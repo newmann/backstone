@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="modules/shop/layouts/fragment.html :: common_head(~{::title},~{::meta},~{})">
+    <title>产品详情</title>
+    <meta name="description" content="产品详情" />
+    <meta name="keywords" content="首页 关键字 测试" />
+</head>
+<body  class="page-body" >
+<div th:replace="modules/shop/layouts/fragment.html :: header"></div>
+
+<div class="main-w clearfix">
+    <div class="main clearfix">
+
+        <div class="breadcrumb">
+            <strong><a th:href="@{'/'}">首页</a></strong>
+            <span>
+                &nbsp;&gt;&nbsp;<a href="">目录</a>
+                &nbsp;&gt;&nbsp;<a th:href="@{|/product/${product.id}.html|}" th:text="${product.name}">${product.name}</a>
+            </span>
+        </div>
+
+        <!-- product-intro -->
+        <div id="product-intro" class="clearfix">
+            <div id="product-intro-left">
+                <div class="jqzoom">
+                    <img height="400" width="400" th:alt="${product.name}" th:src="@{${product.image}}">
+                </div>
+            </div>
+            <div id="product-intro-right">
+                <div class="name">
+                    <h1 th:text="${product.name}">产品名称</h1>
+                    <strong>【月光茶人专营 支持货到付款】</strong>
+                </div>
+                <div th:replace="modules/shop/fragment/product-price.html :: product-price(${product})" />
+                <!--<%&#45;&#45;-->
+                <!--<ul class="summary">-->
+                    <!--<li class="summary-li stock">-->
+                        <!--<div class="dt">配&nbsp;送&nbsp;至：</div>-->
+                        <!--<div class="dd">-->
+                            <!--<div th:replace="modules/shop/area/area-selector.html :: area-selector"></div>-->
+                            <!--<div id="store-prompt">下单后立即配送</div>-->
+                        <!--</div>-->
+                        <!--<span class="clr"></span>-->
+                    <!--</li>-->
+                <!--</ul>-->
+                <!--&#45;&#45;%>-->
+                <ul class="choose clearfix">
+                    <!--<li class="choose-color clearfix" id="choose-color" th:each="attribute : ${product.attributes} ">-->
+                        <!--<div class="dt" th:text="|${attribute.item.name}：|">${attribute.item.name}：</div>-->
+                        <!--<div class="dd">-->
+                            <!--<div class="item selected" th:each="value : ${attribute.item.values} ">-->
+                                <!--<b></b><a href="#none"><i th:text="${value.name}">${value.name}</i></a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</li>-->
+                    <li class="choose-amount clearfix">
+                        <div class="dt">购买数量：</div>
+                        <div class="dd">
+                            <a class="btn-operate" href="javascript:;">-</a>
+                            <input class="amount" value="1">
+                            <a class="btn-operate" href="javascript:;">+</a>
+                        </div>
+                    </li>
+                    <li class="choose-cart clearfix">
+                        <div class="dt">&nbsp;</div>
+                        <div class="dd">
+                            <a class="add-to-cart" rel="nofollow" th:href="@{|/cart/success/${product.id}.html|}"
+                               title="">加入购物车<b></b>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- /product-intro -->
+
+
+        <!-- left -->
+        <div class="main-left">
+            <div th:utext="${product.description}">产品描述</div>
+        </div>
+
+        <!-- content -->
+        <div id="" class="main-content clearfix">
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="modules/shop/layouts/fragment.html :: footer"></div>
+</body>
+</html>
