@@ -3,6 +3,10 @@
  */
 package com.beiyelin.shop.modules.sys.api;
 
+import com.alibaba.fastjson.JSONObject;
+import com.beiyelin.shop.common.config.Global;
+import com.beiyelin.shop.common.mapper.JsonMapper;
+import com.beiyelin.shop.common.security.authority.annotation.PermissionControl;
 import com.beiyelin.shop.common.utils.CacheUtils;
 import com.beiyelin.shop.common.utils.IdGen;
 import com.beiyelin.shop.common.utils.StringUtils;
@@ -13,19 +17,16 @@ import com.beiyelin.shop.modules.shop.entity.CartItem;
 import com.beiyelin.shop.modules.shop.service.CartItemService;
 import com.beiyelin.shop.modules.shop.service.CartService;
 import com.beiyelin.shop.modules.shop.service.CouponUserService;
-import com.beiyelin.shop.modules.sys.entity.User;
+import com.beiyelin.shop.modules.sys.entity.Person;
 import com.beiyelin.shop.modules.sys.security.FormAuthenticationFilter;
-import com.beiyelin.shop.modules.sys.service.ResultCode;
-import com.beiyelin.shop.modules.sys.service.SmsService;
-import com.beiyelin.shop.modules.sys.service.SystemService;
-import com.beiyelin.shop.modules.sys.service.UserService;
+import com.beiyelin.shop.modules.sys.service.*;
 import com.beiyelin.shop.modules.sys.utils.SmsUtils;
 import com.google.common.collect.Maps;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,17 +40,17 @@ import java.util.Map;
  *      当改密码再登录时还是会引用之前的密码而导致登录失败。
  *      因为对shiro还不熟悉，暂时用加密再比较密码的方法来进行登录。
  * 登录判断：
- *      用户登录要用 user.loginName + user.password, 登录后生成新的 user.appLoginToken
- *      判断用户是否登录的session：user.id + user.appLoginToken
+ *      用户登录要用 person.loginName + person.password, 登录后生成新的 person.appLoginToken
+ *      判断用户是否登录的session：person.id + person.appLoginToken
  * @author Tony Wong
  * @version 2015-6-13
  */
 @Controller
-@RequestMapping("${adminPath}/api/user")
-public class ApiUserController extends AppBaseController {
+@RequestMapping("${adminPath}/api/person")
+public class ApiPersonController extends AppBaseController {
 
 	@Autowired
-    UserService userService;
+    PersonService personService;
 
     @Autowired
     SmsService smsService;
@@ -65,28 +66,67 @@ public class ApiUserController extends AppBaseController {
 
 //	@RequestMapping(value = "")
 //	public String index() {
-//		return "modules/app/user/index";
+//		return "modules/app/person/index";
 //	}
+    @PermissionControl("person:save-person")
+    @RequestMapping("/save-person")
+    public String savePerson(HttpServletRequest request,@RequestBody Person person, HttpServletResponse response) {
 
-    @RequestMapping("/get-user")
-    public String getUser(HttpServletRequest request, HttpServletResponse response) {
+        boolean result;
+        int resultCode;
+        String message;
+        Map<String, Object> data = Maps.newHashMap();
+//        if (!isPersonLoggedIn(request)) {
+//            return renderNotLoggedIn(response);
+//        }
+        try {
+//            Person person = JsonMapper.getInstance().fromJson(request.getParameter("person"),Person.class);
+            if (person==null){
+                throw new Exception("没有提交任何信息，不能保存！");
+            }
+
+            beanValidator(person);
+
+            personService.save(person);
+            result = true;
+            resultCode = ResultCode.Success;
+            message = "保存个人信息成功。";
+
+        } catch (Exception ex){
+            result = false;
+            resultCode = ResultCode.Failure;
+            message = ex.getMessage();
+        }
+
+        return renderString(response, result, resultCode, message, data);
+    }
+
+
+    @RequestMapping("/get-person")
+    public String getPerson(HttpServletRequest request, HttpServletResponse response) {
         boolean result;
         int resultCode;
         String message;
         Map<String, Object> data = Maps.newHashMap();
 
-        if (isLoggedIn(request)) {
-            result = true;
-            resultCode = ResultCode.Success;
-            message = "用户信息";
-            String userId = request.getParameter("userId");
-            User user = userService.get(userId);
-            Map<String, Object> oUser = user.toSimpleObj();
-            data.put("user", oUser);
-        } else {
+        try {
+            if (isPersonLoggedIn(request)) {
+                result = true;
+                resultCode = ResultCode.Success;
+                message = "用户信息";
+                String personId = request.getParameter(Global.REQUEST_USER_CAPTION);
+                Person person = personService.get(personId);
+                Map<String, Object> oUser = person.toSimpleObj();
+                data.put("person", oUser);
+            } else {
+                result = false;
+                resultCode = ResultCode.Failure;
+                message = "当前没有登录用户";
+            }
+        } catch (Exception ex){
             result = false;
             resultCode = ResultCode.Failure;
-            message = "当前没有登录用户";
+            message = ex.getMessage();
         }
 
         return renderString(response, result, resultCode, message, data);
@@ -94,10 +134,10 @@ public class ApiUserController extends AppBaseController {
 
 	/**
 	 * 自建会话系统给app用
-     * 判断用户是否登录的条件：user.id + user.app_login_token
+     * 判断用户是否登录的条件：person.id + person.app_login_token
      * 如果用户登录则重新生成app_login_token，实现单点登录，手机掉了只要再次登录，掉了的手机就不能登录了
 	 */
-	@RequestMapping(value = "/login-post", method = RequestMethod.POST)
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String loginPost(HttpServletRequest request, HttpServletResponse response) {
         if (!isValidApp(request)) {
             return renderInvalidApp(response);
@@ -126,43 +166,43 @@ public class ApiUserController extends AppBaseController {
 //			SecurityUtils.getSubject().login(token);
 //        }
 //        catch (AuthenticationException e) {
-//            logger.debug("/app/user/login-post throw AuthenticationException: {}", e.getMessage());
+//            logger.debug("/app/person/login-post throw AuthenticationException: {}", e.getMessage());
 //            result = false;
 //            message = "用户名或密码错误";
 //            return renderString(response, result, message, data);
 //        }
 //        catch (Exception e) {
-//            logger.debug("/app/user/login-post throw Exception: {}", e.getMessage());
+//            logger.debug("/app/person/login-post throw Exception: {}", e.getMessage());
 //            result = false;
 //            message = e.getMessage();
 //            return renderString(response, result, message, data);
 //        }
 
-        User user = _login(username, password);
+        Person person = _loginCheck(username, password);
 
-        if (user == null) {
+        if (person == null) {
             result = false;
             message = "用户名或密码错误";
             return renderString(response, result, message, data);
         }
 
         //转移购物车项给用户
-        String userId = user.getId();
+        String personId = person.getId();
         String appCartCookieId = getAppCartCookieId(request);
         if (StringUtils.isNotBlank(appCartCookieId)) {
             List<CartItem> cartItemList = cartItemService.findByAppCartCookieId(appCartCookieId, null);
             if (cartItemList != null && !cartItemList.isEmpty()) {
-                Cart cart = cartService.getByUserId(userId);
+                Cart cart = cartService.getByUserId(personId);
                 if (cart != null) { //清空用户的购物车项
-                    cartItemService.clearByUserId(userId);
+                    cartItemService.clearByUserId(personId);
                 } else { //创建用户购物车
                     cart = new Cart();
-                    cart.setUser(user);
+//                    cart.setUser(person);
                     cartService.save(cart);
                 }
                 //把产品转给该用户
                 for (CartItem cartItem : cartItemList) {
-                    cartItem.setUserId(userId);
+                    cartItem.setUserId(personId);
                     cartItemService.save(cartItem);
                 }
             }
@@ -173,15 +213,15 @@ public class ApiUserController extends AppBaseController {
 
         //为了app能获得更好的体验，为app的购物车页面准备数据，app从购物车页面跳转到登录页时用
         //代码来自AppCartController.index
-        int oCountUsefulCoupon = couponUserService.countUsefulCoupon(userId);
-        data = cartItemService.findByUserIdWithCount4Json(userId, null);
+        int oCountUsefulCoupon = couponUserService.countUsefulCoupon(personId);
+        data = cartItemService.findByUserIdWithCount4Json(personId, null);
         data.put("isLoggedIn", true);
         data.put("countUsefulCoupon", oCountUsefulCoupon);
 
-        Map<String, Object> oUser = user.toSimpleObj();
+        Map<String, Object> oUser = person.toSimpleObj();
         result = true;
         message = "成功登录";
-        data.put("user", oUser);
+        data.put("person", oUser);
         data.put("appCartCookieId", oAppCartCookieId);
 
         return renderString(response, result, message, data);
@@ -197,7 +237,7 @@ public class ApiUserController extends AppBaseController {
 //
 //		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
 //			model.addAttribute("message", "手机号和密码不能为空");
-//			return "modules/app/user/login-post";
+//			return "modules/app/person/login-post";
 //		}
 //
 //		UsernamePasswordToken token = new UsernamePasswordToken();
@@ -207,19 +247,19 @@ public class ApiUserController extends AppBaseController {
 //			SecurityUtils.getSubject().login(token);
 //		}
 //		catch (Exception e) {
-//			logger.debug("/app/user/login-post throw exception: {}", e.getMessage());
+//			logger.debug("/app/person/login-post throw exception: {}", e.getMessage());
 //			model.addAttribute("message", "手机号或密码不正确");
 //
 //			// 非授权异常，登录失败，验证码加1。
 //			model.addAttribute("isValidateCodeLogin", isValidateCodeLogin(username, true, false));
 //
-//			return "modules/app/user/login-post";
+//			return "modules/app/person/login-post";
 //		}
 //
 //		// 如果已经登录，则跳转
 //		if(SecurityUtils.getSubject().isAuthenticated()){
-//			logger.debug("/app/user/login-post success");
-//			return "modules/app/user/index";
+//			logger.debug("/app/person/login-post success");
+//			return "modules/app/person/index";
 //		}
 //
 //		//String username = WebUtils.getCleanParam(request, FormAuthenticationFilter.DEFAULT_USERNAME_PARAM);
@@ -239,7 +279,7 @@ public class ApiUserController extends AppBaseController {
 //		model.addAttribute(FormAuthenticationFilter.DEFAULT_MESSAGE_PARAM, message);
 //
 //		if (logger.isDebugEnabled()){
-//			logger.debug("/app/user/login-post fail, active session size: {}, message: {}, exception: {}",
+//			logger.debug("/app/person/login-post fail, active session size: {}, message: {}, exception: {}",
 //					sessionDAO.getActiveSessions(false).size(), message, exception);
 //		}
 //
@@ -256,7 +296,7 @@ public class ApiUserController extends AppBaseController {
 ////	        return renderString(response, model);
 ////		}
 //
-//		return "modules/app/user/login-post";
+//		return "modules/app/person/login-post";
 //	}
 
     /**
@@ -282,8 +322,8 @@ public class ApiUserController extends AppBaseController {
             message = ValidateUtils.getErrMsg();
         }
 
-        User user = userService.getByLoginName2(username);
-        if (user != null && StringUtils.isNotBlank(user.getId())) {
+        Person person = personService.getByLoginName2(username);
+        if (person != null && StringUtils.isNotBlank(person.getId())) {
             result = false;
             message = "电话号码已存在";
         } else {
@@ -319,8 +359,8 @@ public class ApiUserController extends AppBaseController {
 			message = ValidateUtils.getErrMsg();
 		}
 
-        User user = userService.getByLoginName2(username);
-        if (user != null && StringUtils.isNotBlank(user.getId())) {
+        Person person = personService.getByLoginName2(username);
+        if (person != null && StringUtils.isNotBlank(person.getId())) {
             result = false;
             message = "电话号码已存在";
         }
@@ -350,7 +390,7 @@ public class ApiUserController extends AppBaseController {
             return renderString(response, result, message, data);
         }
 
-        User u = userService.getByLoginName2(username);
+        Person u = personService.getByLoginName2(username);
         if (u != null && StringUtils.isNotBlank(u.getId())) {
             result = false;
             message = "电话号码已存在";
@@ -360,16 +400,16 @@ public class ApiUserController extends AppBaseController {
         //比较验证码
         if (smsService.checkRegisterCode(username, code)) {
             //保存用户
-            User user = new User();
-            user.setLoginName(username);
-            user.setPassword(SystemService.entryptPassword(password));
-            user.setMobile(username);
-            user.setRemarks("前台用户");
-            user.setRegisterFrom(User.REGISTER_FROM_APP);
-            userService.saveFrontendUser(user);
+            Person person = new Person();
+            person.setLoginName(username);
+            person.setPassword(SystemService.entryptPassword(password));
+            person.setMobile(username);
+//            person.setRemarks("前台用户");
+            person.setRegisterFrom(Person.REGISTER_FROM_APP);
+            personService.save(person);
 
             //用户自动登录
-//            String userId = user.getId();
+//            String personId = person.getId();
 //            UsernamePasswordToken token = new UsernamePasswordToken();
 //            token.setUsername(username);
 //            token.setPassword(password.toCharArray());
@@ -378,21 +418,21 @@ public class ApiUserController extends AppBaseController {
 //                SecurityUtils.getSubject().login(token);
 //            }
 //            catch (AuthenticationException e) {
-//                logger.debug("/app/user/register-step3-post throw AuthenticationException: {}", e.getMessage());
+//                logger.debug("/app/person/register-step3-post throw AuthenticationException: {}", e.getMessage());
 //                result = false;
 //                message = "用户名或密码错误";
 //                return renderString(response, result, message, data);
 //            }
 //            catch (Exception e) {
-//                logger.debug("/app/user/register-step3-post throw Exception: {}",  e.getMessage());
+//                logger.debug("/app/person/register-step3-post throw Exception: {}",  e.getMessage());
 //                result = false;
 //                message = e.getMessage();
 //                return renderString(response, result, message, data);
 //            }
 //            //更新app登录令牌
-//            user.setAppLoginToken(userService.genAppLoginToken());
-//            userService.updateAppLoginToken(user);
-            User loginUser = _login(username, password);
+//            person.setAppLoginToken(personService.genAppLoginToken());
+//            personService.updateAppLoginToken(person);
+            Person loginUser = _loginCheck(username, password);
 
             //给新注册用户发送优惠券
             if (!STOP_COUPON_BUY_ONE_SEND_ONE) {
@@ -406,7 +446,7 @@ public class ApiUserController extends AppBaseController {
                 if (cartItemList != null && !cartItemList.isEmpty()) {
                     //创建用户购物车
                     Cart cart = new Cart();
-                    cart.setUser(u);
+//                    cart.setUser(u);
                     cartService.save(cart);
                     //把产品转给该用户
                     for (CartItem cartItem : cartItemList) {
@@ -423,7 +463,7 @@ public class ApiUserController extends AppBaseController {
 
             result = true;
             message = "恭喜, 您已经成功注册了";
-            data.put("user", oUser);
+            data.put("person", oUser);
             data.put("appCartCookieId", oAppCartCookieId);
         } else {
             result = false;
@@ -454,8 +494,8 @@ public class ApiUserController extends AppBaseController {
             return renderString(response, result, message, data);
         }
 
-        User user = userService.getByMobile(mobile);
-        if (user == null) {
+        Person person = personService.getByMobile(mobile);
+        if (person == null) {
             result = false;
             message = "电话号码不存在";
             return renderString(response, result, message, data);
@@ -498,8 +538,8 @@ public class ApiUserController extends AppBaseController {
             return renderString(response, result, message, data);
         }
 
-        User user = userService.getByMobile(mobile);
-        if (user == null) {
+        Person person = personService.getByMobile(mobile);
+        if (person == null) {
             result = false;
             message = "电话号码不存在";
             return renderString(response, result, message, data);
@@ -541,9 +581,9 @@ public class ApiUserController extends AppBaseController {
             return renderString(response, result, message, data);
         }
 
-        User user = userService.getByMobile(mobile);
+        Person person = personService.getByMobile(mobile);
 
-        if (user == null) {
+        if (person == null) {
             result = false;
             message = "电话号码不存在";
             return renderString(response, result, message, data);
@@ -552,52 +592,52 @@ public class ApiUserController extends AppBaseController {
         //比较验证码
         if (smsService.checkForgetPasswordCode(mobile, code)) {
             //保存用户新密码
-            user.setPassword(SystemService.entryptPassword(password));
-            userService.save(user);
+            person.setPassword(SystemService.entryptPassword(password));
+            personService.save(person);
 
             //用户自动登录
-//            String userId = user.getId();
+//            String personId = person.getId();
 //            UsernamePasswordToken token = new UsernamePasswordToken();
-//            token.setUsername(user.getLoginName());
+//            token.setUsername(person.getLoginName());
 //            token.setPassword(password.toCharArray());
 //            token.setRememberMe(true);
 //            try {
 //                SecurityUtils.getSubject().login(token);
 //            }
 //            catch (AuthenticationException e) {
-//                logger.debug("/app/user/forget-password-step3-post throw AuthenticationException: {}", e.getMessage());
+//                logger.debug("/app/person/forget-password-step3-post throw AuthenticationException: {}", e.getMessage());
 //                result = false;
 //                message = "用户名或密码错误";
 //                return renderString(response, result, message, data);
 //            }
 //            catch (Exception e) {
-//                logger.debug("/app/user/forget-password-step3-post throw Exception: {}", e.getMessage());
+//                logger.debug("/app/person/forget-password-step3-post throw Exception: {}", e.getMessage());
 //                result = false;
 //                message = e.getMessage();
 //                return renderString(response, result, message, data);
 //            }
 //            //更新app登录令牌
-//            user.setAppLoginToken(userService.genAppLoginToken());
-//            userService.updateAppLoginToken(user);
-            User loginUser = _login(mobile, password);
+//            person.setAppLoginToken(personService.genAppLoginToken());
+//            personService.updateAppLoginToken(person);
+            Person loginUser = _loginCheck(mobile, password);
 
             //转移购物车项给用户
-            String userId = loginUser.getId();
+            String personId = loginUser.getId();
             String appCartCookieId = getAppCartCookieId(request);
             if (StringUtils.isNotBlank(appCartCookieId)) {
                 List<CartItem> cartItemList = cartItemService.findByAppCartCookieId(appCartCookieId, null);
                 if (cartItemList != null && !cartItemList.isEmpty()) {
-                    Cart cart = cartService.getByUserId(userId);
+                    Cart cart = cartService.getByUserId(personId);
                     if (cart != null) { //清空用户的购物车项
-                        cartItemService.clearByUserId(userId);
+                        cartItemService.clearByUserId(personId);
                     } else { //创建用户购物车
                         cart = new Cart();
-                        cart.setUser(user);
+//                        cart.setUser(person);
                         cartService.save(cart);
                     }
                     //把产品转给该用户
                     for (CartItem cartItem : cartItemList) {
-                        cartItem.setUserId(userId);
+                        cartItem.setUserId(personId);
                         cartItemService.save(cartItem);
                     }
                 }
@@ -609,7 +649,7 @@ public class ApiUserController extends AppBaseController {
             result = true;
             message = "";
             Map<String, Object> oUser = loginUser.toSimpleObj();
-            data.put("user", oUser);
+            data.put("person", oUser);
             data.put("appCartCookieId", oAppCartCookieId);
             data.put("mobile", mobile);
             data.put("password", password);

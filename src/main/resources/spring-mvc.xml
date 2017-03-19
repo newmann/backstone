@@ -94,7 +94,7 @@
 	</bean>
 	<!-- 定义视图文件解析 -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />-->
 		<property name="prefix" value="${web.view.prefix}"/>
 		<!--<property name="suffix" value="${web.view.suffix}"/>-->
 		<property name="order" value="2" />
@@ -114,6 +114,19 @@
 	<!-- 拦截器配置 -->
 	<mvc:interceptors>
 		<mvc:interceptor>
+			<!-- 匹配的是url路径， 如果不配置或/**,将拦截所有的Controller -->
+			<mvc:mapping path="/**/api/**" />
+			<mvc:exclude-mapping path="/**/api/person/login" />
+			<mvc:exclude-mapping path="/**/api/person/register-step1-post" />
+			<mvc:exclude-mapping path="/**/api/person/register-step2-post" />
+			<mvc:exclude-mapping path="/**/api/person/register-step3-post" />
+			<mvc:exclude-mapping path="/**/api/person/forget-password-step3-post" />
+			<!--<mvc:mapping path="/user/**" />-->
+			<!--<mvc:mapping path="/test/**" />-->
+			<bean class="com.beiyelin.shop.common.security.authority.interceptor.PermissionControlInterceptor"></bean>
+		</mvc:interceptor>
+
+		<mvc:interceptor>
 			<mvc:mapping path="${adminPath}/**" />
 			<mvc:exclude-mapping path="${adminPath}/"/>
 			<mvc:exclude-mapping path="${adminPath}/login"/>
@@ -123,7 +136,8 @@
 			<bean class="com.beiyelin.shop.modules.sys.interceptor.LogInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
-	
+
+
 	<!-- 支持Shiro对Controller的方法级AOP安全控制 begin-->
 	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
 		<property name="proxyTargetClass" value="true" />

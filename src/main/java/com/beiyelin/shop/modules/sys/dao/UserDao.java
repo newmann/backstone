@@ -112,6 +112,6 @@ public interface UserDao extends CrudDao<User> {
 	 */
 	public int updateAppLoginToken(User user);
 
-    public long isAppLoggedIn(User user);
+	public long isAppLoggedIn(User user);
 
 }

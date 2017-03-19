@@ -31,7 +31,12 @@
 	<cache name="userCache" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true">
 		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
 	</cache>
-	
+
+	<!-- 个人缓存 -->
+	<cache name="personCache" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true">
+		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+	</cache>
+
 	<!-- 工作流模块缓存 -->
 	<cache name="actCache" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true">
 		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>

@@ -118,6 +118,9 @@ public class Global {
 	
 	public static final String USERFILES_BASE_URL = "/userfiles/";
 
+	//api登录时，request header中的标签名称
+	public static final String REQUEST_USER_CAPTION = "appUserId";
+	public static final String REQUEST_TOKEN_CAPTION = "appLoginToken";
 	/**
 	 * 页面获取常量
 	 * @see \${fns:getConst('YES')}

@@ -4,9 +4,12 @@
 package com.beiyelin.shop.modules.app.web;
 
 import com.beiyelin.shop.common.beanvalidator.BeanValidators;
+import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.mapper.JsonMapper;
 import com.beiyelin.shop.common.utils.DateUtils;
+import com.beiyelin.shop.modules.sys.entity.Person;
 import com.beiyelin.shop.modules.sys.entity.User;
+import com.beiyelin.shop.modules.sys.service.PersonService;
 import com.beiyelin.shop.modules.sys.service.ResultCode;
 import com.beiyelin.shop.modules.sys.service.SystemService;
 import com.beiyelin.shop.modules.sys.service.UserService;
@@ -99,6 +102,8 @@ public abstract class AppBaseController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private PersonService personService;
 	/**
 	 * 服务端参数有效性验证
 	 * @param object 验证的实体对象
@@ -358,6 +363,27 @@ public abstract class AppBaseController {
 
         return null;
     }
+	/**
+	 * 如果登录成功返回User，否则返回null
+	 * @return
+	 */
+	protected Person _loginCheck(String loginName, String password){
+		if (StringUtils.isBlank(loginName) || StringUtils.isBlank(password))
+			return null;
+
+		Person nPerson = new Person();
+		nPerson.setLoginName(loginName);
+		Person person = personService.getByLoginName2(loginName);
+
+		if (person != null && SystemService.validatePassword(password, person.getPassword())) {
+			//更新appLoginToken
+			person.setAppLoginToken(personService.genAppLoginToken());
+			personService.updateAppLoginToken(person);
+			return person;
+		}
+
+		return null;
+	}
 
     /**
      * 登出
@@ -397,4 +423,19 @@ public abstract class AppBaseController {
             return false;
         }
     }
+	/**
+	 * 个人是否已经登录, 由app传personId和appLoginToken过来
+	 * @return
+	 */
+		protected boolean isPersonLoggedIn(HttpServletRequest request) {
+			String personId = request.getHeader(Global.REQUEST_USER_CAPTION);
+			String token = request.getHeader(Global.REQUEST_TOKEN_CAPTION);
+
+			if (StringUtils.isNotBlank(personId) && StringUtils.isNotBlank(token)
+					&& personService.isAppLoggedIn(personId, token)) {
+				return true;
+			} else {
+				return false;
+			}
+	}
 }

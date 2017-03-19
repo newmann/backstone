@@ -27,9 +27,28 @@ public class JsonUtils {
         return JSON.toJSONString(map);
     }
 
+    public static String toString(boolean result, int resultCode,String message) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("result", result);
+        map.put("resultCode", resultCode);
+        map.put("message", message);
+        map.put("data", new HashMap<String, Object>());
+        return JSON.toJSONString(map);
+    }
+
+
     public static String toString(boolean result, String message, Object data) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("result", result);
+        map.put("message", message);
+        map.put("data", data);
+        return JSON.toJSONString(map);
+    }
+
+    public static String toString(boolean result, int resultCode,String message, Object data) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("result", result);
+        map.put("resultCode", resultCode);
         map.put("message", message);
         map.put("data", data);
         return JSON.toJSONString(map);
@@ -44,4 +63,5 @@ public class JsonUtils {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
     }
+
 }
