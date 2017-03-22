@@ -11,7 +11,7 @@ import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.utils.ShopProductUtils;
 import com.beiyelin.shop.modules.sys.entity.User;
-import com.beiyelin.shop.modules.sys.service.ResultCode;
+import com.beiyelin.shop.common.config.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

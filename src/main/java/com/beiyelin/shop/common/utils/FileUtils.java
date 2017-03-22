@@ -381,10 +381,37 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		}
 
 	}
-
+	/**
+	 * 创建目录
+	 * @param descDirName 目录名,包含路径
+	 * @return 如果创建成功，则返回true，否则返回false
+	 */
+	public static void makeDirectory(String descDirName) throws Exception {
+		try {
+			String descDirNames = descDirName;
+			if (!descDirNames.endsWith(File.separator)) {
+				descDirNames = descDirNames + File.separator;
+			}
+			File descDir = new File(descDirNames);
+			if (descDir.exists()) {
+				log.debug("目录 " + descDirNames + " 已经存在，无须重新创建!");
+			} else {
+				// 创建目录
+				if (descDir.mkdirs()) {
+					log.debug("目录 " + descDirNames + " 创建成功!");
+				} else {
+					log.debug("目录 " + descDirNames + " 创建失败!");
+					throw new Exception("目录 " + descDirNames + " 创建失败!");
+				}
+			}
+		}catch (Exception ex) {
+			log.debug("碰到异常:" + ex.getMessage());
+			throw new Exception("碰到异常::" + ex.getMessage());
+		}
+	}
 	/**
 	 * 写入文件
-	 * @param file 要写入的文件
+	 * @param fileName 要写入的文件
 	 */
 	public static void writeToFile(String fileName, String content, boolean append) {
 		try {
@@ -397,7 +424,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
 	/**
 	 * 写入文件
-	 * @param file 要写入的文件
+	 * @param fileName 要写入的文件
 	 */
 	public static void writeToFile(String fileName, String content, String encoding, boolean append) {
 		try {
@@ -619,4 +646,9 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		return p;
 	}
 
+	public static String getFileSuffix(String fileName){
+
+		String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+		return suffix;
+	}
 }

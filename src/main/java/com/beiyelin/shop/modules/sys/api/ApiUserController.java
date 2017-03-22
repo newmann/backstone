@@ -15,7 +15,7 @@ import com.beiyelin.shop.modules.shop.service.CartService;
 import com.beiyelin.shop.modules.shop.service.CouponUserService;
 import com.beiyelin.shop.modules.sys.entity.User;
 import com.beiyelin.shop.modules.sys.security.FormAuthenticationFilter;
-import com.beiyelin.shop.modules.sys.service.ResultCode;
+import com.beiyelin.shop.common.config.ResultCode;
 import com.beiyelin.shop.modules.sys.service.SmsService;
 import com.beiyelin.shop.modules.sys.service.SystemService;
 import com.beiyelin.shop.modules.sys.service.UserService;

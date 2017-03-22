@@ -3,9 +3,9 @@
  */
 package com.beiyelin.shop.modules.sys.api;
 
-import com.alibaba.fastjson.JSONObject;
+import com.beiyelin.shop.common.bean.ApiResponseData;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.mapper.JsonMapper;
+import com.beiyelin.shop.common.config.ResultCode;
 import com.beiyelin.shop.common.security.authority.annotation.PermissionControl;
 import com.beiyelin.shop.common.utils.CacheUtils;
 import com.beiyelin.shop.common.utils.IdGen;
@@ -25,7 +25,6 @@ import com.google.common.collect.Maps;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +44,7 @@ import java.util.Map;
  * @author Tony Wong
  * @version 2015-6-13
  */
-@Controller
+@RestController
 @RequestMapping("${adminPath}/api/person")
 public class ApiPersonController extends AppBaseController {
 
@@ -103,33 +102,24 @@ public class ApiPersonController extends AppBaseController {
 
 
     @RequestMapping("/get-person")
-    public String getPerson(HttpServletRequest request, HttpServletResponse response) {
-        boolean result;
-        int resultCode;
-        String message;
-        Map<String, Object> data = Maps.newHashMap();
+    public ApiResponseData getPerson(HttpServletRequest request, HttpServletResponse response) {
+        ApiResponseData responseData = new ApiResponseData();
 
         try {
             if (isPersonLoggedIn(request)) {
-                result = true;
-                resultCode = ResultCode.Success;
-                message = "用户信息";
                 String personId = request.getParameter(Global.REQUEST_USER_CAPTION);
                 Person person = personService.get(personId);
                 Map<String, Object> oUser = person.toSimpleObj();
-                data.put("person", oUser);
+                responseData.pushData("person", oUser);
+                responseData.setSuccessMessage("用户信息");
             } else {
-                result = false;
-                resultCode = ResultCode.Failure;
-                message = "当前没有登录用户";
+                responseData.setErrorMessage("当前没有登录用户");
             }
         } catch (Exception ex){
-            result = false;
-            resultCode = ResultCode.Failure;
-            message = ex.getMessage();
+            responseData.setErrorMessage(ex.getMessage());
         }
 
-        return renderString(response, result, resultCode, message, data);
+        return responseData;
     }
 
 	/**
@@ -138,23 +128,22 @@ public class ApiPersonController extends AppBaseController {
      * 如果用户登录则重新生成app_login_token，实现单点登录，手机掉了只要再次登录，掉了的手机就不能登录了
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String loginPost(HttpServletRequest request, HttpServletResponse response) {
+	public ApiResponseData loginPost(HttpServletRequest request, HttpServletResponse response) {
+	    ApiResponseData responseData = new ApiResponseData();
+
         if (!isValidApp(request)) {
-            return renderInvalidApp(response);
+            responseData.setErrorMessage("亲~您还没获得授权，请更新APP后访问");
+            return responseData;
         }
 
-		boolean result;
-		String message;
-		Map<String, Object> data = Maps.newHashMap();
 
 		String username = WebUtils.getCleanParam(request, FormAuthenticationFilter.DEFAULT_USERNAME_PARAM);
 		String password = WebUtils.getCleanParam(request, FormAuthenticationFilter.DEFAULT_PASSWORD_PARAM);
 
 		//不能为空
 		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
-			result = false;
-			message = "手机号和密码不能为空";
-            return renderString(response, result, message, data);
+            responseData.setErrorMessage("手机号和密码不能为空");
+            return responseData;
 		}
 
 		//登录
@@ -181,9 +170,9 @@ public class ApiPersonController extends AppBaseController {
         Person person = _loginCheck(username, password);
 
         if (person == null) {
-            result = false;
-            message = "用户名或密码错误";
-            return renderString(response, result, message, data);
+            responseData.setErrorMessage("用户名或密码错误");
+            return responseData;
+
         }
 
         //转移购物车项给用户
@@ -214,17 +203,20 @@ public class ApiPersonController extends AppBaseController {
         //为了app能获得更好的体验，为app的购物车页面准备数据，app从购物车页面跳转到登录页时用
         //代码来自AppCartController.index
         int oCountUsefulCoupon = couponUserService.countUsefulCoupon(personId);
-        data = cartItemService.findByUserIdWithCount4Json(personId, null);
-        data.put("isLoggedIn", true);
-        data.put("countUsefulCoupon", oCountUsefulCoupon);
-
+//        data = cartItemService.findByUserIdWithCount4Json(personId, null);
+//        data.put("isLoggedIn", true);
+//        data.put("countUsefulCoupon", oCountUsefulCoupon);
+        responseData.pushData("isLoggedIn", true);
+        responseData.pushData("countUsefulCoupon", oCountUsefulCoupon);
         Map<String, Object> oUser = person.toSimpleObj();
-        result = true;
-        message = "成功登录";
-        data.put("person", oUser);
-        data.put("appCartCookieId", oAppCartCookieId);
-
-        return renderString(response, result, message, data);
+//        result = true;
+//        message = "成功登录";
+//        data.put("person", oUser);
+//        data.put("appCartCookieId", oAppCartCookieId);
+        responseData.pushData("person", oUser);
+        responseData.pushData("appCartCookieId", oAppCartCookieId);
+        return responseData;
+//        return renderString(response, result, message, data);
 	}
 
 //	/**

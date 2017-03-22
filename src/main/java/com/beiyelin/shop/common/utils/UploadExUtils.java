@@ -1,19 +1,5 @@
 package com.beiyelin.shop.common.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.beiyelin.shop.common.config.Global;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -22,6 +8,12 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 文件上传工具类
@@ -32,7 +24,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
  * <pre>
  * </pre>
  */
-public class UploadUtils {
+public class UploadExUtils {
 	/**
 	 * 表单字段常量
 	 */
@@ -63,7 +55,7 @@ public class UploadUtils {
 	// 文件最终的url包括文件名
 	private String fileUrl;
 
-	public UploadUtils() {
+	public UploadExUtils() {
 		// 其中images,flashs,medias,files,对应文件夹名称,对应dirName
 		// key文件夹名称
 		// value该文件夹内可以上传文件的后缀名
@@ -71,7 +63,9 @@ public class UploadUtils {
 		extMap.put("flashs", "swf,flv");
 		extMap.put("medias", "swf,flv,mp3,wav,wma,wmv,mid,avi,mpg,asf,rm,rmvb");
 		extMap.put("files", "doc,docx,xls,xlsx,ppt,htm,html,txt,zip,rar,gz,bz2");
+
 		maxSize = StringUtils.toInteger(Global.getConfig("web.maxUploadSize"));
+		basePath = Global.getConfig("web.uploadBasePath");
 
 	}
 
@@ -79,27 +73,42 @@ public class UploadUtils {
 	 * 文件上传
 	 * 
 	 * @param request
-	 * @return infos info[0] 验证文件域返回错误信息 info[1] 上传文件错误信息 info[2] savePath info[3] saveUrl info[4] fileUrl
+	 * @return 返回保存文件的路径和名称列表
 	 */
 	@SuppressWarnings("unchecked")
-	public String[] uploadFile(HttpServletRequest request) {
-		String[] infos = new String[5];
-		// 验证
-		infos[0] = this.validateFields(request);
-		// 初始化表单元素
-		Map<String, Object> fieldsMap = new HashMap<String, Object>();
-		if (infos[0].equals("true")) {
-			fieldsMap = this.initFields(request);
+	public List<String> uploadFile(HttpServletRequest request) throws IOException,Exception {
+		List<String> infos = new ArrayList<String>();
+		String validateInfo;
+		validateInfo= this.validateFields(request);
+		if (!validateInfo.equals("true")){
+			new Exception(validateInfo);
 		}
-		// 上传
-		List<FileItem> fiList = (List<FileItem>) fieldsMap.get(UploadUtils.FILE_FIELDS);
-		if (fiList != null) {
-			for (FileItem item : fiList) {
-				infos[1] = this.saveFile(item);
+
+		CommonsMultipartResolver multipartResolver=new CommonsMultipartResolver(request.getSession().getServletContext());
+		boolean isMultipart = multipartResolver.isMultipart(request);
+		// 第二步：解析request
+		if (isMultipart) {
+
+			//将request变成多部分request
+			MultipartHttpServletRequest multiRequest=(MultipartHttpServletRequest)request;
+			//获取multiRequest 中所有的文件名
+			Iterator iter=multiRequest.getFileNames();
+			// 文件域对象
+			List<String> list = new ArrayList<String>();
+
+			while(iter.hasNext())
+			{
+				//一次遍历所有文件
+				MultipartFile file=multiRequest.getFile(iter.next().toString());
+				if(file!=null)
+				{
+					String path=savePath + file.getOriginalFilename();
+					//上传
+					file.transferTo(new File(path));
+					infos.add(saveUrl + file.getOriginalFilename());
+				}
+
 			}
-			infos[2] = savePath;
-			infos[3] = saveUrl;
-			infos[4] = fileUrl;
 		}
 		return infos;
 	}
@@ -159,130 +168,12 @@ public class UploadUtils {
 				dirFile.mkdirs();
 			}
 
-			// 获取上传临时路径
-			tempPath = request.getSession().getServletContext().getRealPath("/") + tempPath + "/";
-			File file = new File(tempPath);
-			if (!file.exists()) {
-				file.mkdirs();
-			}
+
 		}
 
 		return errorInfo;
 	}
 
-	/**
-	 * 处理上传内容
-	 * 
-	 * @param request
-	 * @param maxSize
-	 * @return
-	 */
-//	@SuppressWarnings("unchecked")
-	private Map<String, Object> initFields(HttpServletRequest request) {
-
-		// 存储表单字段和非表单字段
-		Map<String, Object> map = new HashMap<String, Object>();
-
-		// 第一步：判断request
-		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		// 第二步：解析request
-		if (isMultipart) {
-			// Create a factory for disk-based file items
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-
-			// 阀值,超过这个值才会写到临时目录,否则在内存中
-			factory.setSizeThreshold(1024 * 1024 * 10);
-			factory.setRepository(new File(tempPath));
-
-			// Create a new file upload handler
-			ServletFileUpload upload = new ServletFileUpload(factory);
-
-			upload.setHeaderEncoding("UTF-8");
-
-			// 最大上传限制
-			upload.setSizeMax(maxSize);
-
-			/* FileItem */
-			List<FileItem> items = null;
-			// Parse the request
-			try {
-				items = upload.parseRequest(request);
-			} catch (FileUploadException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			// 第3步：处理uploaded items
-			if (items != null && items.size() > 0) {
-				Iterator<FileItem> iter = items.iterator();
-				// 文件域对象
-				List<FileItem> list = new ArrayList<FileItem>();
-				// 表单字段
-				Map<String, String> fields = new HashMap<String, String>();
-				while (iter.hasNext()) {
-					FileItem item = iter.next();
-					// 处理所有表单元素和文件域表单元素
-					if (item.isFormField()) { // 表单元素
-						String name = item.getFieldName();
-						String value = item.getString();
-						fields.put(name, value);
-					} else { // 文件域表单元素
-						list.add(item);
-					}
-				}
-				map.put(FORM_FIELDS, fields);
-				map.put(FILE_FIELDS, list);
-			}
-		}
-		return map;
-	}
-
-	/**
-	 * 保存文件
-	 * 
-	 * @param obj
-	 *            要上传的文件域
-	 * @param file
-	 * @return
-	 */
-	private String saveFile(FileItem item) {
-		String error = "true";
-		String fileName = item.getName();
-		String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
-
-		if (item.getSize() > maxSize) { // 检查文件大小
-			// TODO
-			error = "上传文件大小超过限制";
-		} else if (!Arrays.<String> asList(extMap.get(dirName).split(",")).contains(fileExt)) {// 检查扩展名
-			error = "上传文件扩展名是不允许的扩展名。\n只允许" + extMap.get(dirName) + "格式。";
-		} else {
-			String newFileName;
-			if ("".equals(fileName.trim())) {
-				SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-				newFileName = df.format(new Date()) + "_" + new Random().nextInt(1000) + "." + fileExt;
-			} else {
-				newFileName = fileName + "." + fileExt;
-			}
-			// .../basePath/dirName/yyyyMMdd/yyyyMMddHHmmss_xxx.xxx
-			fileUrl = saveUrl + newFileName;
-			try {
-				File uploadedFile = new File(savePath, newFileName);
-
-				item.write(uploadedFile);
-
-				/*
-				 * FileOutputStream fos = new FileOutputStream(uploadFile); // 文件全在内存中 if (item.isInMemory()) { fos.write(item.get()); } else { InputStream is = item.getInputStream(); byte[] buffer =
-				 * new byte[1024]; int len; while ((len = is.read(buffer)) > 0) { fos.write(buffer, 0, len); } is.close(); } fos.close(); item.delete();
-				 */
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("上传失败了！！！");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return error;
-	}
 
 	/** **********************get/set方法********************************* */
 

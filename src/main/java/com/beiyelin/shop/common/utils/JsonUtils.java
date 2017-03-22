@@ -14,7 +14,7 @@ public class JsonUtils {
     public static String toString(boolean result) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("result", result);
-        map.put("msg", "");
+        map.put("message", "");
         map.put("data", new HashMap<String, Object>());
         return JSON.toJSONString(map);
     }

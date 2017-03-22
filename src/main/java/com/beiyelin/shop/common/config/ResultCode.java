@@ -1,4 +1,4 @@
-package com.beiyelin.shop.modules.sys.service;
+package com.beiyelin.shop.common.config;
 
 /**
  * Created by tony on 16/2/29.
