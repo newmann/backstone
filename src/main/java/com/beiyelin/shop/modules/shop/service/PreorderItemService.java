@@ -9,7 +9,7 @@ import com.beiyelin.shop.modules.shop.entity.PreorderItem;
 import com.beiyelin.shop.modules.shop.entity.PreorderItemAttribute;
 import com.google.common.collect.Lists;
 import com.beiyelin.shop.common.persistence.Page;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.dao.PreorderItemDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,8 +83,8 @@ public class PreorderItemService extends CrudService<PreorderItemDao, PreorderIt
                 Map<String, Object> oAttr = attr.toSimpleObj();
 
                 // set oAttrPrintNames
-                if (StringUtils.isNotBlank(attr.getAttributeItemValuePrintName())) {
-                    if (StringUtils.isBlank(oAttrPrintNames)) {
+                if (StrUtils.isNotBlank(attr.getAttributeItemValuePrintName())) {
+                    if (StrUtils.isBlank(oAttrPrintNames)) {
                         oAttrPrintNames = attr.getAttributeItemValuePrintName();
                     } else {
                         oAttrPrintNames += "、" + attr.getAttributeItemValuePrintName();
@@ -111,7 +111,7 @@ public class PreorderItemService extends CrudService<PreorderItemDao, PreorderIt
     public List<PreorderItem> findByPreorderIdNoAttr(String preorderId, String orderBy) {
         Preorder preorder = new Preorder(preorderId);
         PreorderItem newItem = new PreorderItem();
-        if (StringUtils.isNotBlank(orderBy)) {
+        if (StrUtils.isNotBlank(orderBy)) {
             Page<PreorderItem> page = new Page<PreorderItem>();
             page.setOrderBy(orderBy);
             newItem.setPage(page);

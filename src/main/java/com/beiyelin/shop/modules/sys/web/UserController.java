@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import com.beiyelin.shop.common.beanvalidator.BeanValidators;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.utils.excel.ExportExcel;
 import com.beiyelin.shop.modules.sys.entity.Office;
 import com.beiyelin.shop.modules.sys.entity.Role;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.utils.excel.ImportExcel;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.sys.entity.User;
@@ -52,7 +52,7 @@ public class UserController extends BaseController {
 	
 	@ModelAttribute
 	public User get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return systemService.getUser(id);
 		}else{
 			return new User();
@@ -98,7 +98,7 @@ public class UserController extends BaseController {
 		user.setCompany(new Office(request.getParameter("company.id")));
 		user.setOffice(new Office(request.getParameter("office.id")));
 		// 如果新密码为空，则不更换密码
-		if (StringUtils.isNotBlank(user.getNewPassword())) {
+		if (StrUtils.isNotBlank(user.getNewPassword())) {
 			user.setPassword(SystemService.entryptPassword(user.getNewPassword()));
 		}
 		if (!beanValidator(model, user)){
@@ -267,7 +267,7 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "info")
 	public String info(User user, HttpServletResponse response, Model model) {
 		User currentUser = UserUtils.getUser();
-		if (StringUtils.isNotBlank(user.getName())){
+		if (StrUtils.isNotBlank(user.getName())){
 			if(Global.isDemoMode()){
 				model.addAttribute("message", "演示模式，不允许操作！");
 				return "modules/sys/userInfo";
@@ -307,7 +307,7 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "modifyPwd")
 	public String modifyPwd(String oldPassword, String newPassword, Model model) {
 		User user = UserUtils.getUser();
-		if (StringUtils.isNotBlank(oldPassword) && StringUtils.isNotBlank(newPassword)){
+		if (StrUtils.isNotBlank(oldPassword) && StrUtils.isNotBlank(newPassword)){
 			if(Global.isDemoMode()){
 				model.addAttribute("message", "演示模式，不允许操作！");
 				return "modules/sys/userModifyPwd";
@@ -334,7 +334,7 @@ public class UserController extends BaseController {
 			Map<String, Object> map = Maps.newHashMap();
 			map.put("id", "u_"+e.getId());
 			map.put("pId", officeId);
-			map.put("name", StringUtils.replace(e.getName(), " ", ""));
+			map.put("name", StrUtils.replace(e.getName(), " ", ""));
 			mapList.add(map);
 		}
 		return mapList;
@@ -347,7 +347,7 @@ public class UserController extends BaseController {
 //			private SystemService systemService;
 //			@Override
 //			public void setAsText(String text) throws IllegalArgumentException {
-//				String[] ids = StringUtils.split(text, ",");
+//				String[] ids = StrUtils.split(text, ",");
 //				List<Role> roles = new ArrayList<Role>();
 //				for (String id : ids) {
 //					Role role = systemService.getRole(Long.valueOf(id));

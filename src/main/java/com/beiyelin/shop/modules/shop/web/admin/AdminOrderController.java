@@ -3,24 +3,21 @@
  */
 package com.beiyelin.shop.modules.shop.web.admin;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.Order;
 import com.beiyelin.shop.modules.shop.entity.OrderItem;
 import com.beiyelin.shop.modules.shop.entity.OrderStatus;
 import com.beiyelin.shop.modules.shop.service.OrderItemService;
 import com.beiyelin.shop.modules.shop.service.OrderService;
 import com.beiyelin.shop.modules.shop.service.OrderStatusService;
-import com.google.common.collect.Maps;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.persistence.Page;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -49,7 +46,7 @@ public class AdminOrderController extends BaseController {
 
 	@ModelAttribute("order")
 	public Order get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)) {
+		if (StrUtils.isNotBlank(id)) {
 			return orderService.getX(id);
 		}
 		else {
@@ -96,7 +93,7 @@ public class AdminOrderController extends BaseController {
         String message;
         String redirectUrl = adminPath + "/order/view?id=" + order.getId();
 
-        if (order == null || StringUtils.isBlank(order.getId())) {
+        if (order == null || StrUtils.isBlank(order.getId())) {
             message = "订单(ID:" + order.getId() + ")不存在";
             addMessage(redirectAttributes, message);
             return "redirect:" + redirectUrl;
@@ -136,7 +133,7 @@ public class AdminOrderController extends BaseController {
         String message;
         String redirectUrl = adminPath + "/order/view?id=" + order.getId();
 
-        if (order == null || StringUtils.isBlank(order.getId())) {
+        if (order == null || StrUtils.isBlank(order.getId())) {
             message = "订单(ID:" + order.getId() + ")不存在";
             addMessage(redirectAttributes, message);
             return "redirect:" + redirectUrl;
@@ -206,7 +203,7 @@ public class AdminOrderController extends BaseController {
         String message;
         String redirectUrl = adminPath + "/order/view?id=" + order.getId();
 
-        if (order == null || StringUtils.isBlank(order.getId())) {
+        if (order == null || StrUtils.isBlank(order.getId())) {
             message = "订单(ID:" + order.getId() + ")不存在";
             addMessage(redirectAttributes, message);
             return "redirect:" + redirectUrl;
@@ -247,7 +244,7 @@ public class AdminOrderController extends BaseController {
         String message;
         String redirectUrl = adminPath + "/order/view?id=" + order.getId();
 
-        if (order == null || StringUtils.isBlank(order.getId())) {
+        if (order == null || StrUtils.isBlank(order.getId())) {
             message = "订单(ID:" + order.getId() + ")不存在";
             addMessage(redirectAttributes, message);
             return "redirect:" + redirectUrl;
@@ -287,7 +284,7 @@ public class AdminOrderController extends BaseController {
         String message;
         String redirectUrl = adminPath + "/order/view?id=" + order.getId();
 
-        if (order == null || StringUtils.isBlank(order.getId())) {
+        if (order == null || StrUtils.isBlank(order.getId())) {
             message = "订单(ID:" + order.getId() + ")不存在";
             addMessage(redirectAttributes, message);
             return "redirect:" + redirectUrl;

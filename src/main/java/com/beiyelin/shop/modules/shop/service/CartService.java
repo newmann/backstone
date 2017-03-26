@@ -4,10 +4,10 @@
 package com.beiyelin.shop.modules.shop.service;
 
 import com.beiyelin.shop.common.service.CrudService;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.*;
 import com.google.common.collect.Maps;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.dao.CartDao;
 import com.beiyelin.shop.modules.shop.service.exception.CartServiceException;
 import com.beiyelin.shop.modules.shop.utils.ShopProductAttributeUtils;
@@ -196,7 +196,7 @@ public class CartService extends CrudService<CartDao, Cart> {
         Cart cart;
         List<Map<String, String>> attributeMaps = ShopProductAttributeUtils.idstringToMap(attributes);
 
-        if (StringUtils.isNotBlank(userId)) {
+        if (StrUtils.isNotBlank(userId)) {
             cart = getByUserId(userId);
         } else {
             throw new CartServiceException("Error: 购物车不存在");
@@ -283,7 +283,7 @@ public class CartService extends CrudService<CartDao, Cart> {
 		Cart cart;
 		List<Map<String, String>> attributeMaps = ShopProductAttributeUtils.idstringToMap(attributes);
 
-		if (StringUtils.isNotBlank(appCartCookieId)) {
+		if (StrUtils.isNotBlank(appCartCookieId)) {
 			cart = getByAppCartCookieId(appCartCookieId);
 		} else {
 			throw new CartServiceException("Error: 购物车不存在");

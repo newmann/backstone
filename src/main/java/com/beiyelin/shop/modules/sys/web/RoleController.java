@@ -12,7 +12,7 @@ import com.beiyelin.shop.common.utils.Collections3;
 import com.beiyelin.shop.modules.sys.entity.Office;
 import com.beiyelin.shop.modules.sys.entity.Role;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.sys.entity.User;
 import com.beiyelin.shop.modules.sys.service.OfficeService;
@@ -49,7 +49,7 @@ public class RoleController extends BaseController {
 	
 	@ModelAttribute("role")
 	public Role get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return systemService.getRole(id);
 		}else{
 			return new Role();

@@ -6,10 +6,10 @@ package com.beiyelin.shop.modules.gen.service;
 import java.util.List;
 import java.util.Map;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.gen.entity.GenTable;
 import com.beiyelin.shop.modules.gen.util.GenUtils;
 import com.beiyelin.shop.common.service.BaseService;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.gen.dao.GenTableColumnDao;
 import com.beiyelin.shop.modules.gen.entity.GenConfig;
 import com.beiyelin.shop.modules.gen.entity.GenScheme;
@@ -54,7 +54,7 @@ public class GenSchemeService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public String save(GenScheme genScheme) {
-		if (StringUtils.isBlank(genScheme.getId())){
+		if (StrUtils.isBlank(genScheme.getId())){
 			genScheme.preInsert();
 			genSchemeDao.insert(genScheme);
 		}else{

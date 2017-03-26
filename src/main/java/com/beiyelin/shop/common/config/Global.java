@@ -8,7 +8,7 @@ import java.util.Map;
 import com.beiyelin.shop.common.utils.PropertiesLoader;
 import com.ckfinder.connector.ServletContextFactory;
 import com.google.common.collect.Maps;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 
 /**
  * 全局配置类
@@ -58,7 +58,7 @@ public class Global {
 		String value = map.get(key);
 		if (value == null){
 			value = propertiesLoader.getProperty(key);
-			map.put(key, value != null ? value : StringUtils.EMPTY);
+			map.put(key, value != null ? value : StrUtils.EMPTY);
 		}
 		return value;
 	}
@@ -140,7 +140,7 @@ public class Global {
 	 */
 	public static String getUserfilesBaseDir() {
 		String dir = getConfig("userfiles.basedir");
-		if (StringUtils.isBlank(dir)){
+		if (StrUtils.isBlank(dir)){
 			try {
 				dir = ServletContextFactory.getServletContext().getRealPath("/");
 			} catch (Exception e) {

@@ -4,11 +4,11 @@
 package com.beiyelin.shop.modules.shop.service;
 
 import com.beiyelin.shop.common.service.CrudService;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.Coupon;
 import com.beiyelin.shop.modules.shop.entity.CouponUser;
 import com.google.common.collect.Lists;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.dao.CouponUserDao;
 import com.beiyelin.shop.modules.sys.entity.User;
 import com.beiyelin.shop.modules.sys.service.UserService;
@@ -58,7 +58,7 @@ public class CouponUserService extends CrudService<CouponUserDao, CouponUser> {
      */
     @Transactional(readOnly = false)
 	public boolean send4NewUser(String userId) {
-		if (StringUtils.isBlank(userId)) {
+		if (StrUtils.isBlank(userId)) {
             return false;
         }
 

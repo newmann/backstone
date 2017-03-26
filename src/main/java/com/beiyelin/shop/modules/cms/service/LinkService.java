@@ -7,9 +7,9 @@ import java.util.Date;
 import java.util.List;
 
 import com.beiyelin.shop.common.service.CrudService;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.cms.entity.Link;
 import com.beiyelin.shop.common.utils.CacheUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,11 +53,11 @@ public class LinkService extends CrudService<LinkDao, Link> {
 	 */
 	public List<Object[]> findByIds(String ids) {
 		List<Object[]> list = Lists.newArrayList();
-		String[] idss = StringUtils.split(ids, ",");
+		String[] idss = StrUtils.split(ids, ",");
 		if (idss.length>0){
 			List<Link> l = dao.findByIdIn(idss);
 			for (Link e : l){
-				list.add(new Object[]{e.getId(),StringUtils.abbr(e.getTitle(),50)});
+				list.add(new Object[]{e.getId(), StrUtils.abbr(e.getTitle(),50)});
 			}
 		}
 		return list;

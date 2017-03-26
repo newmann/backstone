@@ -3,10 +3,12 @@
  */
 package com.beiyelin.shop.modules.app.web;
 
+import com.beiyelin.shop.common.bean.ApiResponseData;
 import com.beiyelin.shop.common.beanvalidator.BeanValidators;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.mapper.JsonMapper;
 import com.beiyelin.shop.common.utils.DateUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.entity.Person;
 import com.beiyelin.shop.modules.sys.entity.User;
 import com.beiyelin.shop.modules.sys.service.PersonService;
@@ -91,7 +93,12 @@ public abstract class AppBaseController {
 	 */
 	@Value("${urlSuffix}")
 	protected String urlSuffix;
-	
+
+	/**
+	*返回的Json结构
+	 */
+	protected ApiResponseData responseData = new ApiResponseData();
+
 	/**
 	 * 验证Bean实例对象
 	 */
@@ -295,7 +302,7 @@ public abstract class AppBaseController {
         return true;
         /*
         String appAuthToken = request.getParameter("appAuthToken");
-        if (StringUtils.isNotBlank(appAuthToken) && appAuthToken.equals(this.appAuthToken)) {
+        if (StrUtils.isNotBlank(appAuthToken) && appAuthToken.equals(this.appAuthToken)) {
             return true;
         } else {
             return false;
@@ -307,7 +314,7 @@ public abstract class AppBaseController {
      * 获取APP传过来的临时购物车唯一标记
      */
     protected String getAppCartCookieId(HttpServletRequest request){
-        return request.getParameter("appCartCookieId");
+        return StrUtils.clean(request.getParameter("appCartCookieId"));
     }
 
 	/**

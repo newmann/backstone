@@ -13,7 +13,7 @@ import com.beiyelin.shop.common.supcan.treelist.cols.Col;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.supcan.annotation.treelist.cols.SupCol;
 import com.beiyelin.shop.common.utils.CacheUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Controller;
@@ -96,12 +96,12 @@ public class SupcanController extends BaseController {
 				
 				// 转为为Col对象
 				Col col = new Col(supCol);
-				if (StringUtils.isBlank(col.getName())){
-					col.setName(StringUtils.uncapitalize(StringUtils.substring(m.getName(), 3)));
+				if (StrUtils.isBlank(col.getName())){
+					col.setName(StrUtils.uncapitalize(StrUtils.substring(m.getName(), 3)));
 				}
 				
 				// 无分组
-				if (StringUtils.isBlank(supCol.groupId())){
+				if (StrUtils.isBlank(supCol.groupId())){
 					cols.add(col);
 				}
 				// 有分组
@@ -156,7 +156,7 @@ public class SupcanController extends BaseController {
 	private void listToTree(List<Object> colList, Map<String, Group> groupMap, String parentId, Comparator<Object> comparator){
 		for (Map.Entry<String, Group> e : groupMap.entrySet()){
 			Group g = e.getValue();
-			if (StringUtils.equals(parentId, g.getParentId())){
+			if (StrUtils.equals(parentId, g.getParentId())){
 				colList.add(g);
 				// 判断是否有子节点，有的话则加进去
 				for (Map.Entry<String, Group> ec : groupMap.entrySet()){

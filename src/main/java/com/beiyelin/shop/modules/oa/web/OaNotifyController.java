@@ -6,9 +6,9 @@ package com.beiyelin.shop.modules.oa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.oa.entity.OaNotify;
 import com.beiyelin.shop.modules.oa.service.OaNotifyService;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class OaNotifyController extends BaseController {
 	@ModelAttribute
 	public OaNotify get(@RequestParam(required=false) String id) {
 		OaNotify entity = null;
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			entity = oaNotifyService.get(id);
 		}
 		if (entity == null){
@@ -57,7 +57,7 @@ public class OaNotifyController extends BaseController {
 	@RequiresPermissions("oa:oaNotify:view")
 	@RequestMapping(value = "form")
 	public String form(OaNotify oaNotify, Model model) {
-		if (StringUtils.isNotBlank(oaNotify.getId())){
+		if (StrUtils.isNotBlank(oaNotify.getId())){
 			oaNotify = oaNotifyService.getRecordList(oaNotify);
 		}
 		model.addAttribute("oaNotify", oaNotify);
@@ -71,7 +71,7 @@ public class OaNotifyController extends BaseController {
 			return form(oaNotify, model);
 		}
 		// 如果是修改，则状态为已发布，则不能再进行操作
-		if (StringUtils.isNotBlank(oaNotify.getId())){
+		if (StrUtils.isNotBlank(oaNotify.getId())){
 			OaNotify e = oaNotifyService.get(oaNotify.getId());
 			if ("1".equals(e.getStatus())){
 				addMessage(redirectAttributes, "已发布，不能操作！");
@@ -119,7 +119,7 @@ public class OaNotifyController extends BaseController {
 	 */
 	@RequestMapping(value = "view")
 	public String view(OaNotify oaNotify, Model model) {
-		if (StringUtils.isNotBlank(oaNotify.getId())){
+		if (StrUtils.isNotBlank(oaNotify.getId())){
 			oaNotifyService.updateReadFlag(oaNotify);
 			oaNotify = oaNotifyService.getRecordList(oaNotify);
 			model.addAttribute("oaNotify", oaNotify);
@@ -134,7 +134,7 @@ public class OaNotifyController extends BaseController {
 	@RequestMapping(value = "viewData")
 	@ResponseBody
 	public OaNotify viewData(OaNotify oaNotify, Model model) {
-		if (StringUtils.isNotBlank(oaNotify.getId())){
+		if (StrUtils.isNotBlank(oaNotify.getId())){
 			oaNotifyService.updateReadFlag(oaNotify);
 			return oaNotify;
 		}
@@ -147,7 +147,7 @@ public class OaNotifyController extends BaseController {
 	@RequestMapping(value = "viewRecordData")
 	@ResponseBody
 	public OaNotify viewRecordData(OaNotify oaNotify, Model model) {
-		if (StringUtils.isNotBlank(oaNotify.getId())){
+		if (StrUtils.isNotBlank(oaNotify.getId())){
 			oaNotify = oaNotifyService.getRecordList(oaNotify);
 			return oaNotify;
 		}

@@ -5,12 +5,12 @@ package com.beiyelin.shop.common.service;
 
 import java.util.List;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.beiyelin.shop.common.persistence.TreeDao;
 import com.beiyelin.shop.common.persistence.TreeEntity;
 import com.beiyelin.shop.common.utils.Reflections;
-import com.beiyelin.shop.common.utils.StringUtils;
 
 /**
  * Service基类
@@ -27,7 +27,7 @@ public abstract class TreeService<D extends TreeDao<T>, T extends TreeEntity<T>>
 		Class<T> entityClass = Reflections.getClassGenricType(getClass(), 1);
 		
 		// 如果没有设置父节点，则代表为跟节点，有则获取父节点实体
-		if (entity.getParent() == null || StringUtils.isBlank(entity.getParentId()) 
+		if (entity.getParent() == null || StrUtils.isBlank(entity.getParentId())
 				|| "0".equals(entity.getParentId())){
 			entity.setParent(null);
 		}else{
@@ -41,7 +41,7 @@ public abstract class TreeService<D extends TreeDao<T>, T extends TreeEntity<T>>
 				throw new ServiceException(e);
 			}
 			entity.setParent(parentEntity);
-			entity.getParent().setParentIds(StringUtils.EMPTY);
+			entity.getParent().setParentIds(StrUtils.EMPTY);
 		}
 		
 		// 获取修改前的parentIds，用于更新子节点的parentIds

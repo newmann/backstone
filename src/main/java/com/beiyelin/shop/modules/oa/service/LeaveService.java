@@ -12,7 +12,7 @@ import com.beiyelin.shop.modules.act.utils.ActUtils;
 import com.beiyelin.shop.modules.oa.dao.LeaveDao;
 import com.beiyelin.shop.modules.oa.entity.Leave;
 import com.beiyelin.shop.common.service.BaseService;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
@@ -75,7 +75,7 @@ public class LeaveService extends BaseService {
 	public void save(Leave leave, Map<String, Object> variables) {
 		
 		// 保存业务数据
-		if (StringUtils.isBlank(leave.getId())){
+		if (StrUtils.isBlank(leave.getId())){
 			leave.preInsert();
 			leaveDao.insert(leave);
 		}else{

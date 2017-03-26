@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.beiyelin.shop.common.persistence.DataEntity;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.hibernate.validator.constraints.Length;
 
 import com.google.common.collect.Lists;
@@ -83,7 +83,7 @@ public class GenTemplate extends DataEntity<GenTemplate> {
 		if (category == null){
 			return Lists.newArrayList();
 		}else{
-			return Lists.newArrayList(StringUtils.split(category, ","));
+			return Lists.newArrayList(StrUtils.split(category, ","));
 		}
 	}
 
@@ -91,7 +91,7 @@ public class GenTemplate extends DataEntity<GenTemplate> {
 		if (categoryList == null){
 			this.category = "";
 		}else{
-			this.category = ","+StringUtils.join(categoryList, ",") + ",";
+			this.category = ","+ StrUtils.join(categoryList, ",") + ",";
 		}
 	}
 	

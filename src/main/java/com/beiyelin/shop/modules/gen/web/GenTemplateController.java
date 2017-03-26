@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class GenTemplateController extends BaseController {
 	
 	@ModelAttribute
 	public GenTemplate get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return genTemplateService.get(id);
 		}else{
 			return new GenTemplate();

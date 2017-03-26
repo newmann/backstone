@@ -6,19 +6,14 @@ package com.beiyelin.shop.modules.sys.entity;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.persistence.DataEntity;
 import com.beiyelin.shop.common.supcan.annotation.treelist.cols.SupCol;
-import com.beiyelin.shop.common.utils.Collections3;
 import com.beiyelin.shop.common.utils.excel.annotation.ExcelField;
-import com.beiyelin.shop.common.utils.excel.fieldtype.RoleListType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,14 +35,8 @@ public class Person extends DataEntity<Person> {
 	private Date loginDate;	// 最后登陆日期
 	private String loginFlag;	// 是否允许登陆
 	private String photo;	// 头像
-    private String latestPayType;
-    /**
-     * 自建会话系统给app用
-     * 判断用户是否登录的条件：user.id + user.appLoginToken(每次登录都会生成新的token)
-     * 退出登录只要把app的用户信息删除和设置user.appLoginToken=null
-     */
-	private String appLoginToken; //
 
+	private String dbUrl; //所属数据库
 	private String oldLoginName;// 原登录名
 	private String newPassword;	// 新密码
 
@@ -93,7 +82,6 @@ public class Person extends DataEntity<Person> {
 		map.put("name", name);
 		map.put("loginName", loginName);
 		map.put("mobile", mobile);
-		map.put("appLoginToken", appLoginToken);
         map.put("level", "铜牌用户");
 		return map;
 	}
@@ -321,19 +309,27 @@ public class Person extends DataEntity<Person> {
 		return id;
 	}
 
-    public String getAppLoginToken() {
-        return appLoginToken;
-    }
+	public String getDbUrl() {
+		return dbUrl;
+	}
 
-    public void setAppLoginToken(String appLoginToken) {
-        this.appLoginToken = appLoginToken;
-    }
+	public void setDbUrl(String dbUrl) {
+		this.dbUrl = dbUrl;
+	}
 
-    public String getLatestPayType() {
-        return latestPayType;
-    }
-
-    public void setLatestPayType(String latestPayType) {
-        this.latestPayType = latestPayType;
-    }
+//    public String getAppLoginToken() {
+//        return appLoginToken;
+//    }
+//
+//    public void setAppLoginToken(String appLoginToken) {
+//        this.appLoginToken = appLoginToken;
+//    }
+//
+//    public String getLatestPayType() {
+//        return latestPayType;
+//    }
+//
+//    public void setLatestPayType(String latestPayType) {
+//        this.latestPayType = latestPayType;
+//    }
 }

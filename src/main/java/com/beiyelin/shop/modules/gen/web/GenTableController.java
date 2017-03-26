@@ -8,11 +8,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.gen.entity.GenTable;
 import com.beiyelin.shop.modules.gen.service.GenTableService;
 import com.beiyelin.shop.modules.gen.util.GenUtils;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.sys.entity.User;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -40,7 +40,7 @@ public class GenTableController extends BaseController {
 	
 	@ModelAttribute
 	public GenTable get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return genTableService.get(id);
 		}else{
 			return new GenTable();
@@ -66,7 +66,7 @@ public class GenTableController extends BaseController {
 		List<GenTable> tableList = genTableService.findTableListFormDb(new GenTable());
 		model.addAttribute("tableList", tableList);
 		// 验证表是否存在
-		if (StringUtils.isBlank(genTable.getId()) && !genTableService.checkTableName(genTable.getName())){
+		if (StrUtils.isBlank(genTable.getId()) && !genTableService.checkTableName(genTable.getName())){
 			addMessage(model, "下一步失败！" + genTable.getName() + " 表已经添加！");
 			genTable.setName("");
 		}
@@ -86,7 +86,7 @@ public class GenTableController extends BaseController {
 			return form(genTable, model);
 		}
 		// 验证表是否已经存在
-		if (StringUtils.isBlank(genTable.getId()) && !genTableService.checkTableName(genTable.getName())){
+		if (StrUtils.isBlank(genTable.getId()) && !genTableService.checkTableName(genTable.getName())){
 			addMessage(model, "保存失败！" + genTable.getName() + " 表已经存在！");
 			genTable.setName("");
 			return form(genTable, model);

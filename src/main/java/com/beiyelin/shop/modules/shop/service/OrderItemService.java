@@ -9,7 +9,7 @@ import com.beiyelin.shop.modules.shop.entity.OrderItem;
 import com.beiyelin.shop.modules.shop.entity.OrderItemAttribute;
 import com.google.common.collect.Lists;
 import com.beiyelin.shop.common.persistence.Page;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.dao.OrderItemDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,8 +83,8 @@ public class OrderItemService extends CrudService<OrderItemDao, OrderItem> {
                 Map<String, Object> oAttr = attr.toSimpleObj();
 
                 // set oAttrPrintNames
-                if (StringUtils.isNotBlank(attr.getAttributeItemValuePrintName())) {
-                    if (StringUtils.isBlank(oAttrPrintNames)) {
+                if (StrUtils.isNotBlank(attr.getAttributeItemValuePrintName())) {
+                    if (StrUtils.isBlank(oAttrPrintNames)) {
                         oAttrPrintNames = attr.getAttributeItemValuePrintName();
                     } else {
                         oAttrPrintNames += "、" + attr.getAttributeItemValuePrintName();
@@ -122,8 +122,8 @@ public class OrderItemService extends CrudService<OrderItemDao, OrderItem> {
                 Map<String, Object> oAttr = attr.toSimpleObj();
 
                 // set oAttrPrintNames
-                if (StringUtils.isNotBlank(attr.getAttributeItemValuePrintName())) {
-                    if (StringUtils.isBlank(oAttrPrintNames)) {
+                if (StrUtils.isNotBlank(attr.getAttributeItemValuePrintName())) {
+                    if (StrUtils.isBlank(oAttrPrintNames)) {
                         oAttrPrintNames = attr.getAttributeItemValuePrintName();
                     } else {
                         oAttrPrintNames += "、" + attr.getAttributeItemValuePrintName();

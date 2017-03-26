@@ -3,7 +3,6 @@ package com.beiyelin.shop.modules.shop.entity;
 import com.beiyelin.shop.common.persistence.DataEntity;
 import com.google.common.collect.Maps;
 import com.beiyelin.shop.modules.sys.entity.User;
-import org.restlet.data.Product;
 
 import java.util.Map;
 

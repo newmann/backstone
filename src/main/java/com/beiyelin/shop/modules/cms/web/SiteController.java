@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.persistence.Page;
 import com.beiyelin.shop.common.utils.CookieUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.cms.entity.Site;
 import com.beiyelin.shop.modules.cms.service.SiteService;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,7 +37,7 @@ public class SiteController extends BaseController {
 	
 	@ModelAttribute
 	public Site get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return siteService.get(id);
 		}else{
 			return new Site();

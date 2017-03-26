@@ -3,13 +3,13 @@
  */
 package com.beiyelin.shop.modules.app.web;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.service.CartService;
 import com.beiyelin.shop.modules.shop.service.CouponUserService;
 import com.google.common.collect.Maps;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.utils.IdGen;
 import com.beiyelin.shop.common.utils.JsonUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.entity.CartItem;
 import com.beiyelin.shop.modules.shop.service.CartItemService;
 import com.beiyelin.shop.modules.shop.service.exception.CartServiceException;
@@ -62,7 +62,7 @@ public class AppCartController extends AppBaseController {
 
         //客户端没有appCartCookieId时（如首次访问），则生成它
         //这样查询就不会导致appCartCookieId被忽略掉
-        if (StringUtils.isBlank(appCartCookieId)) {
+        if (StrUtils.isBlank(appCartCookieId)) {
             //重新为客户端生成appCartCookieId
             appCartCookieId = IdGen.uuid();
         }
@@ -88,10 +88,10 @@ public class AppCartController extends AppBaseController {
 	@RequestMapping("/add")
 	public String add(HttpServletRequest request, HttpServletResponse response) {
 		String productId = request.getParameter("productId");
-		int count = StringUtils.isNotBlank(request.getParameter("count")) ? Integer.valueOf(request.getParameter("count")) : 1;
-        String appCartCookieId = StringUtils.isNotBlank(request.getParameter("appCartCookieId")) ? request.getParameter("appCartCookieId") : IdGen.uuid();
+		int count = StrUtils.isNotBlank(request.getParameter("count")) ? Integer.valueOf(request.getParameter("count")) : 1;
+        String appCartCookieId = StrUtils.isNotBlank(request.getParameter("appCartCookieId")) ? request.getParameter("appCartCookieId") : IdGen.uuid();
 		String attributesStr = request.getParameter("attributes");
-		List<String> attributes = StringUtils.arrayStringToList(attributesStr);
+		List<String> attributes = StrUtils.arrayStringToList(attributesStr);
         int cartNum;
 
 		boolean result;
@@ -120,7 +120,7 @@ public class AppCartController extends AppBaseController {
             result = true;
             message = "商品已加入购物车";
             data.put("cartNum", cartNum);
-            if (StringUtils.isBlank(request.getParameter("appCartCookieId"))) {
+            if (StrUtils.isBlank(request.getParameter("appCartCookieId"))) {
                 data.put("appCartCookieId", appCartCookieId);
             }
         } catch (CartServiceException e) {

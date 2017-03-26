@@ -635,12 +635,12 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 	 * @return
 	 */
 	public static String path(String path){
-		String p = StringUtils.replace(path, "\\", "/");
-		p = StringUtils.join(StringUtils.split(p, "/"), "/");
-		if (!StringUtils.startsWithAny(p, "/") && StringUtils.startsWithAny(path, "\\", "/")){
+		String p = StrUtils.replace(path, "\\", "/");
+		p = StrUtils.join(StrUtils.split(p, "/"), "/");
+		if (!StrUtils.startsWithAny(p, "/") && StrUtils.startsWithAny(path, "\\", "/")){
 			p = "/" + p;
 		}
-		if (!StringUtils.endsWithAny(p, "/") && StringUtils.endsWithAny(path, "\\", "/")){
+		if (!StrUtils.endsWithAny(p, "/") && StrUtils.endsWithAny(path, "\\", "/")){
 			p = p + "/";
 		}
 		return p;

@@ -5,11 +5,11 @@ package com.beiyelin.shop.modules.shop.service;
 
 import com.beiyelin.shop.common.service.CrudService;
 import com.beiyelin.shop.common.utils.IdGen;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.*;
 import com.beiyelin.shop.modules.shop.utils.ShopProductAttributeUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.dao.CartItemDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -143,7 +143,7 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
 		CartItem newItem = new CartItem();
         newItem.setCookieId(cookieId);
 		newItem.setIsOrdered(CartItem.IS_ORDERED_NO);
-        if (StringUtils.isNotBlank(isSelected))
+        if (StrUtils.isNotBlank(isSelected))
             newItem.setIsSelected(isSelected);
 		List<CartItem> list = dao.findByCookieId(newItem);
 
@@ -169,7 +169,7 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
         CartItem newItem = new CartItem();
         newItem.setAppCartCookieId(appCartCookieId);
         newItem.setIsOrdered(CartItem.IS_ORDERED_NO);
-        if (StringUtils.isNotBlank(isSelected))
+        if (StrUtils.isNotBlank(isSelected))
             newItem.setIsSelected(isSelected);
         List<CartItem> list = dao.findByAppCartCookieId(newItem);
 
@@ -195,7 +195,7 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
         CartItem newItem = new CartItem();
         newItem.setUserId(userId);
         newItem.setIsOrdered(CartItem.IS_ORDERED_NO);
-        if (StringUtils.isNotBlank(isSelected))
+        if (StrUtils.isNotBlank(isSelected))
             newItem.setIsSelected(isSelected);
         List<CartItem> list = dao.findByUserId(newItem);
 
@@ -221,7 +221,7 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
         CartItem item = new CartItem();
         item.setUserId(userId);
         item.setIsOrdered(CartItem.IS_ORDERED_NO);
-        if (StringUtils.isNotBlank(isSelected))
+        if (StrUtils.isNotBlank(isSelected))
             item.setIsSelected(isSelected);
 
         return find4Json(item);
@@ -236,7 +236,7 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
         CartItem item = new CartItem();
         item.setCookieId(cookieId);
         item.setIsOrdered(CartItem.IS_ORDERED_NO);
-        if (StringUtils.isNotBlank(isSelected))
+        if (StrUtils.isNotBlank(isSelected))
             item.setIsSelected(isSelected);
 
         return find4Json(item);
@@ -251,7 +251,7 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
         CartItem item = new CartItem();
         item.setUserId(userId);
         item.setIsOrdered(CartItem.IS_ORDERED_NO);
-        if (StringUtils.isNotBlank(isSelected))
+        if (StrUtils.isNotBlank(isSelected))
             item.setIsSelected(isSelected);
 
         return findWithCount4Json(item, isSelected);
@@ -263,13 +263,13 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
      *  {CartItem: {CartItemAttribute(list):{CartItemAttributeItem, CartItemAttributeItemValue}}}
      */
     public Map<String, Object> findByAppCartCookieIdWithCount4Json(String appCartCookieId, String isSelected) {
-        if (StringUtils.isBlank(appCartCookieId))
+        if (StrUtils.isBlank(appCartCookieId))
             appCartCookieId = IdGen.uuid();
 
         CartItem item = new CartItem();
         item.setAppCartCookieId(appCartCookieId);
         item.setIsOrdered(CartItem.IS_ORDERED_NO);
-        if (StringUtils.isNotBlank(isSelected))
+        if (StrUtils.isNotBlank(isSelected))
             item.setIsSelected(isSelected);
 
         return findWithCount4Json(item, isSelected);
@@ -326,8 +326,8 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
                 oAttrValue.put("printName", attrValue.getPrintName());
 
                 // set oAttrPrintNames
-                if (StringUtils.isNotBlank(attrValue.getPrintName())) {
-                    if (StringUtils.isBlank(oAttrPrintNames)) {
+                if (StrUtils.isNotBlank(attrValue.getPrintName())) {
+                    if (StrUtils.isBlank(oAttrPrintNames)) {
                         oAttrPrintNames = attrValue.getPrintName();
                     } else {
                         oAttrPrintNames += "、" + attrValue.getPrintName();
@@ -412,8 +412,8 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
                 oAttrValue.put("printName", attrValue.getPrintName());
 
                 // set oAttrPrintNames
-                if (StringUtils.isNotBlank(attrValue.getPrintName())) {
-                    if (StringUtils.isBlank(oAttrPrintNames)) {
+                if (StrUtils.isNotBlank(attrValue.getPrintName())) {
+                    if (StrUtils.isBlank(oAttrPrintNames)) {
                         oAttrPrintNames = attrValue.getPrintName();
                     } else {
                         oAttrPrintNames += "、" + attrValue.getPrintName();
@@ -455,7 +455,7 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
         item.setUserId(userId);
         item.setIsSelected(isSelected);
         item.setIsOrdered(CartItem.IS_ORDERED_NO);
-        if (StringUtils.isNotBlank(isSelected))
+        if (StrUtils.isNotBlank(isSelected))
             item.setIsSelected(isSelected);
 
         Map<String, Object> map = dao.countByUserId(item);
@@ -474,7 +474,7 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
         item.setCookieId(cookieId);
         item.setIsSelected(isSelected);
         item.setIsOrdered(CartItem.IS_ORDERED_NO);
-        if (StringUtils.isNotBlank(isSelected))
+        if (StrUtils.isNotBlank(isSelected))
             item.setIsSelected(isSelected);
 
         Map<String, Object> map = dao.countByCookieId(item);
@@ -493,7 +493,7 @@ public class CartItemService extends CrudService<CartItemDao, CartItem> {
         item.setAppCartCookieId(appCartCookieId);
         item.setIsSelected(isSelected);
         item.setIsOrdered(CartItem.IS_ORDERED_NO);
-        if (StringUtils.isNotBlank(isSelected))
+        if (StrUtils.isNotBlank(isSelected))
             item.setIsSelected(isSelected);
 
         Map<String, Object> map = dao.countByAppCartCookieId(item);

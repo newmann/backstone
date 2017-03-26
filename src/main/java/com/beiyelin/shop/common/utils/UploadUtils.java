@@ -19,9 +19,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 /**
  * 文件上传工具类
@@ -71,7 +68,7 @@ public class UploadUtils {
 		extMap.put("flashs", "swf,flv");
 		extMap.put("medias", "swf,flv,mp3,wav,wma,wmv,mid,avi,mpg,asf,rm,rmvb");
 		extMap.put("files", "doc,docx,xls,xlsx,ppt,htm,html,txt,zip,rar,gz,bz2");
-		maxSize = StringUtils.toInteger(Global.getConfig("web.maxUploadSize"));
+		maxSize = StrUtils.toInteger(Global.getConfig("web.maxUploadSize"));
 
 	}
 

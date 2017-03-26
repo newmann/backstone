@@ -4,11 +4,9 @@
 package com.beiyelin.shop.modules.app.web;
 
 import com.alipay.util.AlipayNotify;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.OrderStatus;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.entity.Order;
 import com.beiyelin.shop.modules.shop.service.OrderService;
 import com.beiyelin.shop.modules.shop.service.OrderStatusService;
@@ -106,7 +104,7 @@ public class AppAlipayController extends AppBaseController {
                         orderService.save(order);
 
                         //保存最近的支付类型
-                        if (order.getUser() != null && StringUtils.isNotBlank(order.getUser().getId())) {
+                        if (order.getUser() != null && StrUtils.isNotBlank(order.getUser().getId())) {
                             User user = userService.get(order.getUser().getId());
                             if (user != null) {
                                 user.setLatestPayType(order.getPayType());
@@ -148,7 +146,7 @@ public class AppAlipayController extends AppBaseController {
                         orderService.save(order);
 
                         //保存最近的支付类型
-                        if (order.getUser() != null && StringUtils.isNotBlank(order.getUser().getId())) {
+                        if (order.getUser() != null && StrUtils.isNotBlank(order.getUser().getId())) {
                             User user = userService.get(order.getUser().getId());
                             if (user != null) {
                                 user.setLatestPayType(order.getPayType());

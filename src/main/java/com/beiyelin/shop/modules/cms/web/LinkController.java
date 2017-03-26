@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.beiyelin.shop.common.mapper.JsonMapper;
 import com.beiyelin.shop.common.persistence.Page;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.cms.entity.Link;
 import com.beiyelin.shop.modules.cms.entity.Site;
 import com.beiyelin.shop.modules.cms.service.CategoryService;
 import com.beiyelin.shop.modules.cms.service.LinkService;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class LinkController extends BaseController {
 	
 	@ModelAttribute
 	public Link get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return linkService.get(id);
 		}else{
 			return new Link();
@@ -67,7 +67,7 @@ public class LinkController extends BaseController {
 	@RequestMapping(value = "form")
 	public String form(Link link, Model model) {
 		// 如果当前传参有子节点，则选择取消传参选择
-		if (link.getCategory()!=null && StringUtils.isNotBlank(link.getCategory().getId())){
+		if (link.getCategory()!=null && StrUtils.isNotBlank(link.getCategory().getId())){
 			List<Category> list = categoryService.findByParentId(link.getCategory().getId(), Site.getCurrentSiteId());
 			if (list.size() > 0){
 				link.setCategory(null);
@@ -86,7 +86,7 @@ public class LinkController extends BaseController {
 			return form(link, model);
 		}
 		linkService.save(link);
-		addMessage(redirectAttributes, "保存链接'" + StringUtils.abbr(link.getTitle(),50) + "'成功");
+		addMessage(redirectAttributes, "保存链接'" + StrUtils.abbr(link.getTitle(),50) + "'成功");
 		return "redirect:" + adminPath + "/cms/link/?repage&category.id="+link.getCategory().getId();
 	}
 	

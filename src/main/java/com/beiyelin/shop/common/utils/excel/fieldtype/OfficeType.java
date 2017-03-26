@@ -3,8 +3,8 @@
  */
 package com.beiyelin.shop.common.utils.excel.fieldtype;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.entity.Office;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
 
 /**
@@ -19,7 +19,7 @@ public class OfficeType {
 	 */
 	public static Object getValue(String val) {
 		for (Office e : UserUtils.getOfficeList()){
-			if (StringUtils.trimToEmpty(val).equals(e.getName())){
+			if (StrUtils.trimToEmpty(val).equals(e.getName())){
 				return e;
 			}
 		}

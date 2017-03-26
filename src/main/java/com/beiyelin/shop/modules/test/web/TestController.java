@@ -6,7 +6,7 @@ package com.beiyelin.shop.modules.test.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.sys.entity.User;
 import com.beiyelin.shop.modules.test.service.TestService;
@@ -38,7 +38,7 @@ public class TestController extends BaseController {
 	
 	@ModelAttribute
 	public Test get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return testService.get(id);
 		}else{
 			return new Test();

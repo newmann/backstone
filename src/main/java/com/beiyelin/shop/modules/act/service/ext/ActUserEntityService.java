@@ -11,7 +11,6 @@ import com.beiyelin.shop.modules.sys.entity.Role;
 //import com.beiyelin.shop.modules.sys.entity.User;
 import com.beiyelin.shop.common.utils.SpringContextHolder;
 import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;

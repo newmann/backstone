@@ -4,7 +4,7 @@
 package com.beiyelin.shop.common.persistence.interceptor;
 
 import com.beiyelin.shop.common.persistence.dialect.Dialect;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.ExecutorException;
 import org.apache.ibatis.logging.Log;
@@ -106,7 +106,7 @@ public class SQLHelper {
         ResultSet rs = null;
         try {
         	if (log.isDebugEnabled()) {
-                log.debug("COUNT SQL: " + StringUtils.replaceEach(countSql, new String[]{"\n", "\t"}, new String[]{" ", " "}));
+                log.debug("COUNT SQL: " + StrUtils.replaceEach(countSql, new String[]{"\n", "\t"}, new String[]{" ", " "}));
             }
         	if (conn == null){
         		conn = mappedStatement.getConfiguration().getEnvironment().getDataSource().getConnection();

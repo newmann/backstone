@@ -5,7 +5,7 @@ package com.beiyelin.shop.modules.sys.api;
 
 import com.beiyelin.shop.common.utils.CacheUtils;
 import com.beiyelin.shop.common.utils.IdGen;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.utils.ValidateUtils;
 import com.beiyelin.shop.modules.app.web.AppBaseController;
 import com.beiyelin.shop.modules.shop.entity.Cart;
@@ -111,7 +111,7 @@ public class ApiUserController extends AppBaseController {
 		String password = WebUtils.getCleanParam(request, FormAuthenticationFilter.DEFAULT_PASSWORD_PARAM);
 
 		//不能为空
-		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+		if (StrUtils.isBlank(username) || StrUtils.isBlank(password)) {
 			result = false;
 			message = "手机号和密码不能为空";
             return renderString(response, result, message, data);
@@ -149,7 +149,7 @@ public class ApiUserController extends AppBaseController {
         //转移购物车项给用户
         String userId = user.getId();
         String appCartCookieId = getAppCartCookieId(request);
-        if (StringUtils.isNotBlank(appCartCookieId)) {
+        if (StrUtils.isNotBlank(appCartCookieId)) {
             List<CartItem> cartItemList = cartItemService.findByAppCartCookieId(appCartCookieId, null);
             if (cartItemList != null && !cartItemList.isEmpty()) {
                 Cart cart = cartService.getByUserId(userId);
@@ -195,7 +195,7 @@ public class ApiUserController extends AppBaseController {
 //		String username = WebUtils.getCleanParam(request, FormAuthenticationFilter.DEFAULT_USERNAME_PARAM);
 //		String password = WebUtils.getCleanParam(request, FormAuthenticationFilter.DEFAULT_PASSWORD_PARAM);
 //
-//		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+//		if (StrUtils.isBlank(username) || StrUtils.isBlank(password)) {
 //			model.addAttribute("message", "手机号和密码不能为空");
 //			return "modules/app/user/login-post";
 //		}
@@ -228,7 +228,7 @@ public class ApiUserController extends AppBaseController {
 //		String exception = (String)request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
 //		String message = (String)request.getAttribute(FormAuthenticationFilter.DEFAULT_MESSAGE_PARAM);
 //
-//		if (StringUtils.isBlank(message) || StringUtils.equals(message, "null")){
+//		if (StrUtils.isBlank(message) || StrUtils.equals(message, "null")){
 //			message = "用户或密码错误, 请重试.";
 //		}
 //
@@ -283,7 +283,7 @@ public class ApiUserController extends AppBaseController {
         }
 
         User user = userService.getByLoginName2(username);
-        if (user != null && StringUtils.isNotBlank(user.getId())) {
+        if (user != null && StrUtils.isNotBlank(user.getId())) {
             result = false;
             message = "电话号码已存在";
         } else {
@@ -320,7 +320,7 @@ public class ApiUserController extends AppBaseController {
 		}
 
         User user = userService.getByLoginName2(username);
-        if (user != null && StringUtils.isNotBlank(user.getId())) {
+        if (user != null && StrUtils.isNotBlank(user.getId())) {
             result = false;
             message = "电话号码已存在";
         }
@@ -351,7 +351,7 @@ public class ApiUserController extends AppBaseController {
         }
 
         User u = userService.getByLoginName2(username);
-        if (u != null && StringUtils.isNotBlank(u.getId())) {
+        if (u != null && StrUtils.isNotBlank(u.getId())) {
             result = false;
             message = "电话号码已存在";
             return renderString(response, result, message, data);
@@ -401,7 +401,7 @@ public class ApiUserController extends AppBaseController {
 
             //转移购物车项给用户
             String appCartCookieId = getAppCartCookieId(request);
-            if (StringUtils.isNotBlank(appCartCookieId)) {
+            if (StrUtils.isNotBlank(appCartCookieId)) {
                 List<CartItem> cartItemList = cartItemService.findByAppCartCookieId(appCartCookieId, null);
                 if (cartItemList != null && !cartItemList.isEmpty()) {
                     //创建用户购物车
@@ -584,7 +584,7 @@ public class ApiUserController extends AppBaseController {
             //转移购物车项给用户
             String userId = loginUser.getId();
             String appCartCookieId = getAppCartCookieId(request);
-            if (StringUtils.isNotBlank(appCartCookieId)) {
+            if (StrUtils.isNotBlank(appCartCookieId)) {
                 List<CartItem> cartItemList = cartItemService.findByAppCartCookieId(appCartCookieId, null);
                 if (cartItemList != null && !cartItemList.isEmpty()) {
                     Cart cart = cartService.getByUserId(userId);

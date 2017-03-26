@@ -41,7 +41,7 @@ public class TestAuditController extends BaseController {
 		TestAudit testAudit = null;
 		if (StringUtils.isNotBlank(id)){
 			testAudit = testAuditService.get(id);
-//		}else if (StringUtils.isNotBlank(procInsId)){
+//		}else if (StrUtils.isNotBlank(procInsId)){
 //			testAudit = testAuditService.getByProcInsId(procInsId);
 		}
 		if (testAudit == null){

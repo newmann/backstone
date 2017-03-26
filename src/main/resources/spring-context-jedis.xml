@@ -11,15 +11,33 @@
 	<context:property-placeholder ignore-unresolvable="true" location="classpath:shop.properties" />
 	
 	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-		<property name="maxIdle" value="300" /> <!-- 最大能够保持idel状态的对象数  -->
+		<property name="maxIdle" value="60000" /> <!-- 最大能够保持idel状态的对象数  -->
 		<property name="maxTotal" value="60000" /> <!-- 最大分配的对象数 -->
+		<property name="minIdle" value="100" />
+		<property name="maxWaitMillis" value="15000"/>
 		<property name="testOnBorrow" value="true" /> <!-- 当调用borrow Object方法时，是否进行有效性检查 -->
 	</bean>
 	
-	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+	<!--<bean id="jedisPool" class="redis.clients.jedis.JedisPool">-->
+		<!--<constructor-arg index="0" ref="jedisPoolConfig" />-->
+		<!--<constructor-arg index="1" value="${redis.host}" />-->
+		<!--<constructor-arg index="2" value="${redis.port}" type="int" />-->
+	<!--</bean>-->
+
+	<!-- JEDIS SHARD 池配置 -->
+	<bean id="jedisPool" class="redis.clients.jedis.ShardedJedisPool">
 		<constructor-arg index="0" ref="jedisPoolConfig" />
-		<constructor-arg index="1" value="${redis.host}" />
-		<constructor-arg index="2" value="${redis.port}" type="int" />
+		<constructor-arg index="1">
+			<list>
+				<ref bean="jedis.shardInfo.default" />
+			</list>
+		</constructor-arg>
 	</bean>
-	
+	<!-- JEDIS SHARD信息配置[START]      在此添加REDIS集群配置 -->
+	<bean id="jedis.shardInfo.default" class="redis.clients.jedis.JedisShardInfo">
+		<constructor-arg index="0" value="${redis.host}" />
+		<constructor-arg index="1" type="int" value="${redis.port}" />
+		<!--<constructor-arg index="2" type="java.lang.String" value="192.168.1.21" />-->
+	</bean>
+	<!-- JEDIS SHARD信息配置 [END] -->
 </beans>

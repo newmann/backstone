@@ -52,8 +52,8 @@ public class AddressController extends BaseController {
 //		String detail = request.getParameter("detail");
 //		String fullname = request.getParameter("fullname");
 //
-//		if (StringUtils.isNotBlank(areaIdString) && StringUtils.isNotBlank(telephone)
-//				&& StringUtils.isNotBlank(detail) && StringUtils.isNotBlank(fullname)) {
+//		if (StrUtils.isNotBlank(areaIdString) && StrUtils.isNotBlank(telephone)
+//				&& StrUtils.isNotBlank(detail) && StrUtils.isNotBlank(fullname)) {
 //			Integer areaId = Integer.valueOf(areaIdString);
 //			Area area = areaService.get(areaId);
 //			if (area != null) {

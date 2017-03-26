@@ -1,9 +1,9 @@
 package com.beiyelin.shop.modules.shop.entity;
 
 import com.beiyelin.shop.common.persistence.DataEntity;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.google.common.collect.Maps;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.sys.entity.Area;
 import com.beiyelin.shop.modules.sys.entity.User;
 
@@ -175,7 +175,7 @@ public class Order extends DataEntity<Order> {
      * 是否正确的支付方式
      */
     public static boolean isValidPayType(String payType) {
-        if (StringUtils.isBlank(payType))
+        if (StrUtils.isBlank(payType))
             return false;
 
         if (PAY_TYPE_CASH.equals(payType)
@@ -191,7 +191,7 @@ public class Order extends DataEntity<Order> {
      * 是否正确的在线支付方式
      */
     public static boolean isValidOpPayType(String payType) {
-        if (StringUtils.isBlank(payType))
+        if (StrUtils.isBlank(payType))
             return false;
 
         if (PAY_TYPE_WX.equals(payType)

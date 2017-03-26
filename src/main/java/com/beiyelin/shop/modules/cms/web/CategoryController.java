@@ -13,7 +13,7 @@ import com.beiyelin.shop.modules.cms.entity.Site;
 import com.beiyelin.shop.modules.cms.service.CategoryService;
 import com.beiyelin.shop.modules.cms.utils.TplUtils;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
@@ -50,7 +50,7 @@ public class CategoryController extends BaseController {
 	
 	@ModelAttribute("category")
 	public Category get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return categoryService.get(id);
 		}else{
 			return new Category();

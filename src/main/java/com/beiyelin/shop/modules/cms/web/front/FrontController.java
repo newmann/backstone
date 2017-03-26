@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.persistence.Page;
 import com.beiyelin.shop.common.servlet.ValidateCodeServlet;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.cms.entity.Article;
 import com.beiyelin.shop.modules.cms.entity.Comment;
@@ -80,7 +80,7 @@ public class FrontController extends BaseController {
 		}
 		Site site = CmsUtils.getSite(siteId);
 		// 子站有独立页面，则显示独立页面
-		if (StringUtils.isNotBlank(site.getCustomIndexView())){
+		if (StrUtils.isNotBlank(site.getCustomIndexView())){
 			model.addAttribute("site", site);
 			model.addAttribute("isIndex", true);
 			return "modules/cms/front/themes/"+site.getTheme()+"/frontIndex"+site.getCustomIndexView();
@@ -176,7 +176,7 @@ public class FrontController extends BaseController {
 					model.addAttribute("page", page);
 				}
 				String view = "/frontList";
-				if (StringUtils.isNotBlank(category.getCustomListView())){
+				if (StrUtils.isNotBlank(category.getCustomListView())){
 					view = "/"+category.getCustomListView();
 				}
 	            CmsUtils.addViewConfigAttribute(model, category);
@@ -190,7 +190,7 @@ public class FrontController extends BaseController {
 				model.addAttribute("category", category);
 				model.addAttribute("categoryList", categoryList);
 				String view = "/frontListCategory";
-				if (StringUtils.isNotBlank(category.getCustomListView())){
+				if (StrUtils.isNotBlank(category.getCustomListView())){
 					view = "/"+category.getCustomListView();
 				}
 	            CmsUtils.addViewConfigAttribute(model, category);
@@ -287,9 +287,9 @@ public class FrontController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "comment", method=RequestMethod.POST)
 	public String commentSave(Comment comment, String validateCode,@RequestParam(required=false) String replyId, HttpServletRequest request) {
-		if (StringUtils.isNotBlank(validateCode)){
+		if (StrUtils.isNotBlank(validateCode)){
 			if (ValidateCodeServlet.validate(request, validateCode)){
-				if (StringUtils.isNotBlank(replyId)){
+				if (StrUtils.isNotBlank(replyId)){
 					Comment replyComment = commentService.get(replyId);
 					if (replyComment != null){
 						comment.setContent("<div class=\"reply\">"+replyComment.getName()+":<br/>"
@@ -320,12 +320,12 @@ public class FrontController extends BaseController {
 	}
 
     private String getTpl(Article article){
-        if(StringUtils.isBlank(article.getCustomContentView())){
+        if(StrUtils.isBlank(article.getCustomContentView())){
             String view = null;
             Category c = article.getCategory();
             boolean goon = true;
             do{
-                if(StringUtils.isNotBlank(c.getCustomContentView())){
+                if(StrUtils.isNotBlank(c.getCustomContentView())){
                     view = c.getCustomContentView();
                     goon = false;
                 }else if(c.getParent() == null || c.getParent().isRoot()){
@@ -334,7 +334,7 @@ public class FrontController extends BaseController {
                     c = c.getParent();
                 }
             }while(goon);
-            return StringUtils.isBlank(view) ? Article.DEFAULT_TEMPLATE : view;
+            return StrUtils.isBlank(view) ? Article.DEFAULT_TEMPLATE : view;
         }else{
             return article.getCustomContentView();
         }

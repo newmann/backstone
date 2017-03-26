@@ -4,11 +4,11 @@
 package com.beiyelin.shop.modules.app.web;
 
 import com.beiyelin.shop.common.utils.IpAddrUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.*;
 import com.beiyelin.shop.modules.shop.service.*;
 import com.google.common.collect.Maps;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.utils.ShopProductUtils;
 import com.beiyelin.shop.modules.sys.entity.User;
 import com.beiyelin.shop.common.config.ResultCode;
@@ -77,7 +77,7 @@ public class AppPreorderController extends AppBaseController {
 
 		Preorder preorder = preorderService.get(id);
         if (preorder == null || preorder.getUser() == null
-                || StringUtils.isBlank(preorder.getUser().getId())) {
+                || StrUtils.isBlank(preorder.getUser().getId())) {
             result = false;
             message = "预购订单(ID:" + preorder.getId() + ")不存在";
             return renderString(response, result, message, data);
@@ -257,7 +257,7 @@ public class AppPreorderController extends AppBaseController {
 
         CouponUser couponUser;
         //不使用优惠券
-        if (StringUtils.isBlank(couponUserId)) {
+        if (StrUtils.isBlank(couponUserId)) {
             couponUser = new CouponUser();
             preorder.setCouponUser(couponUser);
             preorder.setCouponUserTotalPrice(0f);
@@ -267,7 +267,7 @@ public class AppPreorderController extends AppBaseController {
             couponUser = couponUserService.get(couponUserId);
 
             if (couponUser == null || couponUser.getUser() == null
-                    || StringUtils.isBlank(couponUser.getUser().getId())
+                    || StrUtils.isBlank(couponUser.getUser().getId())
                     || !couponUser.getUser().getId().equals(userId)) {
                 result = false;
                 message = "优惠券(ID:" + couponUserId + ")不存在";

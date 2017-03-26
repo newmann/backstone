@@ -3,6 +3,7 @@ package com.beiyelin.shop.common.security.authority.interceptor;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.security.authority.annotation.PermissionControl;
 import com.beiyelin.shop.common.utils.JsonUtils;
+import com.beiyelin.shop.modules.sys.service.AppLoginService;
 import com.beiyelin.shop.modules.sys.service.PersonService;
 import com.beiyelin.shop.common.config.ResultCode;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ import java.io.IOException;
  */
 public class PermissionControlInterceptor  extends HandlerInterceptorAdapter {
     @Autowired
-    private PersonService personService;
+    private AppLoginService appLoginService;
 
     private final static Logger logger = LoggerFactory.getLogger(PermissionControlInterceptor.class);
 
@@ -31,7 +32,7 @@ public class PermissionControlInterceptor  extends HandlerInterceptorAdapter {
         String token = request.getHeader(Global.REQUEST_TOKEN_CAPTION);
         String userID = request.getHeader(Global.REQUEST_USER_CAPTION);
 
-        if (!personService.isAppLoggedIn(userID, token)) {
+        if (!appLoginService.isAppLoggedIn(userID, token)) {
 
             responseTokenFail(response);
             return false;

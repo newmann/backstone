@@ -18,7 +18,7 @@ import com.beiyelin.shop.modules.cms.service.FileTplService;
 import com.beiyelin.shop.modules.cms.utils.CmsUtils;
 import com.beiyelin.shop.modules.cms.utils.TplUtils;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.cms.service.ArticleService;
 import com.beiyelin.shop.modules.cms.service.SiteService;
@@ -56,7 +56,7 @@ public class ArticleController extends BaseController {
 	
 	@ModelAttribute
 	public Article get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return articleService.get(id);
 		}else{
 			return new Article();
@@ -83,7 +83,7 @@ public class ArticleController extends BaseController {
 	@RequestMapping(value = "form")
 	public String form(Article article, Model model) {
 		// 如果当前传参有子节点，则选择取消传参选择
-		if (article.getCategory()!=null && StringUtils.isNotBlank(article.getCategory().getId())){
+		if (article.getCategory()!=null && StrUtils.isNotBlank(article.getCategory().getId())){
 			List<Category> list = categoryService.findByParentId(article.getCategory().getId(), Site.getCurrentSiteId());
 			if (list.size() > 0){
 				article.setCategory(null);
@@ -92,7 +92,7 @@ public class ArticleController extends BaseController {
 			}
 		}
 		article.setArticleData(articleDataService.get(article.getId()));
-//		if (article.getCategory()=null && StringUtils.isNotBlank(article.getCategory().getId())){
+//		if (article.getCategory()=null && StrUtils.isNotBlank(article.getCategory().getId())){
 //			Category category = categoryService.get(article.getCategory().getId());
 //		}
         model.addAttribute("contentViewList",getTplContent());
@@ -109,7 +109,7 @@ public class ArticleController extends BaseController {
 			return form(article, model);
 		}
 		articleService.save(article);
-		addMessage(redirectAttributes, "保存文章'" + StringUtils.abbr(article.getTitle(),50) + "'成功");
+		addMessage(redirectAttributes, "保存文章'" + StrUtils.abbr(article.getTitle(),50) + "'成功");
 		String categoryId = article.getCategory()!=null?article.getCategory().getId():null;
 		return "redirect:" + adminPath + "/cms/article/?repage&category.id="+(categoryId!=null?categoryId:"");
 	}

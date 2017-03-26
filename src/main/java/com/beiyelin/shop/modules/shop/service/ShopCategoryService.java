@@ -59,15 +59,15 @@ public class ShopCategoryService extends TreeService<ShopCategoryDao, ShopCatego
 	
 	public Page<ShopCategory> find(Page<ShopCategory> page, ShopCategory category) {
 //		DetachedCriteria dc = dao.createDetachedCriteria();
-//		if (category.getSite()!=null && StringUtils.isNotBlank(category.getSite().getId())){
+//		if (category.getSite()!=null && StrUtils.isNotBlank(category.getSite().getId())){
 //			dc.createAlias("site", "site");
 //			dc.add(Restrictions.eq("site.id", category.getSite().getId()));
 //		}
-//		if (category.getParent()!=null && StringUtils.isNotBlank(category.getParent().getId())){
+//		if (category.getParent()!=null && StrUtils.isNotBlank(category.getParent().getId())){
 //			dc.createAlias("parent", "parent");
 //			dc.add(Restrictions.eq("parent.id", category.getParent().getId()));
 //		}
-//		if (StringUtils.isNotBlank(category.getInMenu()) && Category.SHOW.equals(category.getInMenu())){
+//		if (StrUtils.isNotBlank(category.getInMenu()) && Category.SHOW.equals(category.getInMenu())){
 //			dc.add(Restrictions.eq("inMenu", category.getInMenu()));
 //		}
 //		dc.add(Restrictions.eq(Category.FIELD_DEL_FLAG, Category.DEL_FLAG_NORMAL));

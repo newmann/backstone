@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamException;
 
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -110,7 +110,7 @@ public class ActProcessController extends BaseController {
 
 		String fileName = file.getOriginalFilename();
 		
-		if (StringUtils.isBlank(fileName)){
+		if (StrUtils.isBlank(fileName)){
 			redirectAttributes.addFlashAttribute("message", "请选择要部署的流程文件");
 		}else{
 			String message = actProcessService.deploy(exportDir, category, file);
@@ -187,7 +187,7 @@ public class ActProcessController extends BaseController {
 	@RequiresPermissions("act:process:edit")
 	@RequestMapping(value = "deleteProcIns")
 	public String deleteProcIns(String procInsId, String reason, RedirectAttributes redirectAttributes) {
-		if (StringUtils.isBlank(reason)){
+		if (StrUtils.isBlank(reason)){
 			addMessage(redirectAttributes, "请填写删除原因");
 		}else{
 			actProcessService.deleteProcIns(procInsId, reason);

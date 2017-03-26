@@ -156,7 +156,7 @@ public class Role extends DataEntity<Role> {
 //	}
 //
 //	public String getUserIds() {
-//		return StringUtils.join(getUserIdList(), ",");
+//		return StrUtils.join(getUserIdList(), ",");
 //	}
 
 	public List<Menu> getMenuList() {
@@ -268,6 +268,6 @@ public class Role extends DataEntity<Role> {
 //		for (Menu menu : menuList) {
 //			menuNameList.add(menu.getName());
 //		}
-//		return StringUtils.join(menuNameList, ",");
+//		return StrUtils.join(menuNameList, ",");
 //	}
 }

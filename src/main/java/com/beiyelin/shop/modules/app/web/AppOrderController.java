@@ -7,7 +7,7 @@ import com.beiyelin.shop.common.config.AlipayClientConfig;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.persistence.Page;
 import com.beiyelin.shop.common.utils.IpAddrUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.*;
 import com.beiyelin.shop.modules.shop.service.*;
 import com.beiyelin.shop.modules.shop.utils.OrderStatusUtils;
@@ -314,7 +314,7 @@ public class AppOrderController extends AppBaseController {
 
         Order order = orderService.getX(id);
         if (order == null || order.getUser() == null
-                || StringUtils.isBlank(order.getUser().getId())) {
+                || StrUtils.isBlank(order.getUser().getId())) {
             result = false;
             message = "订单(ID:" + id + ")不存在";
             return renderString(response, result, message, data);
@@ -368,7 +368,7 @@ public class AppOrderController extends AppBaseController {
             return renderString(response, result, message, data);
         }
 
-        if (StringUtils.isBlank(addressId)) {
+        if (StrUtils.isBlank(addressId)) {
             result = false;
             message = "请选择收货地址";
             return renderString(response, result, message, data);
@@ -388,19 +388,19 @@ public class AppOrderController extends AppBaseController {
             return renderString(response, result, message, data);
         }
         // area not exist
-        if (StringUtils.isBlank(address.getFullname())) {
+        if (StrUtils.isBlank(address.getFullname())) {
             result = false;
             message = "收货人姓名不存在";
             return renderString(response, result, message, data);
         }
         // address not exist
-        if (StringUtils.isBlank(address.getTelephone())) {
+        if (StrUtils.isBlank(address.getTelephone())) {
             result = false;
             message = "收货人电话不存在";
             return renderString(response, result, message, data);
         }
         // 如果不是店内消费，收货门牌地址必须填写
-        if (!Area.SHIPPING_GROUP_STORE.equals(address.getArea().getShippingGroup()) && StringUtils.isBlank(address.getDetail())) {
+        if (!Area.SHIPPING_GROUP_STORE.equals(address.getArea().getShippingGroup()) && StrUtils.isBlank(address.getDetail())) {
             result = false;
             message = "收货门牌地址不存在";
             return renderString(response, result, message, data);
@@ -418,7 +418,7 @@ public class AppOrderController extends AppBaseController {
 
         //不能重复提交订单
         Order existOrder = orderService.getByPreorderId(preorderId);
-        if (existOrder != null && StringUtils.isNotBlank(existOrder.getId())) {
+        if (existOrder != null && StrUtils.isNotBlank(existOrder.getId())) {
             result = false;
             //message = "请不要重复提交预备订单(预备订单ID:" + preorderId + ")";
             message = "请不要重复提交订单";
@@ -437,7 +437,7 @@ public class AppOrderController extends AppBaseController {
         }
 
         //支付方式检查
-        if (StringUtils.isBlank(preorder.getPayType())) {
+        if (StrUtils.isBlank(preorder.getPayType())) {
             result = false;
             message = "请选择支付方式";
             return renderString(response, result, message, data);
@@ -582,7 +582,7 @@ public class AppOrderController extends AppBaseController {
 
         //set couponUser
         CouponUser couponUser = order.getCouponUser();
-        if (couponUser != null && StringUtils.isNotBlank(couponUser.getId())) {
+        if (couponUser != null && StrUtils.isNotBlank(couponUser.getId())) {
             couponUser = couponUserService.get(couponUser);
             couponUser.setHasUsed(Global.YES);
             couponUserService.save(couponUser);

@@ -18,10 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.beiyelin.shop.common.utils.Encodes;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.security.SystemAuthorizingRealm;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -39,7 +39,7 @@ public class Servlets {
 	public static final long ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
 	
 	// 静态文件后缀
-	private final static String[] staticFiles = StringUtils.split(Global.getConfig("web.staticFile"), ",");
+	private final static String[] staticFiles = StrUtils.split(Global.getConfig("web.staticFile"), ",");
 	
 	// 动态映射URL后缀
 	private final static String urlSuffix = Global.getUrlSuffix();
@@ -247,12 +247,12 @@ public class Servlets {
 				e.printStackTrace();
 			}
 		}
-//		if ((StringUtils.startsWith(uri, "/static/") || StringUtils.endsWithAny(uri, sfs)) 
-//				&& !StringUtils.endsWithAny(uri, ".jsp") && !StringUtils.endsWithAny(uri, ".java")){
+//		if ((StrUtils.startsWith(uri, "/static/") || StrUtils.endsWithAny(uri, sfs))
+//				&& !StrUtils.endsWithAny(uri, ".jsp") && !StrUtils.endsWithAny(uri, ".java")){
 //			return true;
 //		}
-		if (StringUtils.endsWithAny(uri, staticFiles) && !StringUtils.endsWithAny(uri, urlSuffix)
-				&& !StringUtils.endsWithAny(uri, ".jsp") && !StringUtils.endsWithAny(uri, ".java")){
+		if (StrUtils.endsWithAny(uri, staticFiles) && !StrUtils.endsWithAny(uri, urlSuffix)
+				&& !StrUtils.endsWithAny(uri, ".jsp") && !StrUtils.endsWithAny(uri, ".java")){
 			return true;
 		}
 		return false;

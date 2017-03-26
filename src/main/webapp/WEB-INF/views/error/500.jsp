@@ -26,7 +26,7 @@ else {
 <%@page import="org.slf4j.Logger,org.slf4j.LoggerFactory"%>
 <%@page import="com.beiyelin.shop.common.web.Servlets"%>
 <%@page import="com.beiyelin.shop.common.utils.Exceptions"%>
-<%@page import="com.beiyelin.shop.common.utils.StringUtils"%>
+<%@page import="com.beiyelin.shop.common.utils.StrUtils"%>
 <%@page contentType="text/html;charset=UTF-8" isErrorPage="true"%>
 <%@include file="/WEB-INF/views/include/taglib.jsp"%>
 <!DOCTYPE html>
@@ -39,13 +39,13 @@ else {
 	<div class="container-fluid">
 		<div class="page-header"><h1>系统内部错误.</h1></div>
 		<div class="errorMessage">
-			错误信息：<%=ex==null?"未知错误.":StringUtils.toHtml(ex.getMessage())%> <br/> <br/>
+			错误信息：<%=ex==null?"未知错误.": StrUtils.toHtml(ex.getMessage())%> <br/> <br/>
 			请点击“查看详细信息”按钮，将详细错误信息发送给系统管理员，谢谢！<br/> <br/>
 			<a href="javascript:" onclick="history.go(-1);" class="btn">返回上一页</a> &nbsp;
 			<a href="javascript:" onclick="$('.errorMessage').toggle();" class="btn">查看详细信息</a>
 		</div>
 		<div class="errorMessage hide">
-			<%=StringUtils.toHtml(sb.toString())%> <br/>
+			<%=StrUtils.toHtml(sb.toString())%> <br/>
 			<a href="javascript:" onclick="history.go(-1);" class="btn">返回上一页</a> &nbsp;
 			<a href="javascript:" onclick="$('.errorMessage').toggle();" class="btn">隐藏详细信息</a>
 			<br/> <br/>

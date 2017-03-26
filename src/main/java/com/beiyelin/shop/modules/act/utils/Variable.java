@@ -5,7 +5,7 @@ package com.beiyelin.shop.modules.act.utils;
 
 import java.util.Map;
 
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -61,7 +61,7 @@ public class Variable {
 
 		ConvertUtils.register(new DateConverter(), java.util.Date.class);
 
-		if (StringUtils.isBlank(keys)) {
+		if (StrUtils.isBlank(keys)) {
 			return map;
 		}
 

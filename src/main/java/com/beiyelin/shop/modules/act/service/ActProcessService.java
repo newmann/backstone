@@ -18,7 +18,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import com.beiyelin.shop.common.persistence.Page;
 import com.beiyelin.shop.common.service.BaseService;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
@@ -62,7 +62,7 @@ public class ActProcessService extends BaseService {
 	    ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
 	    		.latestVersion().orderByProcessDefinitionKey().asc();
 	    
-	    if (StringUtils.isNotEmpty(category)){
+	    if (StrUtils.isNotEmpty(category)){
 	    	processDefinitionQuery.processDefinitionCategory(category);
 		}
 	    
@@ -85,11 +85,11 @@ public class ActProcessService extends BaseService {
 
 	    ProcessInstanceQuery processInstanceQuery = runtimeService.createProcessInstanceQuery();
 
-	    if (StringUtils.isNotBlank(procInsId)){
+	    if (StrUtils.isNotBlank(procInsId)){
 		    processInstanceQuery.processInstanceId(procInsId);
 	    }
 	    
-	    if (StringUtils.isNotBlank(procDefKey)){
+	    if (StrUtils.isNotBlank(procDefKey)){
 		    processInstanceQuery.processDefinitionKey(procDefKey);
 	    }
 	    
@@ -106,7 +106,7 @@ public class ActProcessService extends BaseService {
 	 */
 	public InputStream resourceRead(String procDefId, String proInsId, String resType) throws Exception {
 		
-		if (StringUtils.isBlank(procDefId)){
+		if (StrUtils.isBlank(procDefId)){
 			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proInsId).singleResult();
 			procDefId = processInstance.getProcessDefinitionId();
 		}

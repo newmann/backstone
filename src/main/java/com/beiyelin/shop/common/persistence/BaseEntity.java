@@ -9,10 +9,10 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.beiyelin.shop.common.supcan.annotation.treelist.cols.SupCol;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.supcan.annotation.treelist.SupTreeList;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.sys.entity.User;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
@@ -131,7 +131,7 @@ public abstract class BaseEntity<T> implements Serializable {
      * @return
      */
 	public boolean getIsNewRecord() {
-        return isNewRecord || StringUtils.isBlank(getId());
+        return isNewRecord || StrUtils.isBlank(getId());
     }
 
 	/**

@@ -13,7 +13,7 @@ import com.beiyelin.shop.modules.sys.service.OfficeService;
 import com.beiyelin.shop.modules.sys.utils.DictUtils;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class OfficeController extends BaseController {
 	
 	@ModelAttribute("office")
 	public Office get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return officeService.get(id);
 		}else{
 			return new Office();
@@ -76,7 +76,7 @@ public class OfficeController extends BaseController {
 			office.setArea(user.getOffice().getArea());
 		}
 		// 自动获取排序号
-		if (StringUtils.isBlank(office.getId())&&office.getParent()!=null){
+		if (StrUtils.isBlank(office.getId())&&office.getParent()!=null){
 			int size = 0;
 			List<Office> list = officeService.findAll();
 			for (int i=0; i<list.size(); i++){
@@ -86,7 +86,7 @@ public class OfficeController extends BaseController {
 					size++;
 				}
 			}
-			office.setCode(office.getParent().getCode() + StringUtils.leftPad(String.valueOf(size > 0 ? size+1 : 1), 3, "0"));
+			office.setCode(office.getParent().getCode() + StrUtils.leftPad(String.valueOf(size > 0 ? size+1 : 1), 3, "0"));
 		}
 		model.addAttribute("office", office);
 		return "modules/sys/officeForm";
@@ -156,7 +156,7 @@ public class OfficeController extends BaseController {
 		List<Office> list = officeService.findList(isAll);
 		for (int i=0; i<list.size(); i++){
 			Office e = list.get(i);
-			if ((StringUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1))
+			if ((StrUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1))
 					&& (type == null || (type != null && (type.equals("1") ? type.equals(e.getType()) : true)))
 					&& (grade == null || (grade != null && Integer.parseInt(e.getGrade()) <= grade.intValue()))
 					&& Global.YES.equals(e.getUseable())){

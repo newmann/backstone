@@ -7,9 +7,6 @@ import com.beiyelin.shop.common.persistence.CrudDao;
 import com.beiyelin.shop.common.persistence.annotation.MyBatisDao;
 import com.beiyelin.shop.modules.sys.entity.Person;
 
-
-import java.util.List;
-
 /**
  * 个人DAO接口
  * @author Newmann HU
@@ -105,8 +102,8 @@ public interface PersonDao extends CrudDao<Person> {
 	 * @param person
 	 * @return
 	 */
-	public int updateAppLoginToken(Person person);
+//	public int updateAppLoginToken(Person person);
 
-	public long isAppLoggedIn(Person person);
+//	public long isAppLoggedIn(Person person);
 
 }

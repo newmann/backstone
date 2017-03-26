@@ -3,10 +3,10 @@
  */
 package com.beiyelin.shop.modules.app.web;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.OrderStatus;
 import com.beiyelin.shop.modules.sys.service.UserService;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.entity.Order;
 import com.beiyelin.shop.modules.shop.service.OrderService;
 import com.beiyelin.shop.modules.shop.service.OrderStatusService;
@@ -101,7 +101,7 @@ public class AppWxpayController extends AppBaseController {
 //        }
 //
 //        Order order = orderService.get(orderId);
-//        if (StringUtils.isBlank(orderId) || order == null) {
+//        if (StrUtils.isBlank(orderId) || order == null) {
 //            result = false;
 //            message = "微信支付失败，订单(ID:" + orderId + ")不存在，请联系月光茶人技术人员";
 //            return renderString(response, result, message, data);
@@ -190,27 +190,27 @@ public class AppWxpayController extends AppBaseController {
             //============== 我的业务逻辑 ==========================//
             //验证微信传过来的参数
             Order order = orderService.get(orderId);
-            if (StringUtils.isBlank(orderId) || order == null) {
+            if (StrUtils.isBlank(orderId) || order == null) {
                 myReturnCode = "FAIL";
                 logger.info("微信支付失败，订单(ID:" + orderId + ")不存在，请联系月光茶人技术人员");
                 return writeToWxpay(myReturnCode, myReturnErr, response);
             }
-            if (StringUtils.isBlank(cashFee) || !totalPrice.equals(order.getTotalPrice())) {
+            if (StrUtils.isBlank(cashFee) || !totalPrice.equals(order.getTotalPrice())) {
                 myReturnCode = "FAIL";
                 logger.info("微信支付失败，订单金额(订单ID:" + orderId + "，金额:" + totalPrice + ")不正确，请联系月光茶人技术人员");
                 return writeToWxpay(myReturnCode, myReturnErr, response);
             }
-            if (StringUtils.isBlank(appid) || !appid.equals(ConfigUtil.APPID)) {
+            if (StrUtils.isBlank(appid) || !appid.equals(ConfigUtil.APPID)) {
                 myReturnCode = "FAIL";
                 logger.info("微信支付失败，配置不正确(APPID:" + appid + ")，请联系月光茶人技术人员");
                 return writeToWxpay(myReturnCode, myReturnErr, response);
             }
-            if (StringUtils.isBlank(mchId) || !mchId.equals(ConfigUtil.MCH_ID)) {
+            if (StrUtils.isBlank(mchId) || !mchId.equals(ConfigUtil.MCH_ID)) {
                 myReturnCode = "FAIL";
                 logger.info("微信支付失败，配置不正确(MCH_ID:" + mchId + ")，请联系月光茶人技术人员");
                 return writeToWxpay(myReturnCode, myReturnErr, response);
             }
-            if (StringUtils.isBlank(appid) || !appid.equals(ConfigUtil.APPID)) {
+            if (StrUtils.isBlank(appid) || !appid.equals(ConfigUtil.APPID)) {
                 myReturnCode = "FAIL";
                 logger.info("微信支付失败，配置不正确(APPID:" + orderId + ")，请联系月光茶人技术人员");
                 return writeToWxpay(myReturnCode, myReturnErr, response);
@@ -235,7 +235,7 @@ public class AppWxpayController extends AppBaseController {
                 orderService.save(order);
 
                 //保存最近的支付类型
-                if (order.getUser() != null && StringUtils.isNotBlank(order.getUser().getId())) {
+                if (order.getUser() != null && StrUtils.isNotBlank(order.getUser().getId())) {
                     User user = userService.get(order.getUser().getId());
                     if (user != null) {
                         user.setLatestPayType(order.getPayType());

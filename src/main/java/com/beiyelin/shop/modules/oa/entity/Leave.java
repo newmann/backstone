@@ -7,9 +7,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.utils.DictUtils;
 import com.beiyelin.shop.common.persistence.DataEntity;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.sys.entity.User;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -174,7 +174,7 @@ public class Leave extends DataEntity<Leave> {
 
 	public String getIds() {
 		List<String> idList = Lists.newArrayList();
-		if (StringUtils.isNotBlank(ids)){
+		if (StrUtils.isNotBlank(ids)){
 			String ss = ids.trim().replace("　", ",").replace(" ",",").replace("，", ",").replace("'", "");
 			for(String s : ss.split(",")) {
 //				if(s.matches("\\d*")) {
@@ -182,7 +182,7 @@ public class Leave extends DataEntity<Leave> {
 //				}
 			}
 		}
-		return StringUtils.join(idList, ",");
+		return StrUtils.join(idList, ",");
 	}
 
 	public void setIds(String ids) {

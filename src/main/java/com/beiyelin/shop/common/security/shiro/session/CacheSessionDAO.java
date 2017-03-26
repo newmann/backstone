@@ -9,9 +9,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.Servlets;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.UnknownSessionException;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
@@ -51,8 +51,8 @@ public class CacheSessionDAO extends EnterpriseCacheSessionDAO implements Sessio
 				return;
 			}
 			// 如果是视图文件，则不更新SESSION
-			if (StringUtils.startsWith(uri, Global.getConfig("web.view.prefix"))
-					&& StringUtils.endsWith(uri, Global.getConfig("web.view.suffix"))){
+			if (StrUtils.startsWith(uri, Global.getConfig("web.view.prefix"))
+					&& StrUtils.endsWith(uri, Global.getConfig("web.view.suffix"))){
 				return;
 			}
 			// 手动控制不更新SESSION
@@ -158,7 +158,7 @@ public class CacheSessionDAO extends EnterpriseCacheSessionDAO implements Sessio
 			// 符合登陆者条件。
 			if (principal != null){
 				PrincipalCollection pc = (PrincipalCollection)session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
-				if (principal.toString().equals(pc != null ? pc.getPrimaryPrincipal().toString() : StringUtils.EMPTY)){
+				if (principal.toString().equals(pc != null ? pc.getPrimaryPrincipal().toString() : StrUtils.EMPTY)){
 					isActiveSession = true;
 				}
 			}

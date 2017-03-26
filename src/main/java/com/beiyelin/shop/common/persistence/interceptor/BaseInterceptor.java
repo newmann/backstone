@@ -103,7 +103,7 @@ public abstract class BaseInterceptor implements Interceptor, Serializable {
         DIALECT = dialect;
 //        _SQL_PATTERN = p.getProperty("sqlPattern");
 //        _SQL_PATTERN = Global.getConfig("mybatis.pagePattern");
-//        if (StringUtils.isEmpty(_SQL_PATTERN)) {
+//        if (StrUtils.isEmpty(_SQL_PATTERN)) {
 //            throw new RuntimeException("sqlPattern property is not found!");
 //        }
     }

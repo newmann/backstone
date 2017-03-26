@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.beiyelin.shop.common.persistence.BaseEntity;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.utils.TimeUtils;
 import com.beiyelin.shop.modules.act.utils.Variable;
-import com.beiyelin.shop.common.utils.StringUtils;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -332,8 +332,8 @@ public class Act extends BaseEntity<Act> {
 	 * @return
 	 */
 	public String getProcDefKey() {
-		if (StringUtils.isBlank(procDefKey) && StringUtils.isNotBlank(procDefId)){
-			procDefKey = StringUtils.split(procDefId, ":")[0];
+		if (StrUtils.isBlank(procDefKey) && StrUtils.isNotBlank(procDefId)){
+			procDefKey = StrUtils.split(procDefId, ":")[0];
 		}
 		return procDefKey;
 	}
@@ -366,7 +366,7 @@ public class Act extends BaseEntity<Act> {
 	 * @return
 	 */
 	public boolean isFinishTask(){
-		return "finish".equals(status) || StringUtils.isBlank(taskId);
+		return "finish".equals(status) || StrUtils.isBlank(taskId);
 	}
 
 	@Override

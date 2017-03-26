@@ -3,7 +3,6 @@
  */
 package com.beiyelin.shop.modules.sys.utils;
 
-import com.beiyelin.shop.common.service.BaseService;
 import com.beiyelin.shop.common.utils.CacheUtils;
 import com.beiyelin.shop.common.utils.SpringContextHolder;
 import com.beiyelin.shop.modules.sys.dao.PersonDao;
@@ -14,8 +13,6 @@ import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.session.InvalidSessionException;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
-
-import java.util.List;
 
 /**
  * 个人工具类

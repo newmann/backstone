@@ -6,10 +6,10 @@ package com.beiyelin.shop.common.utils.excel.fieldtype;
 import java.util.List;
 
 import com.beiyelin.shop.common.utils.Collections3;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.entity.Role;
 import com.google.common.collect.Lists;
 import com.beiyelin.shop.common.utils.SpringContextHolder;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.sys.service.SystemService;
 
 /**
@@ -27,9 +27,9 @@ public class RoleListType {
 	public static Object getValue(String val) {
 		List<Role> roleList = Lists.newArrayList();
 		List<Role> allRoleList = systemService.findAllRole();
-		for (String s : StringUtils.split(val, ",")){
+		for (String s : StrUtils.split(val, ",")){
 			for (Role e : allRoleList){
-				if (StringUtils.trimToEmpty(s).equals(e.getName())){
+				if (StrUtils.trimToEmpty(s).equals(e.getName())){
 					roleList.add(e);
 				}
 			}

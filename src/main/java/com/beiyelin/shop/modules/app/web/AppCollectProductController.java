@@ -3,16 +3,14 @@
  */
 package com.beiyelin.shop.modules.app.web;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.ShopProduct;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.entity.CollectProduct;
 import com.beiyelin.shop.modules.shop.service.CollectProductService;
 import com.beiyelin.shop.modules.sys.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -63,7 +61,7 @@ public class AppCollectProductController extends AppBaseController {
         Map<String, Object> data = Maps.newHashMap();
         String userId = getUserId(request);
 
-        if (StringUtils.isBlank(productId)) {
+        if (StrUtils.isBlank(productId)) {
             result = false;
             message = "商品ID不能为空";
             return renderString(response, result, message, data);
@@ -74,7 +72,7 @@ public class AppCollectProductController extends AppBaseController {
             CollectProduct collectProduct = new CollectProduct();
             collectProduct.setProduct(new ShopProduct(productId));
             collectProduct.setUser(new User(userId));
-            if (StringUtils.isBlank(collectProduct.getId())) {
+            if (StrUtils.isBlank(collectProduct.getId())) {
                 collectProduct.setCreateBy(new User(userId));
                 collectProduct.setUpdateBy(new User(userId));
             } else {
@@ -102,7 +100,7 @@ public class AppCollectProductController extends AppBaseController {
         Map<String, Object> data = Maps.newHashMap();
         String userId = getUserId(request);
 
-        if (StringUtils.isBlank(productId)) {
+        if (StrUtils.isBlank(productId)) {
             result = false;
             message = "商品ID不能为空";
             return renderString(response, result, message, data);
@@ -115,7 +113,7 @@ public class AppCollectProductController extends AppBaseController {
         List<CollectProduct> collectProductList = collectProductService.findByUserId(userId);
         for (CollectProduct cp : collectProductList) {
             cp.setDelFlag(CollectProduct.DEL_FLAG_DELETE);
-            if (StringUtils.isBlank(cp.getId())) {
+            if (StrUtils.isBlank(cp.getId())) {
                 cp.setCreateBy(new User(userId));
                 cp.setUpdateBy(new User(userId));
             } else {

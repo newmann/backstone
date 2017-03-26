@@ -5,13 +5,13 @@ package com.beiyelin.shop.modules.oa.entity;
 
 import java.util.List;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.hibernate.validator.constraints.Length;
 
 import com.google.common.collect.Lists;
 import com.beiyelin.shop.common.persistence.DataEntity;
 import com.beiyelin.shop.common.utils.Collections3;
 import com.beiyelin.shop.common.utils.IdGen;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.sys.entity.User;
 
 /**
@@ -127,7 +127,7 @@ public class OaNotify extends DataEntity<OaNotify> {
 	 */
 	public void setOaNotifyRecordIds(String oaNotifyRecord) {
 		this.oaNotifyRecordList = Lists.newArrayList();
-		for (String id : StringUtils.split(oaNotifyRecord, ",")){
+		for (String id : StrUtils.split(oaNotifyRecord, ",")){
 			OaNotifyRecord entity = new OaNotifyRecord();
 			entity.setId(IdGen.uuid());
 			entity.setOaNotify(this);

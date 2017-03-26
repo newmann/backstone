@@ -6,7 +6,7 @@ package com.beiyelin.shop.modules.gen.entity;
 import java.util.List;
 
 import com.beiyelin.shop.common.persistence.DataEntity;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.hibernate.validator.constraints.Length;
 
 import com.google.common.collect.Lists;
@@ -44,7 +44,7 @@ public class GenTable extends DataEntity<GenTable> {
 
 	@Length(min=1, max=200)
 	public String getName() {
-		return StringUtils.lowerCase(name);
+		return StrUtils.lowerCase(name);
 	}
 
 	public void setName(String name) {
@@ -68,7 +68,7 @@ public class GenTable extends DataEntity<GenTable> {
 	}
 
 	public String getParentTable() {
-		return StringUtils.lowerCase(parentTable);
+		return StrUtils.lowerCase(parentTable);
 	}
 
 	public void setParentTable(String parentTable) {
@@ -76,7 +76,7 @@ public class GenTable extends DataEntity<GenTable> {
 	}
 
 	public String getParentTableFk() {
-		return StringUtils.lowerCase(parentTableFk);
+		return StrUtils.lowerCase(parentTableFk);
 	}
 
 	public void setParentTableFk(String parentTableFk) {
@@ -141,15 +141,15 @@ public class GenTable extends DataEntity<GenTable> {
 			if (column.getIsNotBaseField() || ("1".equals(column.getIsQuery()) && "between".equals(column.getQueryType())
 							&& ("createDate".equals(column.getSimpleJavaField()) || "updateDate".equals(column.getSimpleJavaField())))){
 				// 导入类型依赖包， 如果类型中包含“.”，则需要导入引用。
-				if (StringUtils.indexOf(column.getJavaType(), ".") != -1 && !importList.contains(column.getJavaType())){
+				if (StrUtils.indexOf(column.getJavaType(), ".") != -1 && !importList.contains(column.getJavaType())){
 					importList.add(column.getJavaType());
 				}
 			}
 			if (column.getIsNotBaseField()){
 				// 导入JSR303、Json等依赖包
 				for (String ann : column.getAnnotationList()){
-					if (!importList.contains(StringUtils.substringBeforeLast(ann, "("))){
-						importList.add(StringUtils.substringBeforeLast(ann, "("));
+					if (!importList.contains(StrUtils.substringBeforeLast(ann, "("))){
+						importList.add(StrUtils.substringBeforeLast(ann, "("));
 					}
 				}
 			}
@@ -171,7 +171,7 @@ public class GenTable extends DataEntity<GenTable> {
 	 * @return
 	 */
 	public Boolean getParentExists(){
-		return parent != null && StringUtils.isNotBlank(parentTable) && StringUtils.isNotBlank(parentTableFk);
+		return parent != null && StrUtils.isNotBlank(parentTable) && StrUtils.isNotBlank(parentTableFk);
 	}
 
 	/**

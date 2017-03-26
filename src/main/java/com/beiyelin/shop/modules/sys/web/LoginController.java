@@ -12,12 +12,12 @@ import com.beiyelin.shop.common.security.shiro.session.SessionDAO;
 import com.beiyelin.shop.common.servlet.ValidateCodeServlet;
 import com.beiyelin.shop.common.utils.CookieUtils;
 import com.beiyelin.shop.common.utils.IdGen;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.security.FormAuthenticationFilter;
 import com.beiyelin.shop.modules.sys.security.SystemAuthorizingRealm;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.utils.CacheUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -104,7 +104,7 @@ public class LoginController extends BaseController {
 		String exception = (String)request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
 		String message = (String)request.getAttribute(FormAuthenticationFilter.DEFAULT_MESSAGE_PARAM);
 		
-		if (StringUtils.isBlank(message) || StringUtils.equals(message, "null")){
+		if (StrUtils.isBlank(message) || StrUtils.equals(message, "null")){
 			message = "用户或密码错误, 请重试.";
 		}
 
@@ -156,9 +156,9 @@ public class LoginController extends BaseController {
 		// 如果已登录，再次访问主页，则退出原账号。
 		if (Global.TRUE.equals(Global.getConfig("notAllowRefreshIndex"))){
 			String logined = CookieUtils.getCookie(request, "LOGINED");
-			if (StringUtils.isBlank(logined) || "false".equals(logined)){
+			if (StrUtils.isBlank(logined) || "false".equals(logined)){
 				CookieUtils.setCookie(response, "LOGINED", "true");
-			}else if (StringUtils.equals(logined, "true")){
+			}else if (StrUtils.equals(logined, "true")){
 				UserUtils.getSubject().logout();
 				return "redirect:" + adminPath + "/login";
 			}
@@ -176,7 +176,7 @@ public class LoginController extends BaseController {
 		}
 		
 //		// 登录成功后，获取上次登录的当前站点ID
-//		UserUtils.putCache("siteId", StringUtils.toLong(CookieUtils.getCookie(request, "siteId")));
+//		UserUtils.putCache("siteId", StrUtils.toLong(CookieUtils.getCookie(request, "siteId")));
 
 //		System.out.println("==========================a");
 //		try {
@@ -200,7 +200,7 @@ public class LoginController extends BaseController {
 	 */
 	@RequestMapping(value = "/theme/{theme}")
 	public String getThemeInCookie(@PathVariable String theme, HttpServletRequest request, HttpServletResponse response){
-		if (StringUtils.isNotBlank(theme)){
+		if (StrUtils.isNotBlank(theme)){
 			CookieUtils.setCookie(response, "theme", theme);
 		}else{
 			theme = CookieUtils.getCookie(request, "theme");

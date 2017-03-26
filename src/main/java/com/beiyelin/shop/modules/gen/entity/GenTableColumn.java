@@ -6,7 +6,7 @@ package com.beiyelin.shop.modules.gen.entity;
 import java.util.List;
 
 import com.beiyelin.shop.common.persistence.DataEntity;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.hibernate.validator.constraints.Length;
 
 import com.google.common.collect.Lists;
@@ -58,7 +58,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	
 	@Length(min=1, max=200)
 	public String getName() {
-		return StringUtils.lowerCase(name);
+		return StrUtils.lowerCase(name);
 	}
 
 	public void setName(String name) {
@@ -74,7 +74,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	}
 
 	public String getJdbcType() {
-		return StringUtils.lowerCase(jdbcType);
+		return StrUtils.lowerCase(jdbcType);
 	}
 
 	public void setJdbcType(String jdbcType) {
@@ -190,7 +190,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	 * @return
 	 */
 	public String getDataLength(){
-		String[] ss = StringUtils.split(StringUtils.substringBetween(getJdbcType(), "(", ")"), ",");
+		String[] ss = StrUtils.split(StrUtils.substringBetween(getJdbcType(), "(", ")"), ",");
 		if (ss != null && ss.length == 1){// && "String".equals(getJavaType())){
 			return ss[0];
 		}
@@ -203,10 +203,10 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	 */
 	public String getSimpleJavaType(){
 		if ("This".equals(getJavaType())){
-			return StringUtils.capitalize(genTable.getClassName());
+			return StrUtils.capitalize(genTable.getClassName());
 		}
-		return StringUtils.indexOf(getJavaType(), ".") != -1 
-				? StringUtils.substringAfterLast(getJavaType(), ".")
+		return StrUtils.indexOf(getJavaType(), ".") != -1
+				? StrUtils.substringAfterLast(getJavaType(), ".")
 						: getJavaType();
 	}
 	
@@ -215,7 +215,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	 * @return
 	 */
 	public String getSimpleJavaField(){
-		return StringUtils.substringBefore(getJavaField(), ".");
+		return StrUtils.substringBefore(getJavaField(), ".");
 	}
 	
 	/**
@@ -223,7 +223,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	 * @return
 	 */
 	public String getJavaFieldId(){
-		return StringUtils.substringBefore(getJavaField(), "|");
+		return StrUtils.substringBefore(getJavaField(), "|");
 	}
 	
 	/**
@@ -240,12 +240,12 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	 * @return
 	 */
 	public String[][] getJavaFieldAttrs(){
-		String[] ss = StringUtils.split(StringUtils.substringAfter(getJavaField(), "|"), "|");
+		String[] ss = StrUtils.split(StrUtils.substringAfter(getJavaField(), "|"), "|");
 		String[][] sss = new String[ss.length][2];
 		if (ss!=null){
 			for (int i=0; i<ss.length; i++){
 				sss[i][0] = ss[i];
-				sss[i][1] = StringUtils.toUnderScoreCase(ss[i]);
+				sss[i][1] = StrUtils.toUnderScoreCase(ss[i]);
 			}
 		}
 		return sss;
@@ -286,7 +286,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	public List<String> getSimpleAnnotationList(){
 		List<String> list = Lists.newArrayList();
 		for (String ann : getAnnotationList()){
-			list.add(StringUtils.substringAfterLast(ann, "."));
+			list.add(StrUtils.substringAfterLast(ann, "."));
 		}
 		return list;
 	}
@@ -296,13 +296,13 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	 * @return
 	 */
 	public Boolean getIsNotBaseField(){
-		return !StringUtils.equals(getSimpleJavaField(), "id")
-				&& !StringUtils.equals(getSimpleJavaField(), "remarks")
-				&& !StringUtils.equals(getSimpleJavaField(), "createBy")
-				&& !StringUtils.equals(getSimpleJavaField(), "createDate")
-				&& !StringUtils.equals(getSimpleJavaField(), "updateBy")
-				&& !StringUtils.equals(getSimpleJavaField(), "updateDate")
-				&& !StringUtils.equals(getSimpleJavaField(), "delFlag");
+		return !StrUtils.equals(getSimpleJavaField(), "id")
+				&& !StrUtils.equals(getSimpleJavaField(), "remarks")
+				&& !StrUtils.equals(getSimpleJavaField(), "createBy")
+				&& !StrUtils.equals(getSimpleJavaField(), "createDate")
+				&& !StrUtils.equals(getSimpleJavaField(), "updateBy")
+				&& !StrUtils.equals(getSimpleJavaField(), "updateDate")
+				&& !StrUtils.equals(getSimpleJavaField(), "delFlag");
 	}
 	
 }

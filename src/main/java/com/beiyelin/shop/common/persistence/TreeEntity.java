@@ -6,7 +6,7 @@ package com.beiyelin.shop.common.persistence;
 import javax.validation.constraints.NotNull;
 
 import com.beiyelin.shop.common.utils.Reflections;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -79,7 +79,7 @@ public abstract class TreeEntity<T> extends DataEntity<T> {
 		if (parent != null){
 			id = (String) Reflections.getFieldValue(parent, "id");
 		}
-		return StringUtils.isNotBlank(id) ? id : "0";
+		return StrUtils.isNotBlank(id) ? id : "0";
 	}
 	
 }

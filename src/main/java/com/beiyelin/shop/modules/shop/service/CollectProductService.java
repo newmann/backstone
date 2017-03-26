@@ -4,7 +4,7 @@
 package com.beiyelin.shop.modules.shop.service;
 
 import com.beiyelin.shop.common.service.CrudService;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.CollectProduct;
 import com.beiyelin.shop.modules.shop.entity.ShopProduct;
 import com.beiyelin.shop.modules.shop.utils.ShopProductUtils;
@@ -12,8 +12,6 @@ import com.beiyelin.shop.modules.sys.entity.User;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.beiyelin.shop.modules.shop.dao.CollectProductDao;
-import org.restlet.data.Product;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +37,7 @@ public class CollectProductService extends CrudService<CollectProductDao, Collec
         List<CollectProduct> list = dao.findList(cp);
         for (CollectProduct collectProduct : list) {
             ShopProduct product = ShopProductUtils.getProduct(collectProduct.getProduct().getId());
-            if (product != null && StringUtils.isNotBlank(product.getId()))
+            if (product != null && StrUtils.isNotBlank(product.getId()))
                 collectProduct.setProduct(product);
             else
                 collectProduct.setProduct(null);
@@ -60,7 +58,7 @@ public class CollectProductService extends CrudService<CollectProductDao, Collec
             Map<String, Object> oCollectProduct = collectProduct.toSimpleObj();
             Map<String, Object> oProduct = Maps.newHashMap();
             ShopProduct product = ShopProductUtils.getProduct(collectProduct.getProduct().getId());
-            if (product != null && StringUtils.isNotBlank(product.getId())) {
+            if (product != null && StrUtils.isNotBlank(product.getId())) {
                 oProduct = product.toSimpleObj();
             }
             oCollectProduct.put("product", oProduct);
@@ -73,7 +71,7 @@ public class CollectProductService extends CrudService<CollectProductDao, Collec
      * 用户是否收藏了该商品
      */
     public boolean hasCollected(String userId, String productId) {
-        if (StringUtils.isBlank(userId) || StringUtils.isBlank(productId))
+        if (StrUtils.isBlank(userId) || StrUtils.isBlank(productId))
             return false;
 
         CollectProduct collectProduct = new CollectProduct();

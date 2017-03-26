@@ -5,8 +5,8 @@ package com.beiyelin.shop.common.service;
 
 import java.util.List;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.entity.Role;
-import com.beiyelin.shop.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +45,8 @@ public abstract class BaseService {
 		if (!user.isAdmin()){
 			boolean isDataScopeAll = false;
 			for (Role r : user.getRoleList()){
-				for (String oa : StringUtils.split(officeAlias, ",")){
-					if (!dataScope.contains(r.getDataScope()) && StringUtils.isNotBlank(oa)){
+				for (String oa : StrUtils.split(officeAlias, ",")){
+					if (!dataScope.contains(r.getDataScope()) && StrUtils.isNotBlank(oa)){
 						if (Role.DATA_SCOPE_ALL.equals(r.getDataScope())){
 							isDataScopeAll = true;
 						}
@@ -67,8 +67,8 @@ public abstract class BaseService {
 							sqlString.append(" OR " + oa + ".id = '" + user.getOffice().getId() + "'");
 						}
 						else if (Role.DATA_SCOPE_CUSTOM.equals(r.getDataScope())){
-							String officeIds =  StringUtils.join(r.getOfficeIdList(), "','");
-							if (StringUtils.isNotEmpty(officeIds)){
+							String officeIds =  StrUtils.join(r.getOfficeIdList(), "','");
+							if (StrUtils.isNotEmpty(officeIds)){
 								sqlString.append(" OR " + oa + ".id IN ('" + officeIds + "')");
 							}
 						}
@@ -79,12 +79,12 @@ public abstract class BaseService {
 			}
 			// 如果没有全部数据权限，并设置了用户别名，则当前权限为本人；如果未设置别名，当前无权限为已植入权限
 			if (!isDataScopeAll){
-				if (StringUtils.isNotBlank(userAlias)){
-					for (String ua : StringUtils.split(userAlias, ",")){
+				if (StrUtils.isNotBlank(userAlias)){
+					for (String ua : StrUtils.split(userAlias, ",")){
 						sqlString.append(" OR " + ua + ".id = '" + user.getId() + "'");
 					}
 				}else {
-					for (String oa : StringUtils.split(officeAlias, ",")){
+					for (String oa : StrUtils.split(officeAlias, ",")){
 						//sqlString.append(" OR " + oa + ".id  = " + user.getOffice().getId());
 						sqlString.append(" OR " + oa + ".id IS NULL");
 					}
@@ -94,7 +94,7 @@ public abstract class BaseService {
 				sqlString = new StringBuilder();
 			}
 		}
-		if (StringUtils.isNotBlank(sqlString.toString())){
+		if (StrUtils.isNotBlank(sqlString.toString())){
 			return " AND (" + sqlString.substring(4) + ")";
 		}
 		return "";

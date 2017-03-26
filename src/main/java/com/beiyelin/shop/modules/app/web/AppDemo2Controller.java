@@ -3,15 +3,12 @@
  */
 package com.beiyelin.shop.modules.app.web;
 
-import com.alibaba.fastjson.JSON;
 import com.beiyelin.shop.modules.sys.utils.AreaUtils;
-import com.google.common.collect.Maps;
 import com.beiyelin.shop.modules.sys.entity.Area;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**

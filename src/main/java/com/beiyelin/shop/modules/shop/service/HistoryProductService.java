@@ -5,12 +5,12 @@ package com.beiyelin.shop.modules.shop.service;
 
 import com.beiyelin.shop.common.persistence.Page;
 import com.beiyelin.shop.common.service.CrudService;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.HistoryProduct;
 import com.beiyelin.shop.modules.shop.entity.ShopProduct;
 import com.beiyelin.shop.modules.shop.utils.ShopProductUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.dao.HistoryProductDao;
 import com.beiyelin.shop.modules.sys.entity.User;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,7 @@ public class HistoryProductService extends CrudService<HistoryProductDao, Histor
         List<HistoryProduct> list = findPage(page, hp).getList();
         for (HistoryProduct historyProduct : list) {
             ShopProduct product = ShopProductUtils.getProduct(historyProduct.getProduct().getId());
-            if (product != null && StringUtils.isNotBlank(product.getId()))
+            if (product != null && StrUtils.isNotBlank(product.getId()))
                 historyProduct.setProduct(product);
             else
                 historyProduct.setProduct(null);
@@ -66,7 +66,7 @@ public class HistoryProductService extends CrudService<HistoryProductDao, Histor
             Map<String, Object> oHistoryProduct = historyProduct.toSimpleObj();
             Map<String, Object> oProduct = Maps.newHashMap();
             ShopProduct product = ShopProductUtils.getProduct(historyProduct.getProduct().getId());
-            if (product != null && StringUtils.isNotBlank(product.getId())) {
+            if (product != null && StrUtils.isNotBlank(product.getId())) {
                 oProduct = product.toSimpleObj();
             }
             oHistoryProduct.put("product", oProduct);
@@ -79,7 +79,7 @@ public class HistoryProductService extends CrudService<HistoryProductDao, Histor
      * 通过userId，productId获取浏览过的产品
      */
     public HistoryProduct getBy(String userId, String productId) {
-        if (StringUtils.isBlank(userId) || StringUtils.isBlank(productId))
+        if (StrUtils.isBlank(userId) || StrUtils.isBlank(productId))
             return null;
 
         HistoryProduct historyProduct = new HistoryProduct();
@@ -93,7 +93,7 @@ public class HistoryProductService extends CrudService<HistoryProductDao, Histor
      */
     @Transactional(readOnly = false)
     public void add(String userId, String productId) {
-        if (StringUtils.isBlank(userId) || StringUtils.isBlank(productId))
+        if (StrUtils.isBlank(userId) || StrUtils.isBlank(productId))
             return;
 
         HistoryProduct historyProduct = getBy(userId, productId);

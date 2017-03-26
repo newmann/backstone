@@ -18,8 +18,7 @@
 		a.login_flag,
 		a.photo,
 		a.register_from,
-		a.app_login_token,
-		a.latest_pay_type AS "latestPayType",
+		a.db_url,
 		a.create_by AS "createBy.id",
 		a.create_date,
 		a.update_by AS "updateBy.id",
@@ -42,8 +41,7 @@
 		a.login_flag,
 		a.photo,
 		a.register_from,
-		a.app_login_token,
-        a.latest_pay_type AS "latestPayType",
+		a.db_url,
 		a.create_by AS "createBy.id",
 		a.create_date,
 		a.update_by AS "updateBy.id",
@@ -152,9 +150,8 @@
 			mobile, 
 			user_type,
 			register_from,
-			app_login_token,
-			latest_pay_type,
-			create_by, 
+			db_url,
+			create_by,
 			create_date, 
 			update_by, 
 			update_date, 
@@ -172,9 +169,8 @@
 			#{mobile}, 
 			#{userType},
 			#{registerFrom},
-			#{appLoginToken},
-			#{latestPayType},
-			#{createBy.id}, 
+			#{dbUrl},
+			#{createBy.id},
 			#{createDate}, 
 			#{updateBy.id}, 
 			#{updateDate}, 
@@ -197,7 +193,8 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate}, 
 			remarks = #{remarks},
-			photo = #{photo}
+			photo = #{photo},
+			db_url = #{dbUrl}
 		WHERE id = #{id}
 	</update>
 	
@@ -256,18 +253,18 @@
 	</update>
 
 	<!-- 更新APP用户登录令牌 -->
-	<update id="updateAppLoginToken">
-		UPDATE sys_person SET
-			app_login_token = #{appLoginToken}
-		WHERE id = #{id}
-	</update>
+	<!--<update id="updateAppLoginToken">-->
+		<!--UPDATE sys_person SET-->
+			<!--app_login_token = #{appLoginToken}-->
+		<!--WHERE id = #{id}-->
+	<!--</update>-->
 
     <!-- APP用户是否已经登录？ -->
-    <select id="isAppLoggedIn" resultType="long">
-        SELECT COUNT(1)
-        FROM sys_person a
-		<where>
-        	id = #{id} AND app_login_token = #{appLoginToken}
-		</where>
-    </select>
+    <!--<select id="isAppLoggedIn" resultType="long">-->
+        <!--SELECT COUNT(1)-->
+        <!--FROM sys_person a-->
+		<!--<where>-->
+        	<!--id = #{id} AND app_login_token = #{appLoginToken}-->
+		<!--</where>-->
+    <!--</select>-->
 </mapper>

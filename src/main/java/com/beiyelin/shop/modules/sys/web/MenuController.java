@@ -8,10 +8,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.entity.Menu;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class MenuController extends BaseController {
 	
 	@ModelAttribute("menu")
 	public Menu get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return systemService.getMenu(id);
 		}else{
 			return new Menu();
@@ -66,7 +66,7 @@ public class MenuController extends BaseController {
 		}
 		menu.setParent(systemService.getMenu(menu.getParent().getId()));
 		// 获取排序号，最末节点排序号+30
-		if (StringUtils.isBlank(menu.getId())){
+		if (StrUtils.isBlank(menu.getId())){
 			List<Menu> list = Lists.newArrayList();
 			List<Menu> sourcelist = systemService.findAllMenu();
 			Menu.sortList(list, sourcelist, menu.getParentId(), false);
@@ -160,7 +160,7 @@ public class MenuController extends BaseController {
 		List<Menu> list = systemService.findAllMenu();
 		for (int i=0; i<list.size(); i++){
 			Menu e = list.get(i);
-			if (StringUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){
+			if (StrUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){
 				if(isShowHide != null && isShowHide.equals("0") && e.getIsShow().equals("0")){
 					continue;
 				}

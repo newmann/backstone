@@ -69,7 +69,7 @@ public class GuestbookService extends CrudService<GuestbookDao, Guestbook> {
 //
 //		bcList.add(new BooleanClause(new TermQuery(new Term(Guestbook.FIELD_DEL_FLAG, Guestbook.DEL_FLAG_NORMAL)), Occur.MUST));
 //		
-//		if (StringUtils.isNotBlank(beginDate) && StringUtils.isNotBlank(endDate)) {   
+//		if (StrUtils.isNotBlank(beginDate) && StrUtils.isNotBlank(endDate)) {
 //			bcList.add(new BooleanClause(new TermRangeQuery("createDate", beginDate.replaceAll("-", ""),
 //					endDate.replaceAll("-", ""), true, true), Occur.MUST));
 //		}

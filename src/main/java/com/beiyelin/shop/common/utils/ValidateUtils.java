@@ -29,7 +29,7 @@ public class ValidateUtils {
 	 * @return boolean 验证通过返回true
 	 */
 	public static boolean isMobile(String str) {
-		StringUtils.trim(str);
+		StrUtils.trim(str);
 		Pattern p = null;
 		Matcher m = null;
 		boolean b = false;
@@ -59,7 +59,7 @@ public class ValidateUtils {
 	 * @return boolean 验证通过返回true
 	 */
 	public static boolean isPhone(String str) {
-		StringUtils.trim(str);
+		StrUtils.trim(str);
 		Pattern p1 = null,p2 = null;
 		Matcher m = null;
 		boolean b = false;
@@ -89,7 +89,7 @@ public class ValidateUtils {
 	 * @return boolean 验证通过返回true
 	 */
 	public static boolean isPassword(String str) {
-		StringUtils.trim(str);
+		StrUtils.trim(str);
 		Pattern p = null;
 		Matcher m = null;
 		boolean b = false;

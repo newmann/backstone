@@ -1,6 +1,6 @@
 package com.beiyelin.shop.modules.cms.utils;
 
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class TplUtils {
      */
     public static List<String> tplTrim(List<String> list, String prefix, String include, String... excludes) {
         List<String> result = new ArrayList<String>();
-        if (!StringUtils.isBlank(include) && !list.contains(include)) {
+        if (!StrUtils.isBlank(include) && !list.contains(include)) {
             if (!tplContain(excludes, include)) {
                 int start = include.lastIndexOf("/");
                 int end = include.lastIndexOf(".");

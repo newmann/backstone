@@ -8,9 +8,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.service.AreaService;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class AreaController extends BaseController {
 	
 	@ModelAttribute("area")
 	public Area get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return areaService.get(id);
 		}else{
 			return new Area();
@@ -63,7 +63,7 @@ public class AreaController extends BaseController {
 		}
 		area.setParent(areaService.get(area.getParent().getId()));
 //		// 自动获取排序号
-//		if (StringUtils.isBlank(area.getId())){
+//		if (StrUtils.isBlank(area.getId())){
 //			int size = 0;
 //			List<Area> list = areaService.findAll();
 //			for (int i=0; i<list.size(); i++){
@@ -73,7 +73,7 @@ public class AreaController extends BaseController {
 //					size++;
 //				}
 //			}
-//			area.setCode(area.getParent().getCode() + StringUtils.leftPad(String.valueOf(size > 0 ? size : 1), 4, "0"));
+//			area.setCode(area.getParent().getCode() + StrUtils.leftPad(String.valueOf(size > 0 ? size : 1), 4, "0"));
 //		}
 		model.addAttribute("area", area);
 		return "modules/sys/areaForm";
@@ -118,7 +118,7 @@ public class AreaController extends BaseController {
 		List<Area> list = areaService.findAll();
 		for (int i=0; i<list.size(); i++){
 			Area e = list.get(i);
-			if (StringUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){
+			if (StrUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){
 				Map<String, Object> map = Maps.newHashMap();
 				map.put("id", e.getId());
 				map.put("pId", e.getParentId());

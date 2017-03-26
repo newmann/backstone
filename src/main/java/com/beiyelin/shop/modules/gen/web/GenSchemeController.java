@@ -12,7 +12,7 @@ import com.beiyelin.shop.modules.gen.service.GenSchemeService;
 import com.beiyelin.shop.modules.gen.service.GenTableService;
 import com.beiyelin.shop.modules.gen.util.GenUtils;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.sys.entity.User;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -41,7 +41,7 @@ public class GenSchemeController extends BaseController {
 	
 	@ModelAttribute
 	public GenScheme get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return genSchemeService.get(id);
 		}else{
 			return new GenScheme();
@@ -63,10 +63,10 @@ public class GenSchemeController extends BaseController {
 	@RequiresPermissions("gen:genScheme:view")
 	@RequestMapping(value = "form")
 	public String form(GenScheme genScheme, Model model) {
-		if (StringUtils.isBlank(genScheme.getPackageName())){
+		if (StrUtils.isBlank(genScheme.getPackageName())){
 			genScheme.setPackageName("com.beiyelin.shop.modules");
 		}
-//		if (StringUtils.isBlank(genScheme.getFunctionAuthor())){
+//		if (StrUtils.isBlank(genScheme.getFunctionAuthor())){
 //			genScheme.setFunctionAuthor(UserUtils.getUser().getName());
 //		}
 		model.addAttribute("genScheme", genScheme);

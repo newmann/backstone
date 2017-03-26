@@ -7,11 +7,11 @@ package com.beiyelin.shop.modules.cms.web.front;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.cms.entity.Article;
 import com.beiyelin.shop.modules.cms.entity.Site;
 import com.beiyelin.shop.modules.cms.utils.CmsUtils;
 import com.beiyelin.shop.common.persistence.Page;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.cms.entity.Guestbook;
 import com.beiyelin.shop.modules.cms.service.ArticleService;
@@ -52,7 +52,7 @@ public class FrontSearchController extends BaseController {
 		if ("cmd:reindex".equals(q)){
 			if (UserUtils.getUser().isAdmin()){
 				// 文章模型
-				if (StringUtils.isBlank(t) || "article".equals(t)){
+				if (StrUtils.isBlank(t) || "article".equals(t)){
 					articleService.createIndex();
 				}
 				// 留言模型
@@ -66,18 +66,18 @@ public class FrontSearchController extends BaseController {
 		}
 		// 执行检索
 		else{
-			String qStr = StringUtils.replace(StringUtils.replace(q, "，", " "), ", ", " ");
+			String qStr = StrUtils.replace(StrUtils.replace(q, "，", " "), ", ", " ");
 			// 如果是高级搜索
 			if ("1".equals(a)){
-				if (StringUtils.isNotBlank(qand)){
-					qStr += " +" + StringUtils.replace(StringUtils.replace(StringUtils.replace(qand, "，", " "), ", ", " "), " ", " +"); 
+				if (StrUtils.isNotBlank(qand)){
+					qStr += " +" + StrUtils.replace(StrUtils.replace(StrUtils.replace(qand, "，", " "), ", ", " "), " ", " +");
 				}
-				if (StringUtils.isNotBlank(qnot)){
-					qStr += " -" + StringUtils.replace(StringUtils.replace(StringUtils.replace(qnot, "，", " "), ", ", " "), " ", " -"); 
+				if (StrUtils.isNotBlank(qnot)){
+					qStr += " -" + StrUtils.replace(StrUtils.replace(StrUtils.replace(qnot, "，", " "), ", ", " "), " ", " -");
 				}
 			}
 			// 文章检索
-			if (StringUtils.isBlank(t) || "article".equals(t)){
+			if (StrUtils.isBlank(t) || "article".equals(t)){
 				Page<Article> page = articleService.search(new Page<Article>(request, response), qStr, cid, bd, ed);
 				page.setMessage("匹配结果，共耗时 " + (System.currentTimeMillis() - start) + "毫秒。");
 				model.addAttribute("page", page);

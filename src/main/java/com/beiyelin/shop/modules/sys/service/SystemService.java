@@ -14,6 +14,7 @@ import com.beiyelin.shop.common.security.shiro.session.SessionDAO;
 import com.beiyelin.shop.common.service.BaseService;
 import com.beiyelin.shop.common.service.ServiceException;
 import com.beiyelin.shop.common.utils.Encodes;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.dao.MenuDao;
 import com.beiyelin.shop.modules.sys.dao.RoleDao;
 import com.beiyelin.shop.modules.sys.entity.Menu;
@@ -23,7 +24,6 @@ import com.beiyelin.shop.modules.sys.security.SystemAuthorizingRealm;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.utils.CacheUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.sys.dao.UserDao;
 import com.beiyelin.shop.modules.sys.entity.User;
 import com.beiyelin.shop.modules.sys.utils.LogUtils;
@@ -127,7 +127,7 @@ public class SystemService extends BaseService implements InitializingBean {
 	
 	@Transactional(readOnly = false)
 	public void saveUser(User user) {
-		if (StringUtils.isBlank(user.getId())){
+		if (StrUtils.isBlank(user.getId())){
 			user.preInsert();
 			userDao.insert(user);
 		}else{
@@ -140,7 +140,7 @@ public class SystemService extends BaseService implements InitializingBean {
 			user.preUpdate();
 			userDao.update(user);
 		}
-		if (StringUtils.isNotBlank(user.getId())){
+		if (StrUtils.isNotBlank(user.getId())){
 			// 更新用户与角色关联
 			userDao.deleteUserRole(user);
 			if (user.getRoleList() != null && user.getRoleList().size() > 0){
@@ -258,7 +258,7 @@ public class SystemService extends BaseService implements InitializingBean {
 	
 	@Transactional(readOnly = false)
 	public void saveRole(Role role) {
-		if (StringUtils.isBlank(role.getId())){
+		if (StrUtils.isBlank(role.getId())){
 			role.preInsert();
 			roleDao.insert(role);
 			// 同步到Activiti
@@ -346,7 +346,7 @@ public class SystemService extends BaseService implements InitializingBean {
 		menu.setParentIds(menu.getParent().getParentIds()+menu.getParent().getId()+",");
 
 		// 保存或更新实体
-		if (StringUtils.isBlank(menu.getId())){
+		if (StrUtils.isBlank(menu.getId())){
 			menu.preInsert();
 			menuDao.insert(menu);
 		}else{
@@ -445,7 +445,7 @@ public class SystemService extends BaseService implements InitializingBean {
 		String groupId = role.getEnname();
 		
 		// 如果修改了英文名，则删除原Activiti角色
-		if (StringUtils.isNotBlank(role.getOldEnname()) && !role.getOldEnname().equals(role.getEnname())){
+		if (StrUtils.isNotBlank(role.getOldEnname()) && !role.getOldEnname().equals(role.getEnname())){
 			identityService.deleteGroup(role.getOldEnname());
 		}
 		
@@ -472,9 +472,9 @@ public class SystemService extends BaseService implements InitializingBean {
 			if (activitiUser == null){
 				activitiUser = identityService.newUser(userId);
 				activitiUser.setFirstName(e.getName());
-				activitiUser.setLastName(StringUtils.EMPTY);
+				activitiUser.setLastName(StrUtils.EMPTY);
 				activitiUser.setEmail(e.getEmail());
-				activitiUser.setPassword(StringUtils.EMPTY);
+				activitiUser.setPassword(StrUtils.EMPTY);
 				identityService.saveUser(activitiUser);
 			}
 			identityService.createMembership(userId, groupId);
@@ -501,9 +501,9 @@ public class SystemService extends BaseService implements InitializingBean {
 			activitiUser = identityService.newUser(userId);
 		}
 		activitiUser.setFirstName(user.getName());
-		activitiUser.setLastName(StringUtils.EMPTY);
+		activitiUser.setLastName(StrUtils.EMPTY);
 		activitiUser.setEmail(user.getEmail());
-		activitiUser.setPassword(StringUtils.EMPTY);
+		activitiUser.setPassword(StrUtils.EMPTY);
 		identityService.saveUser(activitiUser);
 		
 		// 删除用户与用户组关系

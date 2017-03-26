@@ -3,12 +3,12 @@
  */
 package com.beiyelin.shop.modules.shop.service;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.persistence.Page;
 import com.beiyelin.shop.common.service.CrudService;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.shop.dao.AddressDao;
 import com.beiyelin.shop.modules.shop.entity.Address;
 import com.beiyelin.shop.modules.shop.entity.Cookie;
@@ -49,7 +49,7 @@ public class AddressService extends CrudService<AddressDao, Address> {
      * @return
      */
     public Address getDefaultByUserId(String userId) {
-        if (StringUtils.isBlank(userId)) {
+        if (StrUtils.isBlank(userId)) {
             return null;
         }
 
@@ -84,7 +84,7 @@ public class AddressService extends CrudService<AddressDao, Address> {
      * @return
      */
     public Address getDefaultByCookieId(String cookieId) {
-        if (StringUtils.isBlank(cookieId)) {
+        if (StrUtils.isBlank(cookieId)) {
             return null;
         }
 

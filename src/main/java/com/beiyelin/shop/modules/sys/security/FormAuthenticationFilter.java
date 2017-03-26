@@ -7,7 +7,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.util.WebUtils;
@@ -36,7 +36,7 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 			password = "";
 		}
 		boolean rememberMe = isRememberMe(request);
-		String host = StringUtils.getRemoteAddr((HttpServletRequest) request);
+		String host = StrUtils.getRemoteAddr((HttpServletRequest) request);
 		String captcha = getCaptcha(request);
 		boolean mobile = isMobileLogin(request);
 		return new UsernamePasswordToken(username, password.toCharArray(), rememberMe, host, captcha, mobile);
@@ -64,8 +64,8 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 	
 	protected void setFailureAttribute(ServletRequest request, AuthenticationException ae) {
     	request.setAttribute(getFailureKeyAttribute(), ae.getClass().getName());
-		if (ae.getMessage() != null && StringUtils.startsWith(ae.getMessage(), "msg:")){
-			String message = StringUtils.replace(ae.getMessage(), "msg:", "");
+		if (ae.getMessage() != null && StrUtils.startsWith(ae.getMessage(), "msg:")){
+			String message = StrUtils.replace(ae.getMessage(), "msg:", "");
 	        request.setAttribute(getMessageParam(), message);
 		}
     }

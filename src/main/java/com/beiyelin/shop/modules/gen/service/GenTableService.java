@@ -5,11 +5,11 @@ package com.beiyelin.shop.modules.gen.service;
 
 import java.util.List;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.gen.dao.GenTableDao;
 import com.beiyelin.shop.modules.gen.entity.GenTable;
 import com.beiyelin.shop.modules.gen.util.GenUtils;
 import com.beiyelin.shop.common.service.BaseService;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.gen.dao.GenDataBaseDictDao;
 import com.beiyelin.shop.modules.gen.dao.GenTableColumnDao;
 import com.beiyelin.shop.modules.gen.entity.GenTableColumn;
@@ -68,7 +68,7 @@ public class GenTableService extends BaseService {
 	 * @return
 	 */
 	public boolean checkTableName(String tableName){
-		if (StringUtils.isBlank(tableName)){
+		if (StrUtils.isBlank(tableName)){
 			return true;
 		}
 		GenTable genTable = new GenTable();
@@ -84,19 +84,19 @@ public class GenTableService extends BaseService {
 	 */
 	public GenTable getTableFormDb(GenTable genTable){
 		// 如果有表名，则获取物理表
-		if (StringUtils.isNotBlank(genTable.getName())){
+		if (StrUtils.isNotBlank(genTable.getName())){
 			
 			List<GenTable> list = genDataBaseDictDao.findTableList(genTable);
 			if (list.size() > 0){
 				
 				// 如果是新增，初始化表属性
-				if (StringUtils.isBlank(genTable.getId())){
+				if (StrUtils.isBlank(genTable.getId())){
 					genTable = list.get(0);
 					// 设置字段说明
-					if (StringUtils.isBlank(genTable.getComments())){
+					if (StrUtils.isBlank(genTable.getComments())){
 						genTable.setComments(genTable.getName());
 					}
-					genTable.setClassName(StringUtils.toCapitalizeCamelCase(genTable.getName()));
+					genTable.setClassName(StrUtils.toCapitalizeCamelCase(genTable.getName()));
 				}
 				
 				// 添加新列
@@ -139,7 +139,7 @@ public class GenTableService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public void save(GenTable genTable) {
-		if (StringUtils.isBlank(genTable.getId())){
+		if (StrUtils.isBlank(genTable.getId())){
 			genTable.preInsert();
 			genTableDao.insert(genTable);
 		}else{
@@ -149,7 +149,7 @@ public class GenTableService extends BaseService {
 		// 保存列
 		for (GenTableColumn column : genTable.getColumnList()){
 			column.setGenTable(genTable);
-			if (StringUtils.isBlank(column.getId())){
+			if (StrUtils.isBlank(column.getId())){
 				column.preInsert();
 				genTableColumnDao.insert(column);
 			}else{

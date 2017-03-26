@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.beiyelin.shop.common.persistence.Page;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.entity.Dict;
 import com.beiyelin.shop.modules.sys.service.DictService;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class DictController extends BaseController {
 	
 	@ModelAttribute
 	public Dict get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return dictService.get(id);
 		}else{
 			return new Dict();
@@ -106,7 +106,7 @@ public class DictController extends BaseController {
 			Map<String, Object> map = Maps.newHashMap();
 			map.put("id", e.getId());
 			map.put("pId", e.getParentId());
-			map.put("name", StringUtils.replace(e.getLabel(), " ", ""));
+			map.put("name", StrUtils.replace(e.getLabel(), " ", ""));
 			mapList.add(map);
 		}
 		return mapList;

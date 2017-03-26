@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.beiyelin.shop.common.persistence.Page;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.cms.entity.Comment;
 import com.beiyelin.shop.modules.cms.service.CommentService;
@@ -38,7 +38,7 @@ public class CommentController extends BaseController {
 	
 	@ModelAttribute
 	public Comment get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)){
+		if (StrUtils.isNotBlank(id)){
 			return commentService.get(id);
 		}else{
 			return new Comment();
@@ -64,7 +64,7 @@ public class CommentController extends BaseController {
 			comment.setDelFlag(Comment.DEL_FLAG_NORMAL);
 			commentService.save(comment);
 			addMessage(redirectAttributes, DictUtils.getDictLabel(comment.getDelFlag(), "cms_del_flag", "保存")
-					+"评论'" + StringUtils.abbr(StringUtils.replaceHtml(comment.getContent()),50) + "'成功");
+					+"评论'" + StrUtils.abbr(StrUtils.replaceHtml(comment.getContent()),50) + "'成功");
 		}
 		return "redirect:" + adminPath + "/cms/comment/?repage&delFlag=2";
 	}

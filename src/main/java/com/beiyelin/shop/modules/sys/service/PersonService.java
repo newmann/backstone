@@ -6,9 +6,7 @@ package com.beiyelin.shop.modules.sys.service;
 import com.beiyelin.shop.common.security.Cryptos;
 import com.beiyelin.shop.common.service.CrudService;
 import com.beiyelin.shop.modules.sys.dao.PersonDao;
-import com.beiyelin.shop.modules.sys.entity.Office;
 import com.beiyelin.shop.modules.sys.entity.Person;
-import com.beiyelin.shop.modules.sys.entity.Role;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,54 +52,4 @@ public class PersonService extends CrudService<PersonDao, Person> {
 //	}
 
 
-
-    /**=======================
-     * 自建会话系统给app用
-     * 判断用户是否登录的条件：person.id + person.app_login_token
-     =======================*/
-
-    /**
-     * 生成APP用户登录令牌（32位）
-     */
-    public String genAppLoginToken() {
-        String token = Cryptos.generateAesKeyString();
-        if (token.length() > 32) {
-            token = token.substring(0, 31);
-        }
-        return token;
-    }
-
-    /**
-     * 更新APP用户登录令牌
-     */
-    @Transactional(readOnly = false)
-    public void updateAppLoginToken(String userId, String token) {
-        //remove cache
-        Person person = new Person(userId);
-        person.setAppLoginToken(token);
-        dao.updateAppLoginToken(person);
-    }
-
-    /**
-     * 更新APP用户登录令牌
-     */
-    @Transactional(readOnly = false)
-    public void updateAppLoginToken(Person person) {
-        //remove cache
-        dao.updateAppLoginToken(person);
-    }
-
-    public boolean isAppLoggedIn(String personId, String token) {
-        if (StringUtils.isNotBlank(personId) && StringUtils.isNotBlank(token)) {
-            Person person = new Person(personId);
-            person.setAppLoginToken(token);
-            long count = dao.isAppLoggedIn(person);
-            if (count > 0)
-                return true;
-            else
-                return false;
-        } else {
-            return false;
-        }
-    }
 }

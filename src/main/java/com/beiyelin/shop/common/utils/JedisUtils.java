@@ -22,8 +22,8 @@ import redis.clients.jedis.exceptions.JedisException;
 /**
  * Jedis Cache 工具类
  * 
- * @author Tony Wong
- * @version 2014-6-29
+ * @author Newmann
+ * @version 2017-3-26
  */
 public class JedisUtils {
 
@@ -31,8 +31,28 @@ public class JedisUtils {
 	
 	private static JedisPool jedisPool = SpringContextHolder.getBean(JedisPool.class);
 
-	public static final String KEY_PREFIX = Global.getConfig("redis.keyPrefix");
-	
+//	public static final String KEY_PREFIX = Global.getConfig("redis.keyPrefix");
+	/**
+	 * 获取缓存
+	 * @param key 键
+	 * @return 值
+	 */
+	public static Long Incr(String key) {
+		Long value = 0L;
+		Jedis jedis = null;
+		try {
+			jedis = getResource();
+			if (jedis.exists(key)) {
+				value = jedis.incr(key);
+			}
+		} catch (Exception e) {
+			logger.warn("Incr {} error, {}", key, e);
+		} finally {
+			returnResource(jedis);
+		}
+		return value;
+	}
+
 	/**
 	 * 获取缓存
 	 * @param key 键
@@ -45,7 +65,7 @@ public class JedisUtils {
 			jedis = getResource();
 			if (jedis.exists(key)) {
 				value = jedis.get(key);
-				value = StringUtils.isNotBlank(value) && !"nil".equalsIgnoreCase(value) ? value : null;
+				value = StrUtils.isNotBlank(value) && !"nil".equalsIgnoreCase(value) ? value : null;
 				logger.debug("get {} = {}", key, value);
 			}
 		} catch (Exception e) {
@@ -102,7 +122,11 @@ public class JedisUtils {
 		}
 		return result;
 	}
-	
+
+	public static String set(String key, String value) {
+		return set(key,value,0);
+	}
+
 	/**
 	 * 设置缓存
 	 * @param key 键
@@ -472,7 +496,7 @@ public class JedisUtils {
 				value = Maps.newHashMap();
 				Map<byte[], byte[]> map = jedis.hgetAll(getBytesKey(key));
 				for (Map.Entry<byte[], byte[]> e : map.entrySet()){
-					value.put(StringUtils.toString(e.getKey()), toObject(e.getValue()));
+					value.put(StrUtils.toString(e.getKey()), toObject(e.getValue()));
 				}
 				logger.debug("getObjectMap {} = {}", key, value);
 			}
@@ -593,7 +617,7 @@ public class JedisUtils {
 	/**
 	 * 移除Map缓存中的值
 	 * @param key 键
-	 * @param value 值
+	 * @param mapKey 值
 	 * @return
 	 */
 	public static long mapRemove(String key, String mapKey) {
@@ -614,7 +638,7 @@ public class JedisUtils {
 	/**
 	 * 移除Map缓存中的值
 	 * @param key 键
-	 * @param value 值
+	 * @param mapKey 值
 	 * @return
 	 */
 	public static long mapObjectRemove(String key, String mapKey) {
@@ -635,7 +659,7 @@ public class JedisUtils {
 	/**
 	 * 判断Map缓存中的Key是否存在
 	 * @param key 键
-	 * @param value 值
+	 * @param mapKey 值
 	 * @return
 	 */
 	public static boolean mapExists(String key, String mapKey) {
@@ -656,7 +680,7 @@ public class JedisUtils {
 	/**
 	 * 判断Map缓存中的Key是否存在
 	 * @param key 键
-	 * @param value 值
+	 * @param mapKey 值
 	 * @return
 	 */
 	public static boolean mapObjectExists(String key, String mapKey) {
@@ -783,7 +807,6 @@ public class JedisUtils {
 	/**
 	 * 归还资源
 	 * @param jedis
-	 * @param isBroken
 	 */
 	public static void returnBrokenResource(Jedis jedis) {
 		if (jedis != null) {
@@ -794,7 +817,6 @@ public class JedisUtils {
 	/**
 	 * 释放资源
 	 * @param jedis
-	 * @param isBroken
 	 */
 	public static void returnResource(Jedis jedis) {
 		if (jedis != null) {
@@ -804,12 +826,12 @@ public class JedisUtils {
 
 	/**
 	 * 获取byte[]类型Key
-	 * @param key
+	 * @param object
 	 * @return
 	 */
 	public static byte[] getBytesKey(Object object){
 		if(object instanceof String){
-    		return StringUtils.getBytes((String)object);
+    		return StrUtils.getBytes((String)object);
     	}else{
     		return ObjectUtils.serialize(object);
     	}
@@ -817,7 +839,7 @@ public class JedisUtils {
 	
 	/**
 	 * Object转换byte[]类型
-	 * @param key
+	 * @param object
 	 * @return
 	 */
 	public static byte[] toBytes(Object object){
@@ -826,7 +848,7 @@ public class JedisUtils {
 
 	/**
 	 * byte[]型转换Object
-	 * @param key
+	 * @param bytes
 	 * @return
 	 */
 	public static Object toObject(byte[] bytes){

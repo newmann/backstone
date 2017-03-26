@@ -8,7 +8,7 @@ import com.beiyelin.shop.modules.shop.service.AddressService;
 import com.beiyelin.shop.modules.sys.utils.AreaUtils;
 import com.beiyelin.shop.common.utils.CacheUtils;
 import com.beiyelin.shop.common.utils.SpringContextHolder;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.entity.Area;
 
 /**
@@ -36,7 +36,7 @@ public class AddressUtils {
 		if (address == null) {
             address = addressService.get(id);
             if (address != null && address.getArea() != null
-                    && StringUtils.isNotBlank(address.getArea().getId())) {
+                    && StrUtils.isNotBlank(address.getArea().getId())) {
                 Area area = AreaUtils.getArea(address.getArea().getId());
                 address.setArea(area);
             }

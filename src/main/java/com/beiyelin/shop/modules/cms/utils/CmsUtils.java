@@ -7,12 +7,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.google.common.collect.Lists;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.mapper.JsonMapper;
 import com.beiyelin.shop.common.utils.CacheUtils;
 import com.beiyelin.shop.common.utils.SpringContextHolder;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.modules.cms.entity.Article;
 import com.beiyelin.shop.modules.cms.entity.Link;
 import com.beiyelin.shop.modules.cms.entity.Site;
@@ -64,7 +64,7 @@ public class CmsUtils {
 	 */
 	public static Site getSite(String siteId){
 		String id = "1";
-		if (StringUtils.isNotBlank(siteId)){
+		if (StrUtils.isNotBlank(siteId)){
 			id = siteId;
 		}
 		for (Site site : getSiteList()){
@@ -116,7 +116,7 @@ public class CmsUtils {
 		Category category = new Category();
 		category.setSite(new Site(siteId));
 		category.setParent(new Category(parentId));
-		if (StringUtils.isNotBlank(param)){
+		if (StrUtils.isNotBlank(param)){
 			@SuppressWarnings({ "unused", "rawtypes" })
 			Map map = JsonMapper.getInstance().fromJson("{"+param+"}", Map.class);
 		}
@@ -159,7 +159,7 @@ public class CmsUtils {
 		Category category = new Category(categoryId, new Site(siteId));
 		category.setParentIds(categoryId);
 		Article article = new Article(category);
-		if (StringUtils.isNotBlank(param)){
+		if (StrUtils.isNotBlank(param)){
 			@SuppressWarnings({ "rawtypes" })
 			Map map = JsonMapper.getInstance().fromJson("{"+param+"}", Map.class);
 			if (new Integer(1).equals(map.get("posid")) || new Integer(2).equals(map.get("posid"))){
@@ -168,7 +168,7 @@ public class CmsUtils {
 			if (new Integer(1).equals(map.get("image"))){
 				article.setImage(Global.YES);
 			}
-			if (StringUtils.isNotBlank((String)map.get("orderBy"))){
+			if (StrUtils.isNotBlank((String)map.get("orderBy"))){
 				page.setOrderBy((String)map.get("orderBy"));
 			}
 		}
@@ -197,7 +197,7 @@ public class CmsUtils {
 	public static List<Link> getLinkList(String siteId, String categoryId, int number, String param){
 		Page<Link> page = new Page<Link>(1, number, -1);
 		Link link = new Link(new Category(categoryId, new Site(siteId)));
-		if (StringUtils.isNotBlank(param)){
+		if (StrUtils.isNotBlank(param)){
 			@SuppressWarnings({ "unused", "rawtypes" })
 			Map map = JsonMapper.getInstance().fromJson("{"+param+"}", Map.class);
 		}
@@ -226,7 +226,7 @@ public class CmsUtils {
    	 * @return url
    	 */
     public static String getUrlDynamic(Article article) {
-        if(StringUtils.isNotBlank(article.getLink())){
+        if(StrUtils.isNotBlank(article.getLink())){
             return article.getLink();
         }
         StringBuilder str = new StringBuilder();
@@ -241,7 +241,7 @@ public class CmsUtils {
    	 * @return url
    	 */
     public static String getUrlDynamic(Category category) {
-        if(StringUtils.isNotBlank(category.getHref())){
+        if(StrUtils.isNotBlank(category.getHref())){
             if(!category.getHref().contains("://")){
                 return context.getContextPath()+Global.getFrontPath()+category.getHref();
             }else{
@@ -260,7 +260,7 @@ public class CmsUtils {
    	 * @return src
    	 */
     public static String formatImageSrcToDb(String src) {
-        if(StringUtils.isBlank(src)) return src;
+        if(StrUtils.isBlank(src)) return src;
         if(src.startsWith(context.getContextPath() + "/userfiles")){
             return src.substring(context.getContextPath().length());
         }else{
@@ -274,7 +274,7 @@ public class CmsUtils {
    	 * @return src
    	 */
     public static String formatImageSrcToWeb(String src) {
-        if(StringUtils.isBlank(src)) return src;
+        if(StrUtils.isBlank(src)) return src;
         if(src.startsWith(context.getContextPath() + "/userfiles")){
             return src;
         }else{
@@ -283,7 +283,7 @@ public class CmsUtils {
     }
     
     public static void addViewConfigAttribute(Model model, String param){
-        if(StringUtils.isNotBlank(param)){
+        if(StrUtils.isNotBlank(param)){
             @SuppressWarnings("rawtypes")
 			Map map = JsonMapper.getInstance().fromJson(param, Map.class);
             if(map != null){

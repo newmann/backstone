@@ -3,10 +3,10 @@
  */
 package com.beiyelin.shop.modules.shop.web.admin;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.entity.ShopCategory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.shop.service.ShopCategoryService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -38,7 +38,7 @@ public class AdminCategoryController extends BaseController {
 
 	@ModelAttribute("category")
 	public ShopCategory get(@RequestParam(required=false) String id) {
-		if (StringUtils.isNotBlank(id)) {
+		if (StrUtils.isNotBlank(id)) {
 			return categoryService.get(id);
 		}
 		else {

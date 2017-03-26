@@ -8,7 +8,7 @@ import java.util.Map;
 import com.beiyelin.shop.common.service.CrudService;
 import com.beiyelin.shop.modules.act.service.ActTaskService;
 import com.beiyelin.shop.modules.act.utils.ActUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +48,7 @@ public class TestAuditService extends CrudService<TestAuditDao, TestAudit> {
 	public void save(TestAudit testAudit) {
 		
 		// 申请发起
-		if (StringUtils.isBlank(testAudit.getId())){
+		if (StrUtils.isBlank(testAudit.getId())){
 			testAudit.preInsert();
 			dao.insert(testAudit);
 			

@@ -19,7 +19,7 @@ import javax.xml.namespace.QName;
 
 import com.beiyelin.shop.common.utils.Exceptions;
 import com.beiyelin.shop.common.utils.Reflections;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.util.Assert;
 
@@ -118,7 +118,7 @@ public class JaxbMapper {
 
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-			if (StringUtils.isNotBlank(encoding)) {
+			if (StrUtils.isNotBlank(encoding)) {
 				marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
 			}
 

@@ -32,6 +32,13 @@ public class ApiResponseData {
         this.message = msg;
     }
 
+    public void setInvalidApp(){
+        this.result =false;
+        this.resultCode = ResultCode.Failure;
+        this.message = "亲~您还没获得授权，请更新APP后访问";
+    }
+
+
     public void setSuccessMessage(String msg){
         this.result =true;
         this.resultCode = ResultCode.Success;

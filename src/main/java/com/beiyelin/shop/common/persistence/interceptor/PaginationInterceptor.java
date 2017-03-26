@@ -4,7 +4,7 @@
 package com.beiyelin.shop.common.persistence.interceptor;
 
 import com.beiyelin.shop.common.persistence.Page;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -36,7 +36,7 @@ public class PaginationInterceptor extends BaseInterceptor {
         
 //        //拦截需要分页的SQL
 ////        if (mappedStatement.getId().matches(_SQL_PATTERN)) {
-//        if (StringUtils.indexOfIgnoreCase(mappedStatement.getId(), _SQL_PATTERN) != -1) {
+//        if (StrUtils.indexOfIgnoreCase(mappedStatement.getId(), _SQL_PATTERN) != -1) {
             Object parameter = invocation.getArgs()[1];
             BoundSql boundSql = mappedStatement.getBoundSql(parameter);
             Object parameterObject = boundSql.getParameterObject();
@@ -50,7 +50,7 @@ public class PaginationInterceptor extends BaseInterceptor {
             //如果设置了分页对象，则进行分页
             if (page != null && page.getPageSize() != -1) {
 
-            	if (StringUtils.isBlank(boundSql.getSql())){
+            	if (StrUtils.isBlank(boundSql.getSql())){
                     return null;
                 }
                 String originalSql = boundSql.getSql().trim();
@@ -61,7 +61,7 @@ public class PaginationInterceptor extends BaseInterceptor {
                 //分页查询 本地化对象 修改数据库注意修改实现
                 String pageSql = SQLHelper.generatePageSql(originalSql, page, DIALECT);
 //                if (log.isDebugEnabled()) {
-//                    log.debug("PAGE SQL:" + StringUtils.replace(pageSql, "\n", ""));
+//                    log.debug("PAGE SQL:" + StrUtils.replace(pageSql, "\n", ""));
 //                }
                 invocation.getArgs()[2] = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
                 BoundSql newBoundSql = new BoundSql(mappedStatement.getConfiguration(), pageSql, boundSql.getParameterMappings(), boundSql.getParameterObject());

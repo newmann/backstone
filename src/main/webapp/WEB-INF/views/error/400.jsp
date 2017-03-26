@@ -43,7 +43,7 @@ else {
 <%@page import="org.slf4j.Logger,org.slf4j.LoggerFactory"%>
 <%@page import="com.beiyelin.shop.common.web.Servlets"%>
 <%@page import="com.beiyelin.shop.common.utils.Exceptions"%>
-<%@page import="com.beiyelin.shop.common.utils.StringUtils"%>
+<%@page import="com.beiyelin.shop.common.utils.StrUtils"%>
 <%@page contentType="text/html;charset=UTF-8" isErrorPage="true"%>
 <%@include file="/WEB-INF/views/include/taglib.jsp"%>
 <!DOCTYPE html>
@@ -56,7 +56,7 @@ else {
 	<div class="container-fluid">
 		<div class="page-header"><h1>参数有误,服务器无法解析.</h1></div>
 		<div class="errorMessage">
-			<%=StringUtils.toHtml(sb.toString())%> <br/>
+			<%=StrUtils.toHtml(sb.toString())%> <br/>
 		</div>
 		<a href="javascript:" onclick="history.go(-1);" class="btn">返回上一页</a> &nbsp;
 		<br/> <br/>

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.beiyelin.shop.common.service.BaseService;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.act.entity.Act;
 import com.beiyelin.shop.modules.act.utils.ActUtils;
 import com.beiyelin.shop.modules.sys.entity.User;
@@ -99,7 +99,7 @@ public class ActTaskService extends BaseService {
 				.includeProcessVariables().orderByTaskCreateTime().desc();
 		
 		// 设置查询条件
-		if (StringUtils.isNotBlank(act.getProcDefKey())){
+		if (StrUtils.isNotBlank(act.getProcDefKey())){
 			todoTaskQuery.processDefinitionKey(act.getProcDefKey());
 		}
 		if (act.getBeginDate() != null){
@@ -129,7 +129,7 @@ public class ActTaskService extends BaseService {
 				.includeProcessVariables().active().orderByTaskCreateTime().desc();
 		
 		// 设置查询条件
-		if (StringUtils.isNotBlank(act.getProcDefKey())){
+		if (StrUtils.isNotBlank(act.getProcDefKey())){
 			toClaimQuery.processDefinitionKey(act.getProcDefKey());
 		}
 		if (act.getBeginDate() != null){
@@ -169,7 +169,7 @@ public class ActTaskService extends BaseService {
 				.includeProcessVariables().orderByHistoricTaskInstanceEndTime().desc();
 		
 		// 设置查询条件
-		if (StringUtils.isNotBlank(act.getProcDefKey())){
+		if (StrUtils.isNotBlank(act.getProcDefKey())){
 			histTaskQuery.processDefinitionKey(act.getProcDefKey());
 		}
 		if (act.getBeginDate() != null){
@@ -218,15 +218,15 @@ public class ActTaskService extends BaseService {
 			HistoricActivityInstance histIns = list.get(i);
 			
 			// 过滤开始节点前的节点
-			if (StringUtils.isNotBlank(startAct) && startAct.equals(histIns.getActivityId())){
+			if (StrUtils.isNotBlank(startAct) && startAct.equals(histIns.getActivityId())){
 				start = true;
 			}
-			if (StringUtils.isNotBlank(startAct) && !start){
+			if (StrUtils.isNotBlank(startAct) && !start){
 				continue;
 			}
 			
 			// 只显示开始节点和结束节点，并且执行人不为空的任务
-			if (StringUtils.isNotBlank(histIns.getAssignee())
+			if (StrUtils.isNotBlank(histIns.getAssignee())
 					 || "startEvent".equals(histIns.getActivityType())
 					 || "endEvent".equals(histIns.getActivityType())){
 				
@@ -243,7 +243,7 @@ public class ActTaskService extends BaseService {
 					List<HistoricProcessInstance> il = historyService.createHistoricProcessInstanceQuery().processInstanceId(procInsId).orderByProcessInstanceStartTime().asc().list();
 //					List<HistoricIdentityLink> il = historyService.getHistoricIdentityLinksForProcessInstance(procInsId);
 					if (il.size() > 0){
-						if (StringUtils.isNotBlank(il.get(0).getStartUserId())){
+						if (StrUtils.isNotBlank(il.get(0).getStartUserId())){
 							User user = UserUtils.getByLoginName(il.get(0).getStartUserId());
 							if (user != null){
 								e.setAssignee(histIns.getAssignee());
@@ -253,7 +253,7 @@ public class ActTaskService extends BaseService {
 					}
 				}
 				// 获取任务执行人名称
-				if (StringUtils.isNotEmpty(histIns.getAssignee())){
+				if (StrUtils.isNotEmpty(histIns.getAssignee())){
 					User user = UserUtils.getByLoginName(histIns.getAssignee());
 					if (user != null){
 						e.setAssignee(histIns.getAssignee());
@@ -261,7 +261,7 @@ public class ActTaskService extends BaseService {
 					}
 				}
 				// 获取意见评论内容
-				if (StringUtils.isNotBlank(histIns.getTaskId())){
+				if (StrUtils.isNotBlank(histIns.getTaskId())){
 					List<Comment> commentList = taskService.getTaskComments(histIns.getTaskId());
 					if (commentList.size()>0){
 						e.setComment(commentList.get(0).getFullMessage());
@@ -271,14 +271,14 @@ public class ActTaskService extends BaseService {
 			}
 			
 			// 过滤结束节点后的节点
-			if (StringUtils.isNotBlank(endAct) && endAct.equals(histIns.getActivityId())){
+			if (StrUtils.isNotBlank(endAct) && endAct.equals(histIns.getActivityId())){
 				boolean bl = false;
 				Integer actNum = actMap.get(histIns.getActivityId());
 				// 该活动节点，后续节点是否在结束节点之前，在后续节点中是否存在
 				for (int j=i+1; j<list.size(); j++){
 					HistoricActivityInstance hi = list.get(j);
 					Integer actNumA = actMap.get(hi.getActivityId());
-					if ((actNumA != null && actNumA < actNum) || StringUtils.equals(hi.getActivityId(), histIns.getActivityId())){
+					if ((actNumA != null && actNumA < actNum) || StrUtils.equals(hi.getActivityId(), histIns.getActivityId())){
 						bl = true;
 					}
 				}
@@ -301,7 +301,7 @@ public class ActTaskService extends BaseService {
 	    ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
 	    		.latestVersion().active().orderByProcessDefinitionKey().asc();
 	    
-	    if (StringUtils.isNotEmpty(category)){
+	    if (StrUtils.isNotEmpty(category)){
 	    	processDefinitionQuery.processDefinitionCategory(category);
 		}
 	    
@@ -322,18 +322,18 @@ public class ActTaskService extends BaseService {
 	 */
 	public String getFormKey(String procDefId, String taskDefKey){
 		String formKey = "";
-		if (StringUtils.isNotBlank(procDefId)){
-			if (StringUtils.isNotBlank(taskDefKey)){
+		if (StrUtils.isNotBlank(procDefId)){
+			if (StrUtils.isNotBlank(taskDefKey)){
 				try{
 					formKey = formService.getTaskFormKey(procDefId, taskDefKey);
 				}catch (Exception e) {
 					formKey = "";
 				}
 			}
-			if (StringUtils.isBlank(formKey)){
+			if (StrUtils.isBlank(formKey)){
 				formKey = formService.getStartFormKey(procDefId);
 			}
-			if (StringUtils.isBlank(formKey)){
+			if (StrUtils.isBlank(formKey)){
 				formKey = "/404";
 			}
 		}
@@ -399,7 +399,7 @@ public class ActTaskService extends BaseService {
 		}
 		
 		// 设置流程标题
-		if (StringUtils.isNotBlank(title)){
+		if (StrUtils.isNotBlank(title)){
 			vars.put("title", title);
 		}
 		
@@ -465,7 +465,7 @@ public class ActTaskService extends BaseService {
 	@Transactional(readOnly = false)
 	public void complete(String taskId, String procInsId, String comment, String title, Map<String, Object> vars){
 		// 添加意见
-		if (StringUtils.isNotBlank(procInsId) && StringUtils.isNotBlank(comment)){
+		if (StrUtils.isNotBlank(procInsId) && StrUtils.isNotBlank(comment)){
 			taskService.addComment(taskId, procInsId, comment);
 		}
 		
@@ -475,7 +475,7 @@ public class ActTaskService extends BaseService {
 		}
 		
 		// 设置流程标题
-		if (StringUtils.isNotBlank(title)){
+		if (StrUtils.isNotBlank(title)){
 			vars.put("title", title);
 		}
 		

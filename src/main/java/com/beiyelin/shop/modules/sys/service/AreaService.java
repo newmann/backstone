@@ -11,7 +11,6 @@ import com.google.common.collect.Maps;
 import com.beiyelin.shop.common.service.TreeService;
 import com.beiyelin.shop.modules.sys.entity.Area;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

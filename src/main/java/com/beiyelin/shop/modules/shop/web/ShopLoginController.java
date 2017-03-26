@@ -8,18 +8,16 @@ import com.beiyelin.shop.common.security.shiro.session.SessionDAO;
 import com.beiyelin.shop.common.servlet.ValidateCodeServlet;
 import com.beiyelin.shop.common.utils.CacheUtils;
 import com.beiyelin.shop.common.utils.IdGen;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.sys.security.FormAuthenticationFilter;
 import com.beiyelin.shop.modules.sys.security.SystemAuthorizingRealm;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.UnauthorizedException;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -86,7 +84,7 @@ public class ShopLoginController extends BaseController {
 		String exception = (String)request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
 		String message = (String)request.getAttribute(FormAuthenticationFilter.DEFAULT_MESSAGE_PARAM);
 		
-		if (StringUtils.isBlank(message) || StringUtils.equals(message, "null")){
+		if (StrUtils.isBlank(message) || StrUtils.equals(message, "null")){
 			message = "用户或密码错误, 请重试.";
 		}
 

@@ -534,8 +534,8 @@ public class Page<T> {
 //	public Pageable getSpringPage(){
 //		List<Order> orders = new ArrayList<Order>();
 //		if (orderBy!=null){
-//			for (String order : StringUtils.split(orderBy, ",")){
-//				String[] o = StringUtils.split(order, " ");
+//			for (String order : StrUtils.split(orderBy, ",")){
+//				String[] o = StrUtils.split(order, " ");
 //				if (o.length==1){
 //					orders.add(new Order(Direction.ASC, o[0]));
 //				}else if (o.length==2){

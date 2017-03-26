@@ -11,7 +11,7 @@ import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.persistence.Page;
 import com.beiyelin.shop.common.service.CrudService;
 import com.beiyelin.shop.common.utils.CacheUtils;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.cms.dao.ArticleDataDao;
 import com.beiyelin.shop.modules.cms.dao.CategoryDao;
 import com.beiyelin.shop.modules.cms.entity.Article;
@@ -53,7 +53,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 //		DetachedCriteria dc = dao.createDetachedCriteria();
 //		dc.createAlias("category", "category");
 //		dc.createAlias("category.site", "category.site");
-		if (article.getCategory()!=null && StringUtils.isNotBlank(article.getCategory().getId()) && !Category.isRoot(article.getCategory().getId())){
+		if (article.getCategory()!=null && StrUtils.isNotBlank(article.getCategory().getId()) && !Category.isRoot(article.getCategory().getId())){
 			Category category = categoryDao.get(article.getCategory().getId());
 			if (category==null){
 				category = new Category();
@@ -65,7 +65,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 		else{
 			article.setCategory(new Category());
 		}
-//		if (StringUtils.isBlank(page.getOrderBy())){
+//		if (StrUtils.isBlank(page.getOrderBy())){
 //			page.setOrderBy("a.weight,a.update_date desc");
 //		}
 //		return dao.find(page, dc);
@@ -85,7 +85,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 			article.setDelFlag(Article.DEL_FLAG_AUDIT);
 		}
 		// 如果栏目不需要审核，则将该内容设为发布状态
-		if (article.getCategory()!=null&&StringUtils.isNotBlank(article.getCategory().getId())){
+		if (article.getCategory()!=null&& StrUtils.isNotBlank(article.getCategory().getId())){
 			Category category = categoryDao.get(article.getCategory().getId());
 			if (!Global.YES.equals(category.getIsAudit())){
 				article.setDelFlag(Article.DEL_FLAG_NORMAL);
@@ -93,12 +93,12 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 		}
 		article.setUpdateBy(UserUtils.getUser());
 		article.setUpdateDate(new Date());
-        if (StringUtils.isNotBlank(article.getViewConfig())){
+        if (StrUtils.isNotBlank(article.getViewConfig())){
             article.setViewConfig(StringEscapeUtils.unescapeHtml4(article.getViewConfig()));
         }
         
         ArticleData articleData = new ArticleData();;
-		if (StringUtils.isBlank(article.getId())){
+		if (StrUtils.isBlank(article.getId())){
 			article.preInsert();
 			articleData = article.getArticleData();
 			articleData.setId(article.getId());
@@ -132,11 +132,11 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 			return new ArrayList<Object[]>();
 		}
 		List<Object[]> list = Lists.newArrayList();
-		String[] idss = StringUtils.split(ids,",");
+		String[] idss = StrUtils.split(ids,",");
 		Article e = null;
 		for(int i=0;(idss.length-i)>0;i++){
 			e = dao.get(idss[i]);
-			list.add(new Object[]{e.getCategory().getId(),e.getId(),StringUtils.abbr(e.getTitle(),50)});
+			list.add(new Object[]{e.getCategory().getId(),e.getId(), StrUtils.abbr(e.getTitle(),50)});
 		}
 		return list;
 	}
@@ -169,11 +169,11 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 //		List<BooleanClause> bcList = Lists.newArrayList();
 //
 //		bcList.add(new BooleanClause(new TermQuery(new Term(Article.FIELD_DEL_FLAG, Article.DEL_FLAG_NORMAL)), Occur.MUST));
-//		if (StringUtils.isNotBlank(categoryId)){
+//		if (StrUtils.isNotBlank(categoryId)){
 //			bcList.add(new BooleanClause(new TermQuery(new Term("category.ids", categoryId)), Occur.MUST));
 //		}
 //		
-//		if (StringUtils.isNotBlank(beginDate) && StringUtils.isNotBlank(endDate)) {   
+//		if (StrUtils.isNotBlank(beginDate) && StrUtils.isNotBlank(endDate)) {
 //			bcList.add(new BooleanClause(new TermRangeQuery("updateDate", beginDate.replaceAll("-", ""),
 //					endDate.replaceAll("-", ""), true, true), Occur.MUST));
 //		}   

@@ -11,7 +11,7 @@ import java.util.Map;
 
 import com.beiyelin.shop.common.utils.Encodes;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.act.entity.Act;
 import com.beiyelin.shop.modules.sys.entity.User;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
@@ -48,7 +48,7 @@ public class ActUtils {
 //		private static final long serialVersionUID = 1L;
 //		{
 //			for (Field field : ActUtils.class.getFields()){
-//				if(StringUtils.startsWith(field.getName(), "PD_")){
+//				if(StrUtils.startsWith(field.getName(), "PD_")){
 //					try{
 //						String[] ss = (String[])field.get(null);
 //						put(ss[0], ss[1]);
@@ -66,8 +66,8 @@ public class ActUtils {
 //	 * @return
 //	 */
 //	public static String getProcExeUrl(String procId) {
-//		String url = procDefMap.get(StringUtils.split(procId, ":")[0]);
-//		if (StringUtils.isBlank(url)){
+//		String url = procDefMap.get(StrUtils.split(procId, ":")[0]);
+//		if (StrUtils.isBlank(url)){
 //			return "404";
 //		}
 //		return url;
@@ -99,7 +99,7 @@ public class ActUtils {
 						Method actMet = act.getClass().getMethod("getTaskId");
 						map.put("taskId", ObjectUtils.toString(m.invoke(act, new Object[]{}), ""));
 					}else{
-						field.add(StringUtils.uncapitalize(m.getName().substring(3)));
+						field.add(StrUtils.uncapitalize(m.getName().substring(3)));
 						value.add(ObjectUtils.toString(m.invoke(entity, new Object[]{}), ""));
 					}
 				}
@@ -108,9 +108,9 @@ public class ActUtils {
 			e.printStackTrace();
 		}
 		
-		map.put("beanTitles", StringUtils.join(field, spiltType));
-		map.put("beanInfos", StringUtils.join(value, spiltType));
-		map.put("chineseNames", StringUtils.join(chinesName, spiltType));
+		map.put("beanTitles", StrUtils.join(field, spiltType));
+		map.put("beanInfos", StrUtils.join(value, spiltType));
+		map.put("chineseNames", StrUtils.join(chinesName, spiltType));
 		
 		return map;
 	}
@@ -126,7 +126,7 @@ public class ActUtils {
 		StringBuilder formUrl = new StringBuilder();
 		
 		String formServerUrl = Global.getConfig("activiti.form.server.url");
-		if (StringUtils.isBlank(formServerUrl)){
+		if (StrUtils.isBlank(formServerUrl)){
 			formUrl.append(Global.getAdminPath());
 		}else{
 			formUrl.append(formServerUrl);
@@ -168,7 +168,7 @@ public class ActUtils {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setId(user.getLoginName());
 		userEntity.setFirstName(user.getName());
-		userEntity.setLastName(StringUtils.EMPTY);
+		userEntity.setLastName(StrUtils.EMPTY);
 		userEntity.setPassword(user.getPassword());
 		userEntity.setEmail(user.getEmail());
 		userEntity.setRevision(1);

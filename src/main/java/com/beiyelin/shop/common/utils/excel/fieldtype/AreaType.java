@@ -3,7 +3,7 @@
  */
 package com.beiyelin.shop.common.utils.excel.fieldtype;
 
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.entity.Area;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
 
@@ -19,7 +19,7 @@ public class AreaType {
 	 */
 	public static Object getValue(String val) {
 		for (Area e : UserUtils.getAreaList()){
-			if (StringUtils.trimToEmpty(val).equals(e.getName())){
+			if (StrUtils.trimToEmpty(val).equals(e.getName())){
 				return e;
 			}
 		}

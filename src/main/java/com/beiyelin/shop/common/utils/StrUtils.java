@@ -27,11 +27,11 @@ import com.google.common.collect.Lists;
  * @author Tony Wong
  * @version 2013-05-22
  */
-public class StringUtils extends org.apache.commons.lang3.StringUtils {
+public class StrUtils extends org.apache.commons.lang3.StringUtils {
 	
     private static final char SEPARATOR = '_';
     private static final String CHARSET_NAME = "UTF-8";
-    
+	public static final String EMPTY_STRING = "";
     /**
      * 转换为字节数组
      * @param str
@@ -427,5 +427,34 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		}
 		return list;
 	}
-    
+
+	/**
+	 * Returns a 'cleaned' representation of the specified argument.  'Cleaned' is defined as the following:
+	 * <p/>
+	 * <ol>
+	 * <li>If the specified <code>String</code> is <code>null</code>, return <code>null</code></li>
+	 * <li>If not <code>null</code>, {@link String#trim() trim()} it.</li>
+	 * <li>If the trimmed string is equal to the empty String (i.e. &quot;&quot;), return <code>null</code></li>
+	 * <li>If the trimmed string is not the empty string, return the trimmed version</li>.
+	 * </ol>
+	 * <p/>
+	 * Therefore this method always ensures that any given string has trimmed text, and if it doesn't, <code>null</code>
+	 * is returned.
+	 *
+	 * @param in the input String to clean.
+	 * @return a populated-but-trimmed String or <code>null</code> otherwise
+	 */
+	public static String clean(String in) {
+		String out = in;
+
+		if (in != null) {
+			out = in.trim();
+			if (out.equals(EMPTY_STRING)) {
+				out = null;
+			}
+		}
+
+		return out;
+	}
+
 }

@@ -3,13 +3,13 @@
  */
 package com.beiyelin.shop.modules.shop.web;
 
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.service.CartService;
 import com.beiyelin.shop.modules.shop.service.CouponUserService;
 import com.beiyelin.shop.modules.shop.utils.CookieUtils;
 import com.beiyelin.shop.modules.sys.service.SmsService;
 import com.beiyelin.shop.modules.sys.service.UserService;
 import com.google.common.collect.Maps;
-import com.beiyelin.shop.common.utils.StringUtils;
 import com.beiyelin.shop.common.utils.ValidateUtils;
 import com.beiyelin.shop.common.web.BaseController;
 import com.beiyelin.shop.modules.shop.entity.Cart;
@@ -19,8 +19,6 @@ import com.beiyelin.shop.modules.sys.entity.User;
 import com.beiyelin.shop.modules.sys.security.FormAuthenticationFilter;
 import com.beiyelin.shop.modules.sys.service.SystemService;
 import com.beiyelin.shop.modules.sys.utils.SmsUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,7 +110,7 @@ public class ShopUserController extends BaseController {
         }
         if(result){
             User user = userService.getByLoginName2(username);
-            if (user != null && StringUtils.isNotBlank(user.getId())) {
+            if (user != null && StrUtils.isNotBlank(user.getId())) {
                 result = false;
                 message = "电话号码已存在";
             } else {
@@ -149,7 +147,7 @@ public class ShopUserController extends BaseController {
 		}
         if (result) {
             User user = userService.getByLoginName2(username);
-            if (user != null && StringUtils.isNotBlank(user.getId())) {
+            if (user != null && StrUtils.isNotBlank(user.getId())) {
                 result = false;
                 message = "电话号码已存在";
             }
@@ -177,7 +175,7 @@ public class ShopUserController extends BaseController {
         }
 
         User u = userService.getByLoginName2(username);
-        if (u != null && StringUtils.isNotBlank(u.getId())) {
+        if (u != null && StrUtils.isNotBlank(u.getId())) {
             result = false;
             message = "电话号码已存在";
             return renderString(response, result, message, data);
@@ -227,7 +225,7 @@ public class ShopUserController extends BaseController {
 
             //转移购物车项给用户
             String cookieId = CookieUtils.getCookieId(request, response);
-            if (StringUtils.isNotBlank(cookieId)) {
+            if (StrUtils.isNotBlank(cookieId)) {
                 List<CartItem> cartItemList = cartItemService.findByCookieId(cookieId, null);
                 if (cartItemList != null && !cartItemList.isEmpty()) {
                     //创建用户购物车
@@ -276,7 +274,7 @@ public class ShopUserController extends BaseController {
         }
 
         User u = userService.getByLoginName2(username);
-        if (u != null && StringUtils.isNotBlank(u.getId())) {
+        if (u != null && StrUtils.isNotBlank(u.getId())) {
             result = false;
             message = "电话号码已存在";
             return renderString(response, result, message, data);
@@ -303,7 +301,7 @@ public class ShopUserController extends BaseController {
 
             //转移购物车项给用户
             String cookieId = CookieUtils.getCookieId(request, response);
-            if (StringUtils.isNotBlank(cookieId)) {
+            if (StrUtils.isNotBlank(cookieId)) {
                 List<CartItem> cartItemList = cartItemService.findByCookieId(cookieId, null);
                 if (cartItemList != null && !cartItemList.isEmpty()) {
                     //创建用户购物车
@@ -475,7 +473,7 @@ public class ShopUserController extends BaseController {
             //转移购物车项给用户
             String userId = loginUser.getId();
             String cookieId = CookieUtils.getCookieId(request, response);
-            if (StringUtils.isNotBlank(cookieId)) {
+            if (StrUtils.isNotBlank(cookieId)) {
                 List<CartItem> cartItemList = cartItemService.findByCookieId(cookieId, null);
                 if (cartItemList != null && !cartItemList.isEmpty()) {
                     Cart cart = cartService.getByUserId(userId);

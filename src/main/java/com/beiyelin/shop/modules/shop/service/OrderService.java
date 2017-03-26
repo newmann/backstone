@@ -8,7 +8,7 @@ import com.beiyelin.shop.modules.shop.entity.*;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.shop.dao.OrderDao;
 import com.beiyelin.shop.modules.shop.utils.OrderStatusUtils;
 import com.beiyelin.shop.modules.sys.entity.User;
@@ -36,7 +36,7 @@ public class OrderService extends CrudService<OrderDao, Order> {
 
     public Order getForUser(String orderId, String userId) {
         Order order = get(orderId);
-        if (order != null && StringUtils.isNotBlank(userId))
+        if (order != null && StrUtils.isNotBlank(userId))
             return order;
         else
             return null;
@@ -44,7 +44,7 @@ public class OrderService extends CrudService<OrderDao, Order> {
 
     public Order getX(String id) {
         Order order = get(id);
-        if (StringUtils.isNotBlank(id) && order != null) {
+        if (StrUtils.isNotBlank(id) && order != null) {
             //订单状态
             if (order.getOrderStatus() != null) {
                 order.setOrderStatus(OrderStatusUtils.get(order.getOrderStatus().getId()));
@@ -147,7 +147,7 @@ public class OrderService extends CrudService<OrderDao, Order> {
      * 如果这个订单存在，则不能再次提交preorder
      */
     public Order getByPreorderId(String preorderId) {
-        if (StringUtils.isBlank(preorderId))
+        if (StrUtils.isBlank(preorderId))
             return null;
 
         Order pOrder = new Order();

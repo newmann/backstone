@@ -5,7 +5,7 @@ package com.beiyelin.shop.modules.gen.service;
 
 import com.beiyelin.shop.common.persistence.Page;
 import com.beiyelin.shop.common.service.BaseService;
-import com.beiyelin.shop.common.utils.StringUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.gen.dao.GenTemplateDao;
 import com.beiyelin.shop.modules.gen.entity.GenTemplate;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -40,7 +40,7 @@ public class GenTemplateService extends BaseService {
 		if (genTemplate.getContent()!=null){
 			genTemplate.setContent(StringEscapeUtils.unescapeHtml4(genTemplate.getContent()));
 		}
-		if (StringUtils.isBlank(genTemplate.getId())){
+		if (StrUtils.isBlank(genTemplate.getId())){
 			genTemplate.preInsert();
 			genTemplateDao.insert(genTemplate);
 		}else{

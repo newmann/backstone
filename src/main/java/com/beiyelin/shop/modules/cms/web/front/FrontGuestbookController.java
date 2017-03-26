@@ -57,7 +57,7 @@ public class FrontGuestbookController extends BaseController {
 	 */
 	@RequestMapping(value = "", method=RequestMethod.POST)
 	public String guestbookSave(Guestbook guestbook, String validateCode, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
-//		if (StringUtils.isNotBlank(validateCode)){
+//		if (StrUtils.isNotBlank(validateCode)){
 //			if (ValidateCodeServlet.validate(request, validateCode)){
 				guestbook.setIp(request.getRemoteAddr());
 				guestbook.setCreateDate(new Date());
