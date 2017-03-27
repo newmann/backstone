@@ -108,8 +108,6 @@ public abstract class AppBaseController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private PersonService personService;
 	/**
 	 * 服务端参数有效性验证
 	 * @param object 验证的实体对象
@@ -369,27 +367,7 @@ public abstract class AppBaseController {
 
         return null;
     }
-	/**
-	 * 如果登录成功返回User，否则返回null
-	 * @return
-	 */
-	protected Person _loginCheck(String loginName, String password){
-		if (StringUtils.isBlank(loginName) || StringUtils.isBlank(password))
-			return null;
 
-		Person nPerson = new Person();
-		nPerson.setLoginName(loginName);
-		Person person = personService.getByLoginName2(loginName);
-
-		if (person != null && SystemService.validatePassword(password, person.getPassword())) {
-			//更新appLoginToken
-			person.setAppLoginToken(personService.genAppLoginToken());
-			personService.updateAppLoginToken(person);
-			return person;
-		}
-
-		return null;
-	}
 
     /**
      * 登出
@@ -429,19 +407,5 @@ public abstract class AppBaseController {
             return false;
         }
     }
-	/**
-	 * 个人是否已经登录, 由app传personId和appLoginToken过来
-	 * @return
-	 */
-		protected boolean isPersonLoggedIn(HttpServletRequest request) {
-			String personId = request.getHeader(Global.REQUEST_USER_CAPTION);
-			String token = request.getHeader(Global.REQUEST_TOKEN_CAPTION);
 
-			if (StringUtils.isNotBlank(personId) && StringUtils.isNotBlank(token)
-					&& personService.isAppLoggedIn(personId, token)) {
-				return true;
-			} else {
-				return false;
-			}
-	}
 }

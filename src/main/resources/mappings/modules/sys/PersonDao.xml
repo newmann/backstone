@@ -55,7 +55,7 @@
 		SELECT
 			<include refid="personColumns"/><!-- ,
 			ro.office_id AS "roleList.officeList.id" -->
-		FROM sys_person a
+		FROM app_person a
 		WHERE a.id = #{id}
 	</select>
 
@@ -63,7 +63,7 @@
     <select id="getEntity" resultType="Person">
         SELECT
             <include refid="personEntityColumns"/>
-        FROM sys_person a
+        FROM app_person a
         WHERE a.id = #{id}
     </select>
 
@@ -72,7 +72,7 @@
 		SELECT
 			<include refid="personColumns"/><!-- ,
 			ro.office_id AS "roleList.officeList.id" -->
-		FROM sys_person a
+		FROM app_person a
 		WHERE a.login_name = #{loginName} AND a.del_flag = #{DEL_FLAG_NORMAL}
 	</select>
 
@@ -80,7 +80,7 @@
     <select id="getByLoginName2" resultType="Person" parameterType="Person">
         SELECT
         <include refid="personEntityColumns"/>
-        FROM sys_person a
+        FROM app_person a
         WHERE a.login_name = #{loginName} AND a.del_flag = #{DEL_FLAG_NORMAL}
     </select>
 
@@ -88,7 +88,7 @@
     <select id="getByMobile" resultType="Person" parameterType="Person">
         SELECT
           <include refid="personEntityColumns"/>
-        FROM sys_person a
+        FROM app_person a
         WHERE a.mobile = #{mobile} AND a.del_flag = #{DEL_FLAG_NORMAL}
     </select>
 	
@@ -96,7 +96,7 @@
 	<select id="findList" resultType="Person">
 		SELECT
 			<include refid="personColumns"/>
-		FROM sys_person a
+		FROM app_person a
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
 		<if test="loginName != null and loginName != ''">
 			AND a.login_name like 
@@ -125,7 +125,7 @@
 	<select id="findAllList" resultType="Person">
 		SELECT
 			<include refid="personColumns"/>
-		FROM sys_person a
+		FROM app_person a
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
 		ORDER BY a.name
 	</select>
@@ -134,13 +134,13 @@
 	<select id="findAllCount" resultType="long">
 		SELECT
 			COUNT(1)
-		FROM sys_person a
+		FROM app_person a
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
 	</select>
 	
 	<!-- 插入用户 -->
 	<insert id="insert">
-		INSERT INTO sys_person(
+		INSERT INTO app_person(
 			id, 
 			login_name,
 			password, 
@@ -183,7 +183,7 @@
 	
 	<!-- 更新用户 -->
 	<update id="update">
-		UPDATE sys_person SET
+		UPDATE app_person SET
 			login_name = #{loginName},
 			name = #{name},
 			email = #{email}, 
@@ -219,7 +219,7 @@
 	
 	<!-- 更新用户信息  -->
 	<update id="updatePersonInfo">
-		UPDATE sys_person SET
+		UPDATE app_person SET
 			email = #{email}, 
 			phone = #{phone}, 
 			mobile = #{mobile}, 
@@ -232,14 +232,14 @@
 	
 	<!-- 更新用户密码 -->
 	<update id="updatePasswordById">
-		UPDATE sys_person SET
+		UPDATE app_person SET
 			password = #{password} 
 		WHERE id = #{id}
 	</update>
 	
 	<!-- 更新登录信息，如登录IP、登录时间 -->
 	<update id="updateLoginInfo">
-		UPDATE sys_person SET
+		UPDATE app_person SET
 			login_ip = #{loginIp}, 
 			login_Date = #{loginDate} 
 		WHERE id = #{id}
@@ -247,14 +247,14 @@
 	
 	<!-- 逻辑删除用户 -->
 	<update id="delete">
-		UPDATE sys_person SET
+		UPDATE app_person SET
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
 
 	<!-- 更新APP用户登录令牌 -->
 	<!--<update id="updateAppLoginToken">-->
-		<!--UPDATE sys_person SET-->
+		<!--UPDATE app_person SET-->
 			<!--app_login_token = #{appLoginToken}-->
 		<!--WHERE id = #{id}-->
 	<!--</update>-->
@@ -262,7 +262,7 @@
     <!-- APP用户是否已经登录？ -->
     <!--<select id="isAppLoggedIn" resultType="long">-->
         <!--SELECT COUNT(1)-->
-        <!--FROM sys_person a-->
+        <!--FROM app_person a-->
 		<!--<where>-->
         	<!--id = #{id} AND app_login_token = #{appLoginToken}-->
 		<!--</where>-->

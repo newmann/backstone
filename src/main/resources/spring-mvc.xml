@@ -117,10 +117,10 @@
 			<!-- 匹配的是url路径， 如果不配置或/**,将拦截所有的Controller -->
 			<mvc:mapping path="/**/api/**" />
 			<mvc:exclude-mapping path="/**/api/person/login" />
-			<mvc:exclude-mapping path="/**/api/person/register-step1-post" />
-			<mvc:exclude-mapping path="/**/api/person/register-step2-post" />
-			<mvc:exclude-mapping path="/**/api/person/register-step3-post" />
-			<mvc:exclude-mapping path="/**/api/person/forget-password-step3-post" />
+			<mvc:exclude-mapping path="/**/api/person/register-get-check-code" />
+			<mvc:exclude-mapping path="/**/api/person/register" />
+			<mvc:exclude-mapping path="/**/api/person/forget-password-get-check-code" />
+			<mvc:exclude-mapping path="/**/api/person/forget-password-reset" />
 			<!--<mvc:mapping path="/user/**" />-->
 			<!--<mvc:mapping path="/test/**" />-->
 			<bean class="com.beiyelin.shop.common.security.authority.interceptor.PermissionControlInterceptor"></bean>

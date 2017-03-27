@@ -3,6 +3,7 @@ package com.beiyelin.shop.common.security.authority.interceptor;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.security.authority.annotation.PermissionControl;
 import com.beiyelin.shop.common.utils.JsonUtils;
+import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.service.AppLoginService;
 import com.beiyelin.shop.modules.sys.service.PersonService;
 import com.beiyelin.shop.common.config.ResultCode;
@@ -29,8 +30,12 @@ public class PermissionControlInterceptor  extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         logger.info("开始处理身份认证判断");
         //客户端提交的用户和token
-        String token = request.getHeader(Global.REQUEST_TOKEN_CAPTION);
-        String userID = request.getHeader(Global.REQUEST_USER_CAPTION);
+        String token = StrUtils.clean(request.getHeader(Global.REQUEST_TOKEN_CAPTION));
+        String userID = StrUtils.clean(request.getHeader(Global.REQUEST_USER_CAPTION));
+        if (StrUtils.isBlank(token) && StrUtils.isBlank(userID)){
+            responseFail(response,"用戶ID或token不全，請提交完整信息。");
+            return false;
+        }
 
         if (!appLoginService.isAppLoggedIn(userID, token)) {
 
@@ -67,10 +72,15 @@ public class PermissionControlInterceptor  extends HandlerInterceptorAdapter {
 
     //登录失败时默认返回401状态码
     private void responseTokenFail(HttpServletResponse response) throws IOException {
-        response.reset();
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        JsonUtils.setResponse(response);
         String msg ="用户不存在或token验证错误，请提交正确的用户ID和Token。";
+        responseFail(response,msg);
+    }
+
+    //登录失败时默认返回401状态码
+    private void responseFail(HttpServletResponse response,String msg) throws IOException {
+        response.reset();
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        JsonUtils.setResponse(response);
         response.getWriter().write(JsonUtils.toString(false, ResultCode.Failure,msg));
     }
 

@@ -64,14 +64,14 @@
 		WHERE id = #{id}
 	</update>
 
-	<select id="get" resultType="Sms">
+	<select id="get" resultType="AppSms">
 		SELECT
 			<include refid="columns"/>
 		FROM app_sms a
 		WHERE a.id = #{id}
 	</select>
 	
-	<select id="findList" resultType="Sms">
+	<select id="findList" resultType="AppSms">
 		SELECT
 			<include refid="columns"/>
 		FROM app_sms a
@@ -79,7 +79,7 @@
 		ORDER BY a.create_date
 	</select>
 
-	<select id="findLastOneBy" resultType="Sms">
+	<select id="findLastOneBy" resultType="AppSms">
 		SELECT
 			<include refid="columns"/>
 		FROM app_sms a

@@ -57,4 +57,17 @@ public class AppLoginService {
 
         return id.equals(userId);
     }
+
+    /**
+     * 刪除token，就表示已經退出系統了。
+     *
+     * @param userId
+     * @param token
+     */
+    public void logout(String userId,String token){
+        if (JedisUtils.get(token).equals(userId)) {
+            JedisUtils.del(token);
+        }
+    }
+
 }

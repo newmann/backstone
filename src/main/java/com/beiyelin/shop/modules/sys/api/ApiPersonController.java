@@ -7,25 +7,19 @@ import com.beiyelin.shop.common.bean.ApiResponseData;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.security.authority.annotation.PermissionControl;
 import com.beiyelin.shop.common.utils.*;
-import com.beiyelin.shop.modules.app.web.AppBaseController;
-import com.beiyelin.shop.modules.shop.entity.Cart;
-import com.beiyelin.shop.modules.shop.entity.CartItem;
-import com.beiyelin.shop.modules.shop.service.CartItemService;
-import com.beiyelin.shop.modules.shop.service.CartService;
-import com.beiyelin.shop.modules.shop.service.CouponUserService;
 import com.beiyelin.shop.modules.sys.entity.Person;
-import com.beiyelin.shop.modules.sys.security.FormAuthenticationFilter;
-import com.beiyelin.shop.modules.sys.service.*;
-import com.beiyelin.shop.modules.sys.utils.SmsUtils;
-import com.google.common.collect.Maps;
-import org.apache.shiro.web.util.WebUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+
+
+import com.beiyelin.shop.modules.sys.service.AppLoginService;
+import com.beiyelin.shop.modules.sys.service.SystemService;
+import com.beiyelin.shop.modules.sys.utils.AppSmsUtils;
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+
 import java.util.Map;
 
 /**
@@ -40,21 +34,16 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("admin/api/person")
-public class ApiPersonController extends AppBaseController {
+public class ApiPersonController extends ApiBaseController {
     private static final String LOGIN_USERNAME_CAPTION="userName";
     private static final String LOGIN_PASSWORD_CAPTION="password";
     private static final String LOGIN_CHECK_CODE_CAPTION="checkCode";
     private static final String LOGIN_MOBILE_CAPTION="mobile";
 
-	@Autowired
-    PersonService personService;
-
-    @Autowired
-    AppSmsService appSmsService;
+//	@Autowired
+//    PersonService personService;
 
 
-    @Autowired
-    AppLoginService appLoginService;
     
 //	@RequestMapping(value = "")
 //	public String index() {
@@ -109,38 +98,43 @@ public class ApiPersonController extends AppBaseController {
      * 如果用户登录则重新生成app_login_token，实现单点登录，手机掉了只要再次登录，掉了的手机就不能登录了
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ApiResponseData loginPost(HttpServletRequest request, HttpServletResponse response) {
+	public ApiResponseData login(HttpServletRequest request, HttpServletResponse response) {
 //
 //        if (!isValidApp(request)) {
 //            responseData.setInvalidApp();
 //            return responseData;
 //        }
+        try {
+
+            String loginName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
+            String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
+
+            //不能为空
+            if (StrUtils.isBlank(loginName) || StrUtils.isBlank(password)) {
+                responseData.setErrorMessage("登录名和密码不能为空");
+                return responseData;
+            }
+
+            //登录
 
 
-		String loginName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
-		String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
+            Person person = _loginCheck(loginName, password);
 
-		//不能为空
-		if (StrUtils.isBlank(loginName) || StrUtils.isBlank(password)) {
-            responseData.setErrorMessage("登录名和密码不能为空");
-            return responseData;
-		}
+            if (person == null) {
+                responseData.setErrorMessage("用户名或密码错误");
+                return responseData;
 
-		//登录
+            }
+            //生成登录令牌
+            String token = appLoginService.genAppLoginToken();
+            appLoginService.updateAppLoginToken(person.getId(), token);
 
-
-        Person person = _loginCheck(loginName, password);
-
-        if (person == null) {
-            responseData.setErrorMessage("用户名或密码错误");
-            return responseData;
-
+            responseData.setSuccessMessage("正确登录。");
+            responseData.pushData("token", token);
+            responseData.pushData("personId", person.getId());
+        } catch (Exception ex){
+            responseData.setErrorMessage(ex.getMessage());
         }
-
-
-        responseData.pushData("isLoggedIn", true);
-        Map<String, Object> oUser = person.toSimpleObj();
-        responseData.pushData("person", oUser);
 
         return responseData;
 
@@ -150,9 +144,11 @@ public class ApiPersonController extends AppBaseController {
 
     /**
      * 注册 - 提交手机号码
+     *  提交的信息的name为“userName”
+     *
      */
-    @RequestMapping(value = "/register-step1-post")
-    public ApiResponseData registerStep1(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/register-get-check-code",method = RequestMethod.POST)
+    public ApiResponseData registerGetCheckCode(HttpServletRequest request, HttpServletResponse response) {
 //        if (!isValidApp(request)) {
 //            responseData.setInvalidApp();
 //            return responseData;
@@ -165,53 +161,56 @@ public class ApiPersonController extends AppBaseController {
             return responseData;
         }
 
-        Person person = personService.getByLoginName2(userName);
+        Person person = personService.getByMobile(userName);
         if (person != null && StrUtils.isNotBlank(person.getId())) {
             responseData.setErrorMessage("电话号码已存在");
         } else {
             //发送手机验证码
 
-            SmsUtils.sendRegisterCode(userName);
+            AppSmsUtils.sendRegisterCode(userName);
             responseData.setSuccessMessage("发送手机验证码成功，请查阅。");
         }
 
         return responseData;
     }
 
-	/**
-	 * 注册 - 提交手机号码、密码
-	 */
-	@RequestMapping(value = "/register-step2-post")
-	public ApiResponseData registerStep2(HttpServletRequest request, HttpServletResponse response) {
-//        if (!isValidApp(request)) {
-//            responseData.setInvalidApp();
-//            return responseData;
+//	/**
+//	 * 注册 - 提交手机号码、密码
+//	 */
+//	@RequestMapping(value = "/register-step2-post")
+//	public ApiResponseData registerStep2(HttpServletRequest request, HttpServletResponse response) {
+////        if (!isValidApp(request)) {
+////            responseData.setInvalidApp();
+////            return responseData;
+////        }
+//
+//        String userName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
+//        String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
+//
+//
+//		if (!(ValidateUtils.isMobile(userName) && ValidateUtils.isPassword(password))) {
+//			responseData.setErrorMessage(ValidateUtils.getErrMsg());
+//			return responseData;
+//		}
+//
+//        Person person = personService.getByLoginName2(userName);
+//        if (person != null && StrUtils.isNotBlank(person.getId())) {
+//            responseData.setErrorMessage("电话号码已存在");
+//        }else{
+//            responseData.setSuccessMessage("正确提交手机号码和密码");
 //        }
-
-        String userName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
-        String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
-        
-
-		if (!(ValidateUtils.isMobile(userName) && ValidateUtils.isPassword(password))) {
-			responseData.setErrorMessage(ValidateUtils.getErrMsg());
-			return responseData;
-		}
-
-        Person person = personService.getByLoginName2(userName);
-        if (person != null && StrUtils.isNotBlank(person.getId())) {
-            responseData.setErrorMessage("电话号码已存在");
-        }else{
-            responseData.setSuccessMessage("正确提交手机号码和密码");
-        }
-
-		return responseData;
-	}
+//
+//		return responseData;
+//	}
 
 	/**
 	 * 注册 - 提交手机号码、密码、验证码
+     * 提交的注册账户的name为“userName”
+     * 提交的密码的name为“password”
+     * 提交的验证码的name为“checkCode”
 	 */
-	@RequestMapping(value = "/register-step3-post", method = RequestMethod.POST)
-	public ApiResponseData registerStep3Post(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public ApiResponseData register(HttpServletRequest request, HttpServletResponse response) {
 //        if (!isValidApp(request)) {
 //            responseData.setInvalidApp();
 //            return responseData;
@@ -234,7 +233,7 @@ public class ApiPersonController extends AppBaseController {
         }
 
         //比较验证码
-        if (appSmsService.checkRegisterCode(userName, code)) {
+        if (AppSmsUtils.checkRegitserCode(userName, code)) {
             //保存用户
             Person person = new Person();
             person.setLoginName(userName);
@@ -243,12 +242,16 @@ public class ApiPersonController extends AppBaseController {
 
             person.setRegisterFrom(Person.REGISTER_FROM_APP);
             personService.save(person);
-
+            //重新登录验证一下
             Person loginUser = _loginCheck(userName, password);
 
-
-            responseData.pushData("person", loginUser);
-            responseData.setSuccessMessage("恭喜, 您已经成功注册了");
+            if (loginUser.equals(null)){
+                responseData.setErrorMessage("出现未知异常，从重新提交注册。");
+            }else {
+                responseData.pushData("mobile", userName);
+                responseData.pushData("personId",person.getId());
+                responseData.setSuccessMessage("恭喜, 您已经成功注册了");
+            }
         } else {
             responseData.setErrorMessage("请输入正确的验证码");
         }
@@ -258,9 +261,10 @@ public class ApiPersonController extends AppBaseController {
 
     /**
      * 重置密码 - 提交手机号码
+     * 提交的手机号name为“mobile”
      */
-    @RequestMapping("/forget-password-step1-post")
-    public ApiResponseData forgetPasswordStep1Post(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/forget-password-get-check-code",method = RequestMethod.POST)
+    public ApiResponseData forgetPasswordGetCheckCode(HttpServletRequest request, HttpServletResponse response) {
 //        if (!isValidApp(request)) {
 //            return renderInvalidApp(response);
 //        }
@@ -281,62 +285,63 @@ public class ApiPersonController extends AppBaseController {
         }
 
         //发送重置密码的验证码
-        SmsUtils.sendForgetPasswordCode(mobile);
+        AppSmsUtils.sendForgetPasswordCode(mobile);
 
         responseData.setSuccessMessage("");
-        responseData.pushData("mobile", mobile);
+        responseData.pushData(LOGIN_MOBILE_CAPTION, mobile);
         return responseData;
 
     }
 
     /**
      * 重置密码 - 提交手机号码和密码
+     * 提交的手机号name为“mobile”
+     * 提交的密码name为“password”
      */
-    @RequestMapping("/forget-password-step2-post")
-    public ApiResponseData forgetPasswordStep2Post(HttpServletRequest request, HttpServletResponse response) {
-//        if (!isValidApp(request)) {
-//            return renderInvalidApp(response);
+//    @RequestMapping("/forget-password-step2-post")
+//    public ApiResponseData forgetPasswordStep2Post(HttpServletRequest request, HttpServletResponse response) {
+////        if (!isValidApp(request)) {
+////            return renderInvalidApp(response);
+////        }
+//
+//
+//        String mobile = request.getParameter(LOGIN_MOBILE_CAPTION);
+//        String password = request.getParameter(LOGIN_PASSWORD_CAPTION);
+//
+//        if (!ValidateUtils.isMobile(mobile)) {
+//            responseData.setErrorMessage(ValidateUtils.getErrMsg());
+//            return responseData;
 //        }
-
-
-        String mobile = request.getParameter("mobile");
-        String password = request.getParameter("password");
-
-        if (!ValidateUtils.isMobile(mobile)) {
-            responseData.setErrorMessage(ValidateUtils.getErrMsg());
-            return responseData;
-        }
-
-        if (!ValidateUtils.isPassword(mobile)) {
-            responseData.setErrorMessage(ValidateUtils.getErrMsg());
-            return responseData;
-        }
-
-        Person person = personService.getByMobile(mobile);
-        if (person == null) {
-            responseData.setErrorMessage("电话号码不存在");
-            return responseData;
-        }
-
-        responseData.setSuccessMessage("");
-        responseData.pushData("mobile", mobile);
-        responseData.pushData("password", password);
-        return responseData;
-    }
+//
+//        if (!ValidateUtils.isPassword(mobile)) {
+//            responseData.setErrorMessage(ValidateUtils.getErrMsg());
+//            return responseData;
+//        }
+//
+//        Person person = personService.getByMobile(mobile);
+//        if (person == null) {
+//            responseData.setErrorMessage("电话号码不存在");
+//            return responseData;
+//        }
+//
+//        responseData.setSuccessMessage("重置密码成功");
+//
+//        return responseData;
+//    }
 
     /**
      * 重置密码 - 提交手机号码、密码、验证码
+     * 提交的手机号name为“mobile”
+     * 提交的密码name为“password”
+     * 提交的验证码name为“checkCode”
      */
-    @RequestMapping("/forget-password-step3-post")
-    public ApiResponseData forgetPasswordStep3Post(HttpServletRequest request, HttpServletResponse response) {
-//        if (!isValidApp(request)) {
-//            return renderInvalidApp(response);
-//        }
+    @RequestMapping(value = "/forget-password-reset",method = RequestMethod.POST)
+    public ApiResponseData forgetPasswordReset(HttpServletRequest request, HttpServletResponse response) {
 
 
-        String mobile = request.getParameter("mobile");
-        String password = request.getParameter("password");
-        String code = request.getParameter("code");
+        String mobile = request.getParameter(LOGIN_MOBILE_CAPTION);
+        String password = request.getParameter(LOGIN_PASSWORD_CAPTION);
+        String code = request.getParameter(LOGIN_CHECK_CODE_CAPTION);
 
         if (!ValidateUtils.isMobile(mobile)) {
             responseData.setErrorMessage(ValidateUtils.getErrMsg());
@@ -356,46 +361,19 @@ public class ApiPersonController extends AppBaseController {
         }
 
         //比较验证码
-        if (appSmsService.checkForgetPasswordCode(mobile, code)) {
+        if (AppSmsUtils.checkForgetPasswordCode(mobile, code)) {
             //保存用户新密码
             person.setPassword(SystemService.entryptPassword(password));
             personService.save(person);
-
-            //用户自动登录
-//            String personId = person.getId();
-//            UsernamePasswordToken token = new UsernamePasswordToken();
-//            token.setUsername(person.getLoginName());
-//            token.setPassword(password.toCharArray());
-//            token.setRememberMe(true);
-//            try {
-//                SecurityUtils.getSubject().login(token);
-//            }
-//            catch (AuthenticationException e) {
-//                logger.debug("/app/person/forget-password-step3-post throw AuthenticationException: {}", e.getMessage());
-//                result = false;
-//                message = "用户名或密码错误";
-//                return renderString(response, result, message, data);
-//            }
-//            catch (Exception e) {
-//                logger.debug("/app/person/forget-password-step3-post throw Exception: {}", e.getMessage());
-//                result = false;
-//                message = e.getMessage();
-//                return renderString(response, result, message, data);
-//            }
-//            //更新app登录令牌
-//            person.setAppLoginToken(personService.genAppLoginToken());
-//            personService.updateAppLoginToken(person);
             Person loginUser = _loginCheck(mobile, password);
 
-
-            //重新为客户端生成appCartCookieId
-            String oAppCartCookieId = IdGen.uuid();
-
-            responseData.setSuccessMessage("");
-            responseData.pushData("person",loginUser);
-            responseData.pushData("appCartCookieId", oAppCartCookieId);
-            responseData.pushData("mobile", mobile);
-            responseData.pushData("password", password);
+            if (loginUser.equals(null)){
+                responseData.setErrorMessage("出现未知异常，从重新重置密码。");
+            }else {
+                responseData.pushData("mobile", mobile);
+                responseData.pushData("personId",person.getId());
+                responseData.setSuccessMessage("密码重置成功");
+            }
 
         } else {
             responseData.setErrorMessage("请输入正确的验证码");
@@ -410,20 +388,26 @@ public class ApiPersonController extends AppBaseController {
 	@RequestMapping(value = "/logout")
 	public ApiResponseData logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        _logout(request);
+        if (_logout(request)){
+            responseData.setSuccessMessage("已成功退出");
+        } else{
+            responseData.setErrorMessage("退出错误！");
+        }
 
-		responseData.setSuccessMessage("已成功退出");
+
+
         return responseData;
 	}
 
     /**
-     * 获得登录的用户对象
+     * 检查是否登录
+     * 将userId和token放到请求头中
      * @return
      */
     @RequestMapping(value = "/check-login")
     public ApiResponseData checkLogin(HttpServletRequest request, HttpServletResponse response) {
 
-        if (isLoggedIn(request)) {
+        if (isLogin(request)) {
             responseData.setSuccessMessage("当前用户已登录");
         } else {
             responseData.setErrorMessage("当前没有登录用户");
@@ -431,32 +415,5 @@ public class ApiPersonController extends AppBaseController {
 
         return responseData;
     }
-	
-	/**
-	 * 是否是验证码登录
-	 * @param userName 用户名
-	 * @param isFail 计数加1
-	 * @param clean 计数清零
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private boolean isValidateCodeLogin(String userName, boolean isFail, boolean clean){
-		Map<String, Integer> loginFailMap = (Map<String, Integer>) CacheUtils.get("loginFailMap");
-		if (loginFailMap==null){
-			loginFailMap = Maps.newHashMap();
-			CacheUtils.put("loginFailMap", loginFailMap);
-		}
-		Integer loginFailNum = loginFailMap.get(userName);
-		if (loginFailNum==null){
-			loginFailNum = 0;
-		}
-		if (isFail){
-			loginFailNum++;
-			loginFailMap.put(userName, loginFailNum);
-		}
-		if (clean){
-			loginFailMap.remove(userName);
-		}
-		return loginFailNum >= 3;
-	}
+
 }

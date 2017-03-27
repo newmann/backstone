@@ -30,6 +30,8 @@ public class PersonService extends CrudService<PersonDao, Person> {
     }
 
 	public Person getByLoginName2(String loginName) {
+		if (StringUtils.isBlank(loginName))
+			return null;
 		Person person = new Person();
 		person.setLoginName(loginName);
 		return dao.getByLoginName2(person);
