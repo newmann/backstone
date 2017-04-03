@@ -15,6 +15,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.exceptions.JedisException;
@@ -28,8 +30,10 @@ import redis.clients.jedis.exceptions.JedisException;
 public class JedisUtils {
 
 	private static Logger logger = LoggerFactory.getLogger(JedisUtils.class);
-	
+
+
 	private static JedisPool jedisPool = SpringContextHolder.getBean(JedisPool.class);
+
 
 //	public static final String KEY_PREFIX = Global.getConfig("redis.keyPrefix");
 	/**

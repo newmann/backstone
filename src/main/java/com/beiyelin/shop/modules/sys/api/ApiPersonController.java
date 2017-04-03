@@ -7,6 +7,7 @@ import com.beiyelin.shop.common.bean.ApiResponseData;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.security.authority.annotation.PermissionControl;
 import com.beiyelin.shop.common.utils.*;
+import com.beiyelin.shop.modules.sys.bean.LoginResponse;
 import com.beiyelin.shop.modules.sys.entity.Person;
 
 
@@ -14,6 +15,11 @@ import com.beiyelin.shop.modules.sys.service.AppLoginService;
 import com.beiyelin.shop.modules.sys.service.SystemService;
 import com.beiyelin.shop.modules.sys.utils.AppSmsUtils;
 
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +40,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("admin/api/person")
+@Api(value="用户controller",description="个人相关操作，包括：注册账户，退出登录，修改密码，重置密码，修改个人信息。")
 public class ApiPersonController extends ApiBaseController {
     private static final String LOGIN_USERNAME_CAPTION="userName";
     private static final String LOGIN_PASSWORD_CAPTION="password";
@@ -50,24 +57,31 @@ public class ApiPersonController extends ApiBaseController {
 //		return "modules/app/person/index";
 //	}
     @PermissionControl("person:save-person")
-    @RequestMapping("/save-person")
+    @RequestMapping(value = "/save-person",method = RequestMethod.POST)
+    @ApiOperation(value = "修改当前登录个人信息", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "appUserId", value = "个人id", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "appLoginToken", value = "登录token", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "person.property", value = "Person类的属性，通过form提交", required = true, paramType = "form", dataType = "object")
+    })
     public ApiResponseData savePerson(HttpServletRequest request,@RequestBody Person person, HttpServletResponse response) {
 
 //        if (!isPersonLoggedIn(request)) {
 //            return renderNotLoggedIn(response);
 //        }
-
+        responseData = new ApiResponseData();
         try {
 //            Person person = JsonMapper.getInstance().fromJson(request.getParameter("person"),Person.class);
             if (person==null){
-                throw new Exception("没有提交任何信息，不能保存！");
+//                throw new Exception("没有提交任何信息，不能保存！");
+                throw new Exception(messageService.getMessage("ApiPersonController.savePerson.noPerson"));
             }
 
             beanValidator(person);
 
             personService.save(person);
 
-            responseData.setSuccessMessage("保存个人信息成功。");
+            responseData.setSuccessMessage(messageService.getMessage("ApiPersonController.savePerson.success"));
 
         } catch (Exception ex){
             responseData.setErrorMessage(ex.getMessage());
@@ -77,9 +91,15 @@ public class ApiPersonController extends ApiBaseController {
     }
 
 
-    @RequestMapping("/get-person")
+    @RequestMapping(value = "/get-person",method = RequestMethod.GET)
+    @ApiOperation(value = "获取当前登录个人信息", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "appUserId", value = "个人id", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "appLoginToken", value = "登录token", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "person.property", value = "Person类的属性，通过form提交", required = true, paramType = "form", dataType = "object")
+    })
     public ApiResponseData getPerson(HttpServletRequest request, HttpServletResponse response) {
-
+        responseData = new ApiResponseData();
         try {
             String personId = request.getHeader(Global.REQUEST_USER_CAPTION);
             Person person = personService.get(personId);
@@ -98,47 +118,82 @@ public class ApiPersonController extends ApiBaseController {
      * 如果用户登录则重新生成app_login_token，实现单点登录，手机掉了只要再次登录，掉了的手机就不能登录了
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ApiResponseData login(HttpServletRequest request, HttpServletResponse response) {
-//
-//        if (!isValidApp(request)) {
-//            responseData.setInvalidApp();
-//            return responseData;
-//        }
-        try {
+    @ApiOperation(value = "登录接口", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userName", value = "登录账户，现在只能用手机号", required = true, paramType = "form", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "form", dataType = "String")
+    })
+    public LoginResponse login(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-            String loginName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
-            String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
+        LoginResponse loginResponse =new LoginResponse();
 
-            //不能为空
-            if (StrUtils.isBlank(loginName) || StrUtils.isBlank(password)) {
-                responseData.setErrorMessage("登录名和密码不能为空");
-                return responseData;
-            }
+        String loginName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
+        String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
 
-            //登录
-
-
-            Person person = _loginCheck(loginName, password);
-
-            if (person == null) {
-                responseData.setErrorMessage("用户名或密码错误");
-                return responseData;
-
-            }
-            //生成登录令牌
-            String token = appLoginService.genAppLoginToken();
-            appLoginService.updateAppLoginToken(person.getId(), token);
-
-            responseData.setSuccessMessage("正确登录。");
-            responseData.pushData("token", token);
-            responseData.pushData("personId", person.getId());
-        } catch (Exception ex){
-            responseData.setErrorMessage(ex.getMessage());
+        //不能为空
+        if (StrUtils.isBlank(loginName) || StrUtils.isBlank(password)) {
+            throw new Exception("ApiPersonController.login.notNull");
         }
 
-        return responseData;
+        //登录
 
-	}
+
+        Person person = _loginCheck(loginName, password);
+
+        if (person == null) {
+            throw new Exception("ApiPersonController.login.nameOrPasswordError");
+
+        }
+
+        //生成登录令牌
+        String token = appLoginService.genAppLoginToken();
+        appLoginService.updateAppLoginToken(person.getId(), token);
+
+        loginResponse.setToken(token);
+        loginResponse.setPersonId(person.getId());
+
+        return loginResponse;
+
+    }
+
+//	public ApiResponseData login(HttpServletRequest request, HttpServletResponse response) {
+//
+//        responseData = new ApiResponseData();
+//        try {
+//
+//            String loginName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
+//            String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
+//
+//            //不能为空
+//            if (StrUtils.isBlank(loginName) || StrUtils.isBlank(password)) {
+//                responseData.setErrorMessage(messageService.getMessage("ApiPersonController.login.notNull"));
+//                return responseData;
+//            }
+//
+//            //登录
+//
+//
+//            Person person = _loginCheck(loginName, password);
+//
+//            if (person == null) {
+//                responseData.setErrorMessage(messageService.getMessage("ApiPersonController.login.nameOrPasswordError"));
+//                return responseData;
+//
+//            }
+//            //生成登录令牌
+//            String token = appLoginService.genAppLoginToken();
+//            appLoginService.updateAppLoginToken(person.getId(), token);
+//
+//            responseData.setSuccessMessage(messageService.getMessage("ApiPersonController.login.success"));
+//            responseData.pushData("token", token);
+//            responseData.pushData("personId", person.getId());
+//        } catch (Exception ex){
+//            responseData.setErrorMessage(ex.toString());
+//        }
+//
+//        return responseData;
+//
+//	}
 
 
 
@@ -148,12 +203,17 @@ public class ApiPersonController extends ApiBaseController {
      *
      */
     @RequestMapping(value = "/register-get-check-code",method = RequestMethod.POST)
+    @ApiOperation(value = "注册用户时获取注册码", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userName", value = "登录账户，现在只能用手机号", required = true, paramType = "form", dataType = "String")
+
+    })
     public ApiResponseData registerGetCheckCode(HttpServletRequest request, HttpServletResponse response) {
 //        if (!isValidApp(request)) {
 //            responseData.setInvalidApp();
 //            return responseData;
 //        }
-
+        responseData = new ApiResponseData();
         String userName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
 
         if (!ValidateUtils.isMobile(userName)) {
@@ -210,12 +270,18 @@ public class ApiPersonController extends ApiBaseController {
      * 提交的验证码的name为“checkCode”
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
+    @ApiOperation(value = "提交注册接口", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userName", value = "登录账户，现在只能用手机号", required = true, paramType = "form", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "form", dataType = "String"),
+            @ApiImplicitParam(name = "checkCode", value = "注册码", required = true, paramType = "form", dataType = "String")
+    })
 	public ApiResponseData register(HttpServletRequest request, HttpServletResponse response) {
 //        if (!isValidApp(request)) {
 //            responseData.setInvalidApp();
 //            return responseData;
 //        }
-
+        responseData = new ApiResponseData();
         String userName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
         String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
         String code = StrUtils.clean(request.getParameter(LOGIN_CHECK_CODE_CAPTION));
@@ -264,11 +330,16 @@ public class ApiPersonController extends ApiBaseController {
      * 提交的手机号name为“mobile”
      */
     @RequestMapping(value = "/forget-password-get-check-code",method = RequestMethod.POST)
+    @ApiOperation(value = "忘记密码获取注册码接口", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "mobile", value = "手机号", required = true, paramType = "form", dataType = "String")
+    })
+
     public ApiResponseData forgetPasswordGetCheckCode(HttpServletRequest request, HttpServletResponse response) {
 //        if (!isValidApp(request)) {
 //            return renderInvalidApp(response);
 //        }
-
+        responseData = new ApiResponseData();
 
         String mobile = StrUtils.clean(request.getParameter(LOGIN_MOBILE_CAPTION));
 
@@ -336,8 +407,14 @@ public class ApiPersonController extends ApiBaseController {
      * 提交的验证码name为“checkCode”
      */
     @RequestMapping(value = "/forget-password-reset",method = RequestMethod.POST)
+    @ApiOperation(value = "重置密码接口", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "mobile", value = "手机号", required = true, paramType = "form", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "新密码", required = true, paramType = "form", dataType = "String"),
+            @ApiImplicitParam(name = "checkCode", value = "注册码", required = true, paramType = "form", dataType = "String")
+    })
     public ApiResponseData forgetPasswordReset(HttpServletRequest request, HttpServletResponse response) {
-
+        responseData = new ApiResponseData();
 
         String mobile = request.getParameter(LOGIN_MOBILE_CAPTION);
         String password = request.getParameter(LOGIN_PASSWORD_CAPTION);
@@ -386,8 +463,13 @@ public class ApiPersonController extends ApiBaseController {
 	 * 退出
 	 */
 	@RequestMapping(value = "/logout")
-	public ApiResponseData logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+    @ApiOperation(value = "退出登录接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "appUserId", value = "个人id", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "appLoginToken", value = "登录token", required = true, paramType = "header", dataType = "String")
+    })
+    public ApiResponseData logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        responseData = new ApiResponseData();
         if (_logout(request)){
             responseData.setSuccessMessage("已成功退出");
         } else{
@@ -405,8 +487,13 @@ public class ApiPersonController extends ApiBaseController {
      * @return
      */
     @RequestMapping(value = "/check-login")
+    @ApiOperation(value = "验证是否登录接口", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "appUserId", value = "个人id", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "appLoginToken", value = "登录token", required = true, paramType = "header", dataType = "String")
+    })
     public ApiResponseData checkLogin(HttpServletRequest request, HttpServletResponse response) {
-
+        responseData = new ApiResponseData();
         if (isLogin(request)) {
             responseData.setSuccessMessage("当前用户已登录");
         } else {

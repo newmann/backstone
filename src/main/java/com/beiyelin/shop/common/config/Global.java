@@ -3,12 +3,14 @@
  */
 package com.beiyelin.shop.common.config;
 
+import java.util.Locale;
 import java.util.Map;
 
 import com.beiyelin.shop.common.utils.PropertiesLoader;
 import com.ckfinder.connector.ServletContextFactory;
 import com.google.common.collect.Maps;
 import com.beiyelin.shop.common.utils.StrUtils;
+import org.springframework.web.servlet.support.RequestContext;
 
 /**
  * 全局配置类
@@ -42,7 +44,9 @@ public class Global {
 	 * 属性文件加载对象
 	 */
 	private static PropertiesLoader propertiesLoader = new PropertiesLoader("shop.properties");
-	
+
+
+
 	/**
 	 * 获取当前对象实例
 	 */
@@ -153,5 +157,6 @@ public class Global {
 //		System.out.println("userfiles.basedir: " + dir);
 		return dir;
 	}
-	
+
+
 }

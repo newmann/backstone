@@ -8,6 +8,7 @@ import com.beiyelin.shop.common.beanvalidator.BeanValidators;
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.config.ResultCode;
 import com.beiyelin.shop.common.mapper.JsonMapper;
+import com.beiyelin.shop.common.service.MessageService;
 import com.beiyelin.shop.common.utils.DateUtils;
 import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.entity.Person;
@@ -71,7 +72,7 @@ public abstract class ApiBaseController {
 	/**
 	*返回的Json结构
 	 */
-	protected ApiResponseData responseData = new ApiResponseData();
+	protected ApiResponseData responseData;
 
 	/**
 	 * 验证Bean实例对象
@@ -84,6 +85,9 @@ public abstract class ApiBaseController {
 
 	@Autowired
 	protected AppLoginService appLoginService;
+
+	@Autowired
+	protected MessageService messageService;
 
 	/**
 	 * 服务端参数有效性验证

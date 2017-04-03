@@ -39,7 +39,7 @@ public class PermissionControlInterceptor  extends HandlerInterceptorAdapter {
 
         if (!appLoginService.isAppLoggedIn(userID, token)) {
 
-            responseTokenFail(response);
+            responseFail(response,"用户没有登录，请重新登录。");
             return false;
         }
 

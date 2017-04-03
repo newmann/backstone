@@ -8,8 +8,12 @@ import com.beiyelin.shop.common.security.Cryptos;
 import com.beiyelin.shop.common.utils.IdGen;
 import com.beiyelin.shop.common.utils.JedisUtils;
 import com.beiyelin.shop.common.utils.StrUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import sun.util.locale.provider.JRELocaleConstants;
+
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -22,11 +26,9 @@ import sun.util.locale.provider.JRELocaleConstants;
  */
 @Service
 public class AppLoginService {
-    /**=======================
-     * 自建会话系统给app用
-     * 判断用户是否登录的条件：person.id + person.app_login_token
-     =======================*/
 
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
     /**
      * 生成APP用户登录令牌
      */
@@ -42,7 +44,9 @@ public class AppLoginService {
      */
 
     public void updateAppLoginToken(String userId,String token){
-        JedisUtils.set(token,userId, StrUtils.toInteger(Global.getConfig("token.TimeoutClean")));
+
+        redisTemplate.opsForValue().set(token,userId, StrUtils.toInteger(Global.getConfig("token.TimeoutClean")), TimeUnit.SECONDS);
+//        JedisUtils.set(token,userId, StrUtils.toInteger(Global.getConfig("token.TimeoutClean")));
     }
 
     /**
@@ -53,9 +57,15 @@ public class AppLoginService {
      */
     public boolean isAppLoggedIn(String userId,String token){
         String id;
-        id= JedisUtils.get(token);
+        id = redisTemplate.opsForValue().get(token);
 
-        return id.equals(userId);
+//        id= JedisUtils.get(token);
+        if (id == null){
+            return false;
+        }else{
+            return id.equals(userId);
+        }
+
     }
 
     /**
@@ -64,10 +74,23 @@ public class AppLoginService {
      * @param userId
      * @param token
      */
-    public void logout(String userId,String token){
-        if (JedisUtils.get(token).equals(userId)) {
-            JedisUtils.del(token);
+    public boolean logout(String userId,String token){
+        String id;
+        id = redisTemplate.opsForValue().get(token).toString();
+        if (id.equals(null)){
+            return false;
+        }else{
+            try {
+                redisTemplate.delete(token);
+                return true;
+            } catch (Exception ex){
+                return false;
+            }
         }
+
+//        if (JedisUtils.get(token).equals(userId)) {
+//            JedisUtils.del(token);
+//        }
     }
 
 }

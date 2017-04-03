@@ -107,12 +107,26 @@
 	
 	<!-- 静态资源映射 -->
     <mvc:resources mapping="/static/**" location="/static/" cache-period="31536000"/>
-	
+
+
+
 	<!-- 定义无Controller的path<->view直接映射 -->
 	<mvc:view-controller path="/" view-name="redirect:${web.view.index}"/>
 	
 	<!-- 拦截器配置 -->
 	<mvc:interceptors>
+		<!--国际化资源切换（根据请求参数中的locale参数自动切换）-->
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<ref bean="localeChangeInterceptor" />
+		</mvc:interceptor>
+
+		<!--将RequestContext配置到MessageService中-->
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="com.beiyelin.shop.common.interceptor.AppLocaleInterceptor" />
+		</mvc:interceptor>
+
 		<mvc:interceptor>
 			<!-- 匹配的是url路径， 如果不配置或/**,将拦截所有的Controller -->
 			<mvc:mapping path="/**/api/**" />
@@ -160,5 +174,49 @@
 		<property name="defaultEncoding" value="UTF-8"/>
 		<property name="resolveLazily" value="true"/>
 	</bean>
-	
+
+	<!-- 国际化信息支持 -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>/WEB-INF/classes/i18n/msg_app</value>
+			</list>
+		</property>
+		<property name="cacheSeconds" value="5" />
+		<property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+	<!---->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="zh_CN"/>
+	</bean>
+
+	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+
+	<!--<bean id="localResolver" class="com.beiyelin.shop.common.LocaleResolver.AppLocaleResolver">-->
+
+	<!--</bean>-->
+	<bean id="restExceptionResolver" class="com.beiyelin.shop.common.restException.RestExceptionHandler">
+		<property name="order" value="100"/>
+		<!--<property name="messageConverters">-->
+			<!--<list>-->
+				<!--<ref bean="jacksonHttpMessageConverter"/>-->
+			<!--</list>-->
+		<!--</property>-->
+		<property name="errorResolver">
+			<bean class="com.beiyelin.shop.common.restException.DefaultRestErrorResolver">
+				<property name="localeResolver" ref="localeResolver"/>
+				<property name="defaultMoreInfoUrl" value="mailto:support@beiyelin.com"/>
+				<property name="exceptionMappingDefinitions">
+					<map>
+						<!-- 404 -->
+						<!--<entry key="com.stormpath.blog.spring.mvc.rest.exhandler.UnknownResourceException" value="404, _exmsg"/>-->
+
+						<!-- 500 (catch all): -->
+						<entry key="Throwable" value="500"/>
+					</map>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
 </beans>
