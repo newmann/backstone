@@ -3,52 +3,33 @@
  */
 package com.beiyelin.shop.modules.sys.api;
 
-import com.beiyelin.shop.common.bean.ApiResponseData;
 import com.beiyelin.shop.common.beanvalidator.BeanValidators;
 import com.beiyelin.shop.common.config.Global;
-import com.beiyelin.shop.common.config.ResultCode;
-import com.beiyelin.shop.common.mapper.JsonMapper;
 import com.beiyelin.shop.common.service.MessageService;
 import com.beiyelin.shop.common.utils.DateUtils;
-import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.modules.sys.entity.Person;
-import com.beiyelin.shop.modules.sys.entity.User;
 import com.beiyelin.shop.modules.sys.service.AppLoginService;
 import com.beiyelin.shop.modules.sys.service.PersonService;
 import com.beiyelin.shop.modules.sys.service.SystemService;
-import com.beiyelin.shop.modules.sys.service.UserService;
-import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
 import javax.validation.Validator;
 import java.beans.PropertyEditorSupport;
-import java.io.IOException;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * API控制器支持类
  * @author Newmann
  * @version 2017-03-27
  */
-public abstract class ApiBaseController {
+@Slf4j
+public abstract class ApiPersonBaseController {
 
 
     //总是提交客户端类型参数，标明是什么类型的客户端
@@ -58,10 +39,6 @@ public abstract class ApiBaseController {
     protected final String kTerminalTypeName_apicloud = "apicloud";
 
 
-	/**
-	 * 日志对象
-	 */
-	protected Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * APP授权码
@@ -69,10 +46,6 @@ public abstract class ApiBaseController {
     protected final String appAuthToken = "newmamm-d8exd2ae8_0a218t3c7a3a_f9g4af7wd9bb-byl";
 
 
-	/**
-	*返回的Json结构
-	 */
-	protected ApiResponseData responseData;
 
 	/**
 	 * 验证Bean实例对象
@@ -187,60 +160,4 @@ public abstract class ApiBaseController {
     }
 
 
-
-	/**
-	 * 如果登录成功返回User，否则返回null
-	 * @return
-	 */
-	protected Person _loginCheck(String loginName, String password){
-		if (StringUtils.isBlank(loginName) || StringUtils.isBlank(password))
-			return null;
-
-
-		Person person = personService.getByLoginName2(loginName);
-
-		if (person != null && SystemService.validatePassword(password, person.getPassword())) {
-			//更新appLoginToken
-//			String token = appLoginService.genAppLoginToken();
-//			appLoginService.updateAppLoginToken(person.getId(),token);
-
-			return person;
-		}
-
-		return null;
-	}
-
-    /**
-     * 登出
-     * @return
-     */
-    protected boolean _logout(HttpServletRequest request){
-		String personId = request.getHeader(Global.REQUEST_USER_CAPTION);
-		String token = request.getHeader(Global.REQUEST_TOKEN_CAPTION);
-		try {
-			if (StringUtils.isNotBlank(personId) && StringUtils.isNotBlank(token)) {
-				appLoginService.logout(personId, token);
-			}
-			return true;
-		}catch (Exception ex){
-			return false;
-		}
-    }
-
-
-	/**
-	 * 个人是否已经登录, 由app传personId和appLoginToken过来
-	 * @return
-	 */
-		protected boolean isLogin(HttpServletRequest request) {
-			String personId = request.getHeader(Global.REQUEST_USER_CAPTION);
-			String token = request.getHeader(Global.REQUEST_TOKEN_CAPTION);
-
-			if (StringUtils.isNotBlank(personId) && StringUtils.isNotBlank(token)
-					&& appLoginService.isAppLoggedIn(personId, token)) {
-				return true;
-			} else {
-				return false;
-			}
-	}
 }

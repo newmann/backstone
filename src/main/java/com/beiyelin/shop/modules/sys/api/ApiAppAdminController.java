@@ -5,21 +5,21 @@ package com.beiyelin.shop.modules.sys.api;
 
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.security.authority.annotation.PermissionControl;
-import com.beiyelin.shop.common.utils.*;
+import com.beiyelin.shop.common.utils.StrUtils;
+import com.beiyelin.shop.common.utils.ValidateUtils;
 import com.beiyelin.shop.modules.sys.bean.LoginResponse;
-import com.beiyelin.shop.modules.sys.entity.Person;
-
-
+import com.beiyelin.shop.modules.sys.entity.AppAdmin;
 import com.beiyelin.shop.modules.sys.service.SystemService;
 import com.beiyelin.shop.modules.sys.utils.AppSmsUtils;
-
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,35 +30,25 @@ import javax.validation.Valid;
  * 注意：因为app端没有用cookie来做session，shiro的登出（SecurityUtils.getSubject().logout();）不起作用，
  *      当改密码再登录时还是会引用之前的密码而导致登录失败。
  * 登录判断：
- *      用户登录要用 person.loginName + person.password, 登录后生成新的 person.appLoginToken
- *      判断用户是否登录的session：person.id + person.appLoginToken
- * @author Newmann HU
+ *      在Handler中处理
+  * @author Newmann HU
  * @version 2017-04-06
  *
  * Module:1000
  */
 @RestController
-@RequestMapping("/api/person")
-@Api(value="用户controller",description="个人相关操作，包括：注册账户，退出登录，修改密码，重置密码，修改个人信息。")
-public class ApiPersonController extends ApiPersonBaseController {
+@RequestMapping("/api/admin")
+@Api(value="管理员controller",description="管理员账户的相关操作，包括：注册账户，退出登录，修改密码，重置密码，修改管理员信息。")
+public class ApiAppAdminController extends ApiAppAdminBaseController {
     private static final String LOGIN_USERNAME_CAPTION="userName";
     private static final String LOGIN_PASSWORD_CAPTION="password";
     private static final String LOGIN_CHECK_CODE_CAPTION="checkCode";
     private static final String LOGIN_MOBILE_CAPTION="mobile";
 
-//	@Autowired
-//    PersonService personService;
-
-
-    
-//	@RequestMapping(value = "")
-//	public String index() {
-//		return "modules/app/person/index";
-//	}
 
     /**
      *
-     * @param person
+     * @param appAdmin
      * @return
      * @throws Throwable
      *
@@ -67,25 +57,25 @@ public class ApiPersonController extends ApiPersonBaseController {
      */
     @PermissionControl("person:save")
     @RequestMapping(value = "/save",method = RequestMethod.POST)
-    @ApiOperation(value = "修改当前登录个人信息", httpMethod = "POST")
+    @ApiOperation(value = "修改当前登录的管理员信息", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "appUserId", value = "个人id", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "appUserId", value = "系统管理员id", required = true, paramType = "header", dataType = "String"),
             @ApiImplicitParam(name = "appLoginToken", value = "登录token", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "person.property", value = "Person类的属性，通过form提交", required = true, paramType = "form", dataType = "object")
+            @ApiImplicitParam(name = "appAdmin.property", value = "AppAdmin类的属性，通过form提交", required = true, paramType = "form", dataType = "object")
     })
-    public String savePerson(@Valid @RequestBody Person person, BindingResult validateResult) throws Throwable {
+    public String saveAppAdmin(@Valid @RequestBody AppAdmin appAdmin, BindingResult validateResult) throws Throwable {
 
-//            Person person = JsonMapper.getInstance().fromJson(request.getParameter("person"),Person.class);
-        if (person==null){
+//            AppAdmin person = JsonMapper.getInstance().fromJson(request.getParameter("person"),AppAdmin.class);
+        if (appAdmin==null){
 //                throw new Exception("没有提交任何信息，不能保存！");
-            throw new Exception(messageService.getMessage("ApiPersonController.savePerson.01"));
+            throw new Exception(messageService.getMessage("ApiAppAdminController.saveAppAdmin.01"));
         }
         if (validateResult.hasErrors()){
             throw new Exception(validateResult.toString());
         }
 //            beanValidator(person);
 
-        personService.save(person);
+        appAdminService.save(appAdmin);
 
         return messageService.getMessage("SuccessComplete");
 
@@ -100,17 +90,17 @@ public class ApiPersonController extends ApiPersonBaseController {
      * Module:09
      */
     @RequestMapping(value = "/get",method = RequestMethod.GET)
-    @ApiOperation(value = "获取当前登录个人信息", httpMethod = "GET")
+    @ApiOperation(value = "获取当前登录的管理员信息", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "appUserId", value = "个人id", required = true, paramType = "header", dataType = "String"),
+            @ApiImplicitParam(name = "appUserId", value = "系统管理员id", required = true, paramType = "header", dataType = "String"),
             @ApiImplicitParam(name = "appLoginToken", value = "登录token", required = true, paramType = "header", dataType = "String"),
-            @ApiImplicitParam(name = "person.property", value = "Person类的属性，通过form提交", required = true, paramType = "form", dataType = "object")
+            @ApiImplicitParam(name = "person.property", value = "AppAdmin类的属性，通过form提交", required = true, paramType = "form", dataType = "object")
     })
-    public Person getPerson(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+    public AppAdmin getAppAdmin(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
         String personId = request.getHeader(Global.REQUEST_USER_CAPTION);
-        Person person = personService.get(personId);
-        return person;
+        AppAdmin appAdmin = appAdminService.get(personId);
+        return appAdmin;
 
     }
 
@@ -137,187 +127,113 @@ public class ApiPersonController extends ApiPersonBaseController {
 
         //不能为空
         if (StrUtils.isBlank(loginName) || StrUtils.isBlank(password)) {
-            throw new Exception("ApiPersonController.login.01");
+            throw new Exception("ApiAppAdminController.login.01");
         }
 
         //核查密码
 
-        Person person = personService.getByLoginName2(loginName);
+        AppAdmin appAdmin = appAdminService.getByLoginName2(loginName);
 
-        if ((person == null) || (!SystemService.validatePassword(password, person.getPassword()))) {
-            throw new Exception("ApiPersonController.login.02");
+        if (appAdmin != null && SystemService.validatePassword(password, appAdmin.getPassword())) {
+            throw new Exception("ApiAppAdminController.login.02");
         }
 
         //生成登录令牌
         String token = appLoginService.genAppLoginToken();
-        appLoginService.updateAppLoginToken(person.getId(), token);
+        appLoginService.updateAppLoginToken(appAdmin.getId(), token);
 
         loginResponse.setToken(token);
-        loginResponse.setPersonId(person.getId());
+        loginResponse.setPersonId(appAdmin.getId());
 
         return loginResponse;
 
     }
 
-//	public ApiResponseData login(HttpServletRequest request, HttpServletResponse response) {
+
+
+
+//    /**
+//     * 注册 - 提交手机号码
+//     *  提交的信息的name为“userName”
+//     *
+//     *  method：03
+//     */
+//    @RequestMapping(value = "/register-get-check-code",method = RequestMethod.POST)
+//    @ApiOperation(value = "注册用户时获取注册码", httpMethod = "POST")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "userName", value = "登录账户，现在只能用手机号", required = true, paramType = "form", dataType = "String")
 //
-//        responseData = new ApiResponseData();
-//        try {
+//    })
+//    public String registerGetCheckCode(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 //
-//            String loginName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
-//            String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
+//        String userName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
 //
-//            //不能为空
-//            if (StrUtils.isBlank(loginName) || StrUtils.isBlank(password)) {
-//                responseData.setErrorMessage(messageService.getMessage("ApiPersonController.login.notNull"));
-//                return responseData;
-//            }
+//        if (!ValidateUtils.isMobile(userName)) {
+//            throw new Exception(ValidateUtils.getErrMsg());
 //
-//            //登录
-//
-//
-//            Person person = _loginCheck(loginName, password);
-//
-//            if (person == null) {
-//                responseData.setErrorMessage(messageService.getMessage("ApiPersonController.login.nameOrPasswordError"));
-//                return responseData;
-//
-//            }
-//            //生成登录令牌
-//            String token = appLoginService.genAppLoginToken();
-//            appLoginService.updateAppLoginToken(person.getId(), token);
-//
-//            responseData.setSuccessMessage(messageService.getMessage("ApiPersonController.login.success"));
-//            responseData.pushData("token", token);
-//            responseData.pushData("personId", person.getId());
-//        } catch (Exception ex){
-//            responseData.setErrorMessage(ex.toString());
 //        }
 //
-//        return responseData;
+//        AppAdmin appAdmin = appAdminService.getByMobile(userName);
+//        if (appAdmin != null && StrUtils.isNotBlank(appAdmin.getId())) {
+//            throw new Exception("ApiAppAdminController.registerGetCheckCode.01");
+//        } else {
+//            //发送手机验证码
 //
-//	}
-
-
-
-    /**
-     * 注册 - 提交手机号码
-     *  提交的信息的name为“userName”
-     *
-     *  method：03
-     */
-    @RequestMapping(value = "/register-get-check-code",method = RequestMethod.POST)
-    @ApiOperation(value = "注册用户时获取注册码", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userName", value = "登录账户，现在只能用手机号", required = true, paramType = "form", dataType = "String")
-
-    })
-    public String registerGetCheckCode(HttpServletRequest request, HttpServletResponse response) throws Throwable {
-//        if (!isValidApp(request)) {
-//            responseData.setInvalidApp();
-//            return responseData;
+//            AppSmsUtils.sendRegisterCode(userName);
+//            return messageService.getMessage("ApiAppAdminController.registerGetCheckCode.02");
 //        }
-
-        String userName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
-
-        if (!ValidateUtils.isMobile(userName)) {
-            throw new Exception(ValidateUtils.getErrMsg());
-
-        }
-
-        Person person = personService.getByMobile(userName);
-        if (person != null && StrUtils.isNotBlank(person.getId())) {
-            throw new Exception("ApiPersonController.registerGetCheckCode.01");
-        } else {
-            //发送手机验证码
-
-            AppSmsUtils.sendRegisterCode(userName);
-            return messageService.getMessage("ApiPersonController.registerGetCheckCode.02");
-        }
-
-
-    }
-
+//
+//
+//    }
+//
+//
 //	/**
-//	 * 注册 - 提交手机号码、密码
+//	 * 注册 - 提交手机号码、密码、验证码
+//     * 提交的注册账户的name为“userName”
+//     * 提交的密码的name为“password”
+//     * 提交的验证码的name为“checkCode”
+//     *
+//     * module:04
+//     *
 //	 */
-//	@RequestMapping(value = "/register-step2-post")
-//	public ApiResponseData registerStep2(HttpServletRequest request, HttpServletResponse response) {
-////        if (!isValidApp(request)) {
-////            responseData.setInvalidApp();
-////            return responseData;
-////        }
+//	@RequestMapping(value = "/register", method = RequestMethod.POST)
+//    @ApiOperation(value = "提交注册接口", httpMethod = "POST")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "userName", value = "登录账户，现在只能用手机号", required = true, paramType = "form", dataType = "String"),
+//            @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "form", dataType = "String"),
+//            @ApiImplicitParam(name = "checkCode", value = "注册码", required = true, paramType = "form", dataType = "String")
+//    })
+//	public String register(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 //
 //        String userName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
 //        String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
+//        String code = StrUtils.clean(request.getParameter(LOGIN_CHECK_CODE_CAPTION));
 //
-//
-//		if (!(ValidateUtils.isMobile(userName) && ValidateUtils.isPassword(password))) {
-//			responseData.setErrorMessage(ValidateUtils.getErrMsg());
-//			return responseData;
-//		}
-//
-//        Person person = personService.getByLoginName2(userName);
-//        if (person != null && StrUtils.isNotBlank(person.getId())) {
-//            responseData.setErrorMessage("电话号码已存在");
-//        }else{
-//            responseData.setSuccessMessage("正确提交手机号码和密码");
+//        if (!ValidateUtils.isMobile(userName) || !ValidateUtils.isPassword(password)) {
+//            throw new Exception("ApiAppAdminController.register.01");
 //        }
 //
-//		return responseData;
+//        AppAdmin u = appAdminService.getByLoginName2(userName);
+//        if (u != null && StrUtils.isNotBlank(u.getId())) {
+//            throw new Exception("ApiAppAdminController.register.02");
+//        }
+//
+//        //比较验证码
+//        if (AppSmsUtils.checkRegitserCode(userName, code)) {
+//            //保存用户
+//            AppAdmin appAdmin = new AppAdmin();
+//            appAdmin.setLoginName(userName);
+//            appAdmin.setPassword(SystemService.entryptPassword(password));
+//            appAdmin.setMobile(userName);
+//
+//            appAdminService.save(appAdmin);
+//            return appAdmin.getId();
+//
+//        } else {
+//            throw new Exception("ApiAppAdminController.register.04");
+//        }
+//
 //	}
-
-	/**
-	 * 注册 - 提交手机号码、密码、验证码
-     * 提交的注册账户的name为“userName”
-     * 提交的密码的name为“password”
-     * 提交的验证码的name为“checkCode”
-     *
-     * module:04
-     *
-	 */
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
-    @ApiOperation(value = "提交注册接口", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userName", value = "登录账户，现在只能用手机号", required = true, paramType = "form", dataType = "String"),
-            @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "form", dataType = "String"),
-            @ApiImplicitParam(name = "checkCode", value = "注册码", required = true, paramType = "form", dataType = "String")
-    })
-	public String register(HttpServletRequest request, HttpServletResponse response) throws Throwable {
-//        if (!isValidApp(request)) {
-//            responseData.setInvalidApp();
-//            return responseData;
-//        }
-
-        String userName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
-        String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
-        String code = StrUtils.clean(request.getParameter(LOGIN_CHECK_CODE_CAPTION));
-
-        if (!ValidateUtils.isMobile(userName) || !ValidateUtils.isPassword(password)) {
-            throw new Exception("ApiPersonController.register.01");
-        }
-
-        Person u = personService.getByLoginName2(userName);
-        if (u != null && StrUtils.isNotBlank(u.getId())) {
-            throw new Exception("ApiPersonController.register.02");
-        }
-
-        //比较验证码
-        if (AppSmsUtils.checkRegitserCode(userName, code)) {
-            //保存用户
-            Person person = new Person();
-            person.setLoginName(userName);
-            person.setPassword(SystemService.entryptPassword(password));
-            person.setMobile(userName);
-
-            person.setRegisterFrom(Person.REGISTER_FROM_APP);
-            personService.save(person);
-                return person.getId();
-        } else {
-            throw new Exception("ApiPersonController.register.04");
-        }
-
-	}
 
     /**
      * 重置密码 - 提交手机号码
@@ -343,9 +259,9 @@ public class ApiPersonController extends ApiPersonBaseController {
             throw new Exception(ValidateUtils.getErrMsg());
         }
 
-        Person person = personService.getByMobile(mobile);
-        if (person == null) {
-            throw new Exception("ApiPersonController.forgetPasswordGetCheckCode.01");
+        AppAdmin appAdmin = appAdminService.getByMobile(mobile);
+        if (appAdmin == null) {
+            throw new Exception("ApiAppAdminController.forgetPasswordGetCheckCode.01");
         }
 
         //发送重置密码的验证码
@@ -381,8 +297,8 @@ public class ApiPersonController extends ApiPersonBaseController {
 //            return responseData;
 //        }
 //
-//        Person person = personService.getByMobile(mobile);
-//        if (person == null) {
+//        AppAdmin appAdmin = appAdminService.getByMobile(mobile);
+//        if (appAdmin == null) {
 //            responseData.setErrorMessage("电话号码不存在");
 //            return responseData;
 //        }
@@ -421,22 +337,22 @@ public class ApiPersonController extends ApiPersonBaseController {
             throw new Exception(ValidateUtils.getErrMsg());
         }
 
-        Person person = personService.getByMobile(mobile);
+        AppAdmin appAdmin = appAdminService.getByMobile(mobile);
 
-        if (person == null) {
-            throw new Exception("ApiPersonController.forgetPasswordReset.01");
+        if (appAdmin == null) {
+            throw new Exception("ApiAppAdminController.forgetPasswordReset.01");
         }
 
         //比较验证码
         if (AppSmsUtils.checkForgetPasswordCode(mobile, code)) {
             //保存用户新密码
-            person.setPassword(SystemService.entryptPassword(password));
-            personService.save(person);
-            return messageService.getMessage("SuccessComplete");
+            appAdmin.setPassword(SystemService.entryptPassword(password));
+            appAdminService.save(appAdmin);
 
+                return messageService.getMessage("SuccessComplete");
 
         } else {
-            throw new Exception("ApiPersonController.forgetPasswordReset.03");
+            throw new Exception("ApiAppAdminController.forgetPasswordReset.03");
         }
 
 
@@ -457,7 +373,7 @@ public class ApiPersonController extends ApiPersonBaseController {
         if (appLoginService.logout(request)){
             return messageService.getMessage("SuccessComplete");
         } else{
-            throw new Exception("ApiPersonController.logout.01");
+            throw new Exception("ApiAppAdminController.logout.01");
         }
 
 	}
@@ -476,7 +392,6 @@ public class ApiPersonController extends ApiPersonBaseController {
             @ApiImplicitParam(name = "appLoginToken", value = "登录token", required = true, paramType = "header", dataType = "String")
     })
     public Boolean checkLogin(HttpServletRequest request, HttpServletResponse response) throws  Throwable {
-
         return appLoginService.isAppLoggedIn(request);
 
     }

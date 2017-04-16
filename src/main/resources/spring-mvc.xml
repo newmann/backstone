@@ -129,12 +129,18 @@
 
 		<mvc:interceptor>
 			<!-- 匹配的是url路径， 如果不配置或/**,将拦截所有的Controller -->
-			<mvc:mapping path="/**/api/**" />
-			<mvc:exclude-mapping path="/**/api/person/login" />
-			<mvc:exclude-mapping path="/**/api/person/register-get-check-code" />
-			<mvc:exclude-mapping path="/**/api/person/register" />
-			<mvc:exclude-mapping path="/**/api/person/forget-password-get-check-code" />
-			<mvc:exclude-mapping path="/**/api/person/forget-password-reset" />
+			<mvc:mapping path="/api/**" />
+			<mvc:exclude-mapping path="/api/person/login" />
+			<mvc:exclude-mapping path="/api/person/register-get-check-code" />
+			<mvc:exclude-mapping path="/api/person/register" />
+			<mvc:exclude-mapping path="/api/person/forget-password-get-check-code" />
+			<mvc:exclude-mapping path="/api/person/forget-password-reset" />
+			<mvc:exclude-mapping path="/api/admin/login" />
+			<mvc:exclude-mapping path="/api/admin/register-get-check-code" />
+			<mvc:exclude-mapping path="/api/admin/register" />
+			<mvc:exclude-mapping path="/api/admin/forget-password-get-check-code" />
+			<mvc:exclude-mapping path="/api/admin/forget-password-reset" />
+
 			<!--<mvc:mapping path="/user/**" />-->
 			<!--<mvc:mapping path="/test/**" />-->
 			<bean class="com.beiyelin.shop.common.security.authority.interceptor.PermissionControlInterceptor"></bean>
@@ -142,6 +148,7 @@
 
 		<mvc:interceptor>
 			<mvc:mapping path="${adminPath}/**" />
+			<mvc:mapping path="/api/**" />
 			<mvc:exclude-mapping path="${adminPath}/"/>
 			<mvc:exclude-mapping path="${adminPath}/login"/>
 			<mvc:exclude-mapping path="${adminPath}/sys/menu/tree"/>
@@ -175,26 +182,7 @@
 		<property name="resolveLazily" value="true"/>
 	</bean>
 
-	<!-- 国际化信息支持 -->
-	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<property name="basenames">
-			<list>
-				<value>/WEB-INF/classes/i18n/msg_app</value>
-			</list>
-		</property>
-		<property name="cacheSeconds" value="5" />
-		<property name="defaultEncoding" value="UTF-8"/>
-	</bean>
-	<!---->
-	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
-		<property name="defaultLocale" value="zh_CN"/>
-	</bean>
-
-	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
-
-	<!--<bean id="localResolver" class="com.beiyelin.shop.common.LocaleResolver.AppLocaleResolver">-->
-
-	<!--</bean>-->
+	<!--异常的统一处理-->
 	<bean id="restExceptionResolver" class="com.beiyelin.shop.common.restException.RestExceptionHandler">
 		<property name="order" value="100"/>
 		<!--<property name="messageConverters">-->

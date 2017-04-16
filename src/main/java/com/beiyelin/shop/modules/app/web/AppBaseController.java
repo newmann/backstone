@@ -97,7 +97,7 @@ public abstract class AppBaseController {
 	/**
 	*返回的Json结构
 	 */
-	protected ApiResponseData responseData = new ApiResponseData();
+//	protected ApiResponseData responseData = new ApiResponseData();
 
 	/**
 	 * 验证Bean实例对象

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.beiyelin.shop.modules.sys.dao.AppOrgDao">
+	
+
+	<sql id="appOrgEntityColumns">
+		a.id,
+		a.code,
+		a.name,
+		a.org_type,
+		a.db_url,
+		a.remarks,
+		a.create_by,
+		a.create_date,
+		a.update_by ,
+		a.update_date,
+		a.del_flag
+
+	</sql>
+	
+    <sql id="appOrgColumns">
+ 		a.id,
+		a.code,
+		a.name,
+		a.org_type,
+		a.db_url,
+		a.remarks,
+		a.create_by,
+		a.create_date,
+		a.update_by,
+		a.update_date,
+		a.del_flag
+    </sql>
+    
+
+	<!-- 根据编号获得组织 -->
+	<select id="get" resultType="AppOrg">
+		SELECT
+			<include refid="appOrgColumns"/><!-- ,
+			ro.office_id AS "roleList.officeList.id" -->
+		FROM app_org a
+		WHERE a.id = #{id}
+	</select>
+
+    <!-- 获得组织表的实体 -->
+    <select id="getEntity" resultType="AppOrg">
+        SELECT
+            <include refid="appOrgEntityColumns"/>
+        FROM app_org a
+        WHERE a.id = #{id}
+    </select>
+
+	<!-- 根据代码查询组织 -->
+	<select id="getByCode" resultType="AppOrg" parameterType="AppOrg">
+		SELECT
+			<include refid="appOrgColumns"/><!-- ,
+			ro.office_id AS "roleList.officeList.id" -->
+		FROM app_org a
+		WHERE a.code = #{code} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+
+
+
+	<!-- 分页查询组织信息 -->
+	<select id="findList" resultType="AppOrg">
+		SELECT
+			<include refid="appOrgColumns"/>
+		FROM app_org a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="name != null and name != ''">
+			AND a.name like 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+		</if>
+		<!-- 数据范围过滤 -->
+		${sqlMap.dsf}
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.name
+			</otherwise>
+		</choose>
+	</select>
+	
+
+	<!-- 查询全部组织 -->
+	<select id="findAllList" resultType="AppOrg">
+		SELECT
+			<include refid="appOrgColumns"/>
+		FROM app_org a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		ORDER BY a.name
+	</select>
+	
+	<!-- 查询全部组织数目 -->
+	<select id="findAllCount" resultType="long">
+		SELECT
+			COUNT(1)
+		FROM app_org a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+
+	<!-- 插入组织 -->
+	<insert id="insert">
+		INSERT INTO app_org(
+		id,
+		code,
+		name,
+		org_type,
+		db_url,
+		remarks,
+		create_by,
+		create_date,
+		update_by,
+		update_date,
+		del_flag
+
+		) VALUES (
+			#{id},
+			#{code},
+			#{name},
+			#{orgType},
+			#{dbUrl},
+			#{remarks},
+			#{createBy},
+			#{createDate}, 
+			#{updateBy},
+			#{updateDate}, 
+			#{delFlag}
+		)
+	</insert>
+
+	<!-- 完整更新组织 -->
+	<update id="update">
+		UPDATE app_org SET
+		code = #{code},
+		name = #{name},
+		org_type = #{orgType},
+		db_url = #{dbUrl},
+		remarks = #{remarks},
+		create_by = #{createBy},
+		create_date = #{createDate},
+		update_by = #{updateBy},
+		update_date = #{updateDate},
+		del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+
+	<!-- 更新组织信息  -->
+	<update id="updateAppOrgInfo">
+		UPDATE app_org SET
+			name = #{name},
+			org_type = #{orgType},
+			update_by = #{updateByid},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+
+
+	<!-- 逻辑删除组织 -->
+	<update id="delete">
+		UPDATE app_org SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+
+</mapper>

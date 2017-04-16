@@ -4,6 +4,7 @@
 package com.beiyelin.shop.modules.sys.service;
 
 import com.beiyelin.shop.common.security.Cryptos;
+import com.beiyelin.shop.common.service.AppAdminCrudService;
 import com.beiyelin.shop.common.service.CrudService;
 import com.beiyelin.shop.modules.sys.dao.PersonDao;
 import com.beiyelin.shop.modules.sys.entity.Person;
@@ -18,13 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class PersonService extends CrudService<PersonDao, Person> {
+public class PersonService extends AppAdminCrudService<PersonDao, Person> {
 
     public Person getByMobile(String mobile) {
         if (StringUtils.isBlank(mobile))
             return null;
 
-        Person person = new Person();
+		Person person = new Person();
         person.setMobile(mobile);
         return dao.getByMobile(person);
     }

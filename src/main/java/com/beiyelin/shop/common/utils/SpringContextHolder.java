@@ -69,7 +69,7 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
 	/**
 	 * 实现ApplicationContextAware接口, 注入Context到静态变量中.
 	 */
-//	@Override
+	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) {
 		logger.debug("注入ApplicationContext到SpringContextHolder:{}", applicationContext);
 //		if (SpringContextHolder.applicationContext != null) {
@@ -93,7 +93,7 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
 	/**
 	 * 实现DisposableBean接口, 在Context关闭时清理静态变量.
 	 */
-//	@Override
+	@Override
 	public void destroy() throws Exception {
 		SpringContextHolder.clearHolder();
 	}

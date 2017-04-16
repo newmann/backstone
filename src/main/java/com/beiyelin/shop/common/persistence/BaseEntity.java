@@ -34,10 +34,7 @@ public abstract class BaseEntity<T> implements Serializable {
 	 */
 	protected String id;
 	
-	/**
-	 * 当前用户
-	 */
-	protected User currentUser;
+
 	
 	/**
 	 * 当前实体分页对象
@@ -73,18 +70,7 @@ public abstract class BaseEntity<T> implements Serializable {
 		this.id = id;
 	}
 	
-	@JsonIgnore
-	@XmlTransient
-	public User getCurrentUser() {
-		if(currentUser == null){
-			currentUser = UserUtils.getUser();
-		}
-		return currentUser;
-	}
-	
-	public void setCurrentUser(User currentUser) {
-		this.currentUser = currentUser;
-	}
+
 
 	@JsonIgnore
 	@XmlTransient

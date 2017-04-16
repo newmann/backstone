@@ -14,6 +14,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.beiyelin.shop.modules.sys.utils.UserUtils;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * 数据Entity类
  * @author Tony Wong
@@ -29,7 +31,25 @@ public abstract class DataEntity<T> extends BaseEntity<T> {
 	protected User updateBy;	// 更新者
 	protected Date updateDate;	// 更新日期
 	protected String delFlag; 	// 删除标记（0：正常；1：删除；2：审核）
-	
+	/**
+	 * 当前用户
+	 */
+	protected User currentUser;
+
+	@JsonIgnore
+	@XmlTransient
+	public User getCurrentUser() {
+		if(currentUser == null){
+			currentUser = UserUtils.getUser();
+		}
+		return currentUser;
+	}
+
+	public void setCurrentUser(User currentUser) {
+		this.currentUser = currentUser;
+	}
+
+
 	public DataEntity() {
 		super();
 		this.delFlag = DEL_FLAG_NORMAL;

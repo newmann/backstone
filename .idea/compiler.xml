@@ -10,9 +10,8 @@
         <module name="shop" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="backstone" target="1.5" />
-      <module name="shop" target="1.5" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="backstone" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

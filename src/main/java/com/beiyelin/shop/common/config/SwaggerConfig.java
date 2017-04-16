@@ -21,7 +21,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 @EnableWebMvc //必须存在
-@ComponentScan(basePackages="com.beiyelin.shop.modules.sys.api")
+@ComponentScan(basePackages={"com.beiyelin.shop.modules.sys.api"})
 public class SwaggerConfig {
 //    private SpringSwaggerConfig springSwaggerConfig;
 //    /**

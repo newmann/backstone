@@ -25,7 +25,7 @@
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 	
- 	<!-- MyBatis begin -->
+ 	 <!--MyBatis begin-->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="typeAliasesPackage" value="com.beiyelin.shop"/>
@@ -33,7 +33,54 @@
         <property name="mapperLocations" value="classpath:/mappings/**/*.xml"/>
 		<property name="configLocation" value="classpath:/mybatis-config.xml"></property>
     </bean>
-    
+
+	<!--<bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean">-->
+		<!--<property name="dataSource" ref="dataSource"/>-->
+		<!--<property name="typeAliasesPackage" value="com.beiyelin.shop"/>-->
+		<!--<property name="typeAliasesSuperType" value="com.beiyelin.shop.common.persistence.BaseEntity"/>-->
+		<!--<property name="mapperLocations" value="classpath:/mappings/**/*.xml"/>-->
+		<!--<property name="configLocation" value="classpath:/mybatis-config.xml"></property>-->
+		<!--&lt;!&ndash; MP 全局配置注入 &ndash;&gt;-->
+		<!--<property name="globalConfig" ref="globalConfig"/>-->
+
+	<!--</bean>-->
+	<!--&lt;!&ndash; 定义 MP 全局策略 &ndash;&gt;-->
+	<!--<bean id="globalConfig" class="com.baomidou.mybatisplus.entity.GlobalConfiguration">-->
+		<!--&lt;!&ndash; 主键策略配置 &ndash;&gt;-->
+		<!--&lt;!&ndash; 可选参数-->
+            <!--AUTO->`0`("数据库ID自增")-->
+            <!--INPUT->`1`(用户输入ID")-->
+            <!--ID_WORKER->`2`("全局唯一ID")-->
+            <!--UUID->`3`("全局唯一ID")-->
+        <!--&ndash;&gt;-->
+		<!--<property name="idType" value="3"/>-->
+
+		<!--&lt;!&ndash; 数据库类型配置 &ndash;&gt;-->
+		<!--&lt;!&ndash; 可选参数（默认mysql）-->
+            <!--MYSQL->`mysql`-->
+            <!--ORACLE->`oracle`-->
+            <!--DB2->`db2`-->
+            <!--H2->`h2`-->
+            <!--HSQL->`hsql`-->
+            <!--SQLITE->`sqlite`-->
+            <!--POSTGRE->`postgresql`-->
+            <!--SQLSERVER2005->`sqlserver2005`-->
+            <!--SQLSERVER->`sqlserver`-->
+        <!--&ndash;&gt;-->
+		<!--<property name="dbType" value="mysql"/>-->
+
+		<!--&lt;!&ndash; 全局表为下划线命名设置 true &ndash;&gt;-->
+		<!--<property name="dbColumnUnderline" value="true"/>-->
+	<!--</bean>-->
+	<!--&lt;!&ndash; MyBatis 热加载 &ndash;&gt;-->
+	<!--<bean class="com.baomidou.mybatisplus.spring.MybatisMapperRefresh">-->
+		<!--<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>-->
+		<!--<constructor-arg name="mapperLocations" value="classpath:/mappings/**/*.xml"/>-->
+		<!--<constructor-arg name="delaySeconds" value="5"/>-->
+		<!--<constructor-arg name="sleepSeconds" value="10"/>-->
+		<!--<constructor-arg name="enabled" value="true"/>-->
+	<!--</bean>-->
+
     <!-- 扫描basePackage下所有以@MyBatisDao注解的接口 -->
     <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
@@ -49,9 +96,33 @@
 	<!-- 配置 Annotation 驱动，扫描@Transactional注解的类定义事务  -->
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
     <!-- MyBatis end -->
-    
+
+
+	<!-- 国际化信息支持 -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>/WEB-INF/classes/i18n/msg_app</value>
+			</list>
+		</property>
+		<property name="cacheSeconds" value="5" />
+		<property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="zh_CN"/>
+	</bean>
+
+	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+
+	<!-- -->
+	<!--<bean id="localResolver" class="com.beiyelin.shop.common.LocaleResolver.AppLocaleResolver">-->
+
 	<!-- 配置 JSR303 Bean Validator 定义 -->
-	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+
 
 	<!-- 缓存配置 -->
 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">

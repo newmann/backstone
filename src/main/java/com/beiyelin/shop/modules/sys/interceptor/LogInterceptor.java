@@ -26,7 +26,7 @@ public class LogInterceptor extends BaseService implements HandlerInterceptor {
 	private static final ThreadLocal<Long> startTimeThreadLocal =
 			new NamedThreadLocal<Long>("ThreadLocal StartTime");
 	
-//	@Override
+	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, 
 			Object handler) throws Exception {
 		if (logger.isDebugEnabled()){
@@ -38,12 +38,12 @@ public class LogInterceptor extends BaseService implements HandlerInterceptor {
 		return true;
 	}
 
-//	@Override
+	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, 
 			ModelAndView modelAndView) throws Exception {
 	}
 
-//	@Override
+	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, 
 			Object handler, Exception ex) throws Exception {
 

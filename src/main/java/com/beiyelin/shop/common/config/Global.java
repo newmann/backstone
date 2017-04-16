@@ -158,5 +158,4 @@ public class Global {
 		return dir;
 	}
 
-
 }

@@ -8,11 +8,13 @@ import com.beiyelin.shop.common.security.Cryptos;
 import com.beiyelin.shop.common.utils.IdGen;
 import com.beiyelin.shop.common.utils.JedisUtils;
 import com.beiyelin.shop.common.utils.StrUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import sun.util.locale.provider.JRELocaleConstants;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
 
 
@@ -91,6 +93,39 @@ public class AppLoginService {
 //        if (JedisUtils.get(token).equals(userId)) {
 //            JedisUtils.del(token);
 //        }
+    }
+    /**
+     * 登出
+     * @return
+     */
+    public boolean logout(HttpServletRequest request){
+        String personId = request.getHeader(Global.REQUEST_USER_CAPTION);
+        String token = request.getHeader(Global.REQUEST_TOKEN_CAPTION);
+        try {
+            if (StringUtils.isNotBlank(personId) && StringUtils.isNotBlank(token)) {
+                logout(personId, token);
+            }
+            return true;
+        }catch (Exception ex){
+            return false;
+        }
+    }
+
+
+    /**
+     * 用户是否已经登录, 由app传personId和appLoginToken过来
+     * @return
+     */
+    public boolean isAppLoggedIn(HttpServletRequest request) {
+        String personId = request.getHeader(Global.REQUEST_USER_CAPTION);
+        String token = request.getHeader(Global.REQUEST_TOKEN_CAPTION);
+
+        if (StringUtils.isNotBlank(personId) && StringUtils.isNotBlank(token)
+                && isAppLoggedIn(personId, token)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

@@ -2,6 +2,7 @@
 --  Table structure for `app_config`
 --  公司序号和个人需要就对应各自的ID，
 --  为了未来分库，会根据id号来自动分配所属的库
+--  2017.04.07 这张表不需要了，放到redis数据库中进行处理
 -- ----------------------------
 DROP TABLE IF EXISTS `app_config`;
 CREATE TABLE `app_config` (
@@ -54,6 +55,7 @@ CREATE TABLE `app_person` (
 --  Table structure for `app_config`
 --  公司序号和个人需要就对应各自的ID，
 --  为了未来分库，会根据id号来自动分配所属的库
+--  2017.04.07 放到redis中去处理
 -- ----------------------------
 DROP TABLE IF EXISTS `app_person_token`;
 CREATE TABLE `app_person_token` (
@@ -70,6 +72,8 @@ CREATE TABLE `app_person_token` (
 
 -- ----------------------------
 --  Table structure for `app_admin`
+--  管理账户表
+--   org_id为1的时候为系统管理员，为其他值的时候为具体公司的管理员
 -- ----------------------------
 DROP TABLE IF EXISTS `app_admin`;
 CREATE TABLE `app_admin` (
@@ -89,7 +93,7 @@ CREATE TABLE `app_admin` (
   `update_date` datetime NOT NULL COMMENT '更新时间',
   `remarks` varchar(255) DEFAULT NULL COMMENT '备注信息',
   `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
-  `org_id` varchar(64) NOT NULL COMMENT '管理组织' ,
+  `org_id` varchar(64) NOT NULL DEFAULT '1' COMMENT '管理组织' ,
   PRIMARY KEY (`id`),
   UNIQUE KEY `app_admin_mobile` (`mobile`),
   UNIQUE KEY `app_admin_login_name` (`login_name`),
@@ -100,7 +104,7 @@ CREATE TABLE `app_admin` (
 --  Records of `app_admin`
 -- ----------------------------
 BEGIN;
-INSERT INTO app_admin(id,login_name,password,name,create_date,update_date,org_id) VALUES ('1', 'sysadmin','sysadmin','超级管理员',now(),now(),'1');
+INSERT INTO app_admin(id,login_name,password,name,create_date,update_date,create_by,update_by,org_id) VALUES ('1', 'sysadmin','sysadmin','超级管理员',now(),now(),'1','1','1');
 COMMIT;
 
 -- ----------------------------
@@ -126,6 +130,7 @@ CREATE TABLE `app_admin_token` (
 DROP TABLE IF EXISTS `app_org`;
 CREATE TABLE `app_org` (
   `id` varchar(64) NOT NULL COMMENT '编号',
+  `code` varchar(64) NOT NULL COMMENT '代码',
   `name` varchar(100) NOT NULL COMMENT '名称',
   `org_type` smallint DEFAULT 0 NOT NULL COMMENT '机构类型' ,
   `create_by` varchar(64) DEFAULT NULL COMMENT '创建者',
@@ -137,11 +142,12 @@ CREATE TABLE `app_org` (
   `db_url`varchar(100) DEFAULT NULL COMMENT '所属数据库',
   PRIMARY KEY (`id`),
   KEY `app_org_del_flag` (`del_flag`),
+  UNIQUE KEY `app_org_code` (`code`),
   KEY `app_org_type` (`org_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='机构表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='组织表';
 
 BEGIN;
-INSERT INTO app_org(id,name,org_type,create_date,update_date) VALUES ('1', '缺省组织',0,now(),now());
+INSERT INTO app_org(id,code,name,org_type,create_date,update_date) VALUES ('1','0','缺省组织',0,now(),now());
 COMMIT;
 
 -- ----------------------------
