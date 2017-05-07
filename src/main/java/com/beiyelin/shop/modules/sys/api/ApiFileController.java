@@ -1,6 +1,7 @@
 package com.beiyelin.shop.modules.sys.api;
 
 import com.beiyelin.shop.common.utils.UploadExUtils;
+import com.beiyelin.shop.modules.person.api.ApiPersonBaseController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -1,18 +1,13 @@
 /**
  * Copyright &copy; 2012-2014 <a href="http://www.iwantclick.com">iWantClick</a>iwc.shop All rights reserved.
  */
-package com.beiyelin.shop.modules.sys.api;
+package com.beiyelin.shop.modules.application.api;
 
-import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.security.authority.annotation.PermissionControl;
-import com.beiyelin.shop.common.utils.StrUtils;
-import com.beiyelin.shop.common.utils.ValidateUtils;
-import com.beiyelin.shop.modules.sys.bean.LoginResponse;
-import com.beiyelin.shop.modules.sys.bean.NewAppOrgBean;
-import com.beiyelin.shop.modules.sys.entity.AppOrg;
-import com.beiyelin.shop.modules.sys.service.AppOrgService;
+import com.beiyelin.shop.modules.application.reqbody.NewAppOrgReqBody;
+import com.beiyelin.shop.modules.application.entity.AppOrg;
+import com.beiyelin.shop.modules.application.service.AppOrgService;
 import com.beiyelin.shop.modules.sys.service.SystemService;
-import com.beiyelin.shop.modules.sys.utils.AppSmsUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -22,7 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
@@ -83,7 +77,7 @@ public class ApiAppOrgController extends ApiAppAdminBaseController {
     }
     /**
      *
-     * @param newAppOrgBean
+     * @param newAppOrgReqBody
      * @return
      * @throws Throwable
      *
@@ -98,11 +92,11 @@ public class ApiAppOrgController extends ApiAppAdminBaseController {
             @ApiImplicitParam(name = "appLoginToken", value = "登录token", required = true, paramType = "header", dataType = "String"),
             @ApiImplicitParam(name = "appOrg.property", value = "AppOrg类的属性，通过form提交", required = true, paramType = "form", dataType = "object")
     })
-    public String newAppOrg(@Valid @RequestBody NewAppOrgBean newAppOrgBean, BindingResult validateResult,
+    public String newAppOrg(@Valid @RequestBody NewAppOrgReqBody newAppOrgReqBody, BindingResult validateResult,
                             @RequestHeader("appUserId") String curOperatorId) throws Throwable {
 
 //            AppOrg person = JsonMapper.getInstance().fromJson(request.getParameter("person"),AppOrg.class);
-        if (newAppOrgBean==null){
+        if (newAppOrgReqBody ==null){
 //                throw new Exception("没有提交任何信息，不能保存！");
             throw new Exception(messageService.getMessage("ApiAppOrgController.newAppOrg.01"));
         }
@@ -111,9 +105,9 @@ public class ApiAppOrgController extends ApiAppAdminBaseController {
         }
 //            beanValidator(person);
         //对密码进行加密
-        newAppOrgBean.setPassword(SystemService.entryptPassword(newAppOrgBean.getPassword()));
+        newAppOrgReqBody.setPassword(SystemService.entryptPassword(newAppOrgReqBody.getPassword()));
         //新增组织
-        appOrgService.newAppOrg(newAppOrgBean,curOperatorId);
+        appOrgService.newAppOrg(newAppOrgReqBody,curOperatorId);
 
         return messageService.getMessage("SuccessComplete");
 

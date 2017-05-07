@@ -1,16 +1,17 @@
 /**
  * Copyright &copy; 2012-2014 <a href="http://www.iwantclick.com">iWantClick</a>iwc.shop All rights reserved.
  */
-package com.beiyelin.shop.modules.sys.api;
+package com.beiyelin.shop.modules.application.api;
 
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.security.authority.annotation.PermissionControl;
 import com.beiyelin.shop.common.utils.StrUtils;
 import com.beiyelin.shop.common.utils.ValidateUtils;
-import com.beiyelin.shop.modules.sys.bean.LoginResponse;
-import com.beiyelin.shop.modules.sys.entity.AppAdmin;
+import com.beiyelin.shop.modules.application.reqbody.LoginReqBody;
+import com.beiyelin.shop.modules.application.resbody.LoginResBody;
+import com.beiyelin.shop.modules.application.entity.AppAdmin;
 import com.beiyelin.shop.modules.sys.service.SystemService;
-import com.beiyelin.shop.modules.sys.utils.AppSmsUtils;
+import com.beiyelin.shop.modules.application.utils.AppSmsUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -118,12 +119,12 @@ public class ApiAppAdminController extends ApiAppAdminBaseController {
             @ApiImplicitParam(name = "userName", value = "登录账户，现在只能用手机号", required = true, paramType = "form", dataType = "String"),
             @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "form", dataType = "String")
     })
-    public LoginResponse login(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+    public LoginResBody login(@RequestBody LoginReqBody loginReqBody, HttpServletResponse response) throws Throwable {
 
-        LoginResponse loginResponse =new LoginResponse();
+        LoginResBody loginResBody =new LoginResBody();
 
-        String loginName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
-        String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
+        String loginName = StrUtils.clean(loginReqBody.getUserName());
+        String password = StrUtils.clean(loginReqBody.getPassword());
 
         //不能为空
         if (StrUtils.isBlank(loginName) || StrUtils.isBlank(password)) {
@@ -133,8 +134,10 @@ public class ApiAppAdminController extends ApiAppAdminBaseController {
         //核查密码
 
         AppAdmin appAdmin = appAdminService.getByLoginName2(loginName);
-
-        if (appAdmin != null && SystemService.validatePassword(password, appAdmin.getPassword())) {
+        if (null == appAdmin){
+            throw new Exception("ApiAppAdminController.login.NotExists");
+        }
+        if (SystemService.validatePassword(password, appAdmin.getPassword())) {
             throw new Exception("ApiAppAdminController.login.02");
         }
 
@@ -142,10 +145,10 @@ public class ApiAppAdminController extends ApiAppAdminBaseController {
         String token = appLoginService.genAppLoginToken();
         appLoginService.updateAppLoginToken(appAdmin.getId(), token);
 
-        loginResponse.setToken(token);
-        loginResponse.setPersonId(appAdmin.getId());
+        loginResBody.setToken(token);
+        loginResBody.setId(appAdmin.getId());
 
-        return loginResponse;
+        return loginResBody;
 
     }
 

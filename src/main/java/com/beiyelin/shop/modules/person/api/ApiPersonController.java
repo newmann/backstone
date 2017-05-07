@@ -1,17 +1,17 @@
 /**
  * Copyright &copy; 2012-2014 <a href="http://www.iwantclick.com">iWantClick</a>iwc.shop All rights reserved.
  */
-package com.beiyelin.shop.modules.sys.api;
+package com.beiyelin.shop.modules.person.api;
 
 import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.security.authority.annotation.PermissionControl;
 import com.beiyelin.shop.common.utils.*;
-import com.beiyelin.shop.modules.sys.bean.LoginResponse;
-import com.beiyelin.shop.modules.sys.entity.Person;
+import com.beiyelin.shop.modules.person.resbody.LoginResBody;
+import com.beiyelin.shop.modules.person.entity.Person;
 
 
 import com.beiyelin.shop.modules.sys.service.SystemService;
-import com.beiyelin.shop.modules.sys.utils.AppSmsUtils;
+import com.beiyelin.shop.modules.application.utils.AppSmsUtils;
 
 
 import io.swagger.annotations.Api;
@@ -128,9 +128,9 @@ public class ApiPersonController extends ApiPersonBaseController {
             @ApiImplicitParam(name = "userName", value = "登录账户，现在只能用手机号", required = true, paramType = "form", dataType = "String"),
             @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "form", dataType = "String")
     })
-    public LoginResponse login(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+    public LoginResBody login(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        LoginResponse loginResponse =new LoginResponse();
+        LoginResBody loginResBody =new LoginResBody();
 
         String loginName = StrUtils.clean(request.getParameter(LOGIN_USERNAME_CAPTION));
         String password = StrUtils.clean(request.getParameter(LOGIN_PASSWORD_CAPTION));
@@ -152,10 +152,10 @@ public class ApiPersonController extends ApiPersonBaseController {
         String token = appLoginService.genAppLoginToken();
         appLoginService.updateAppLoginToken(person.getId(), token);
 
-        loginResponse.setToken(token);
-        loginResponse.setPersonId(person.getId());
+        loginResBody.setToken(token);
+        loginResBody.setId(person.getId());
 
-        return loginResponse;
+        return loginResBody;
 
     }
 

@@ -1,19 +1,15 @@
 /**
  * Copyright &copy; 2012-2014 <a href="http://www.iwantclick.com">iWantClick</a>iwc.shop All rights reserved.
  */
-package com.beiyelin.shop.modules.sys.api;
+package com.beiyelin.shop.modules.person.api;
 
 import com.beiyelin.shop.common.beanvalidator.BeanValidators;
-import com.beiyelin.shop.common.config.Global;
 import com.beiyelin.shop.common.service.MessageService;
 import com.beiyelin.shop.common.utils.DateUtils;
-import com.beiyelin.shop.modules.sys.entity.Person;
-import com.beiyelin.shop.modules.sys.service.AppLoginService;
-import com.beiyelin.shop.modules.sys.service.PersonService;
-import com.beiyelin.shop.modules.sys.service.SystemService;
+import com.beiyelin.shop.modules.application.service.AppLoginService;
+import com.beiyelin.shop.modules.person.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
